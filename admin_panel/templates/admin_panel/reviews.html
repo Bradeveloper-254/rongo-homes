@@ -1,0 +1,279 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Review Moderation | Rongo Homes</title>
+
+    <link
+        rel="stylesheet"
+        href="{% static 'admin_panel/css/dashboard.css' %}"
+    >
+</head>
+
+<body>
+
+<header class="header">
+    <h1>RONGO HOMES</h1>
+</header>
+
+<div class="page-title">
+    <h2>Review Moderation</h2>
+</div>
+
+<main class="container">
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="message">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+
+    <!-- =========================
+         PENDING REVIEWS
+    ========================== -->
+
+    <section class="section">
+
+        <h2 class="section-title">
+            Pending Reviews
+        </h2>
+
+        {% if pending_reviews %}
+
+            {% for review in pending_reviews %}
+
+                <article class="card">
+
+                    <h3>
+                        ⭐ {{ review.rating }}/5
+                    </h3>
+
+                    <p>
+                        <strong>Review ID:</strong>
+                        {{ review.id }}
+                    </p>
+
+                    <p>
+                        <strong>Student:</strong>
+                        {{ review.student_id }}
+                    </p>
+
+                    <p>
+                        <strong>Property:</strong>
+                        {{ review.property_id }}
+                    </p>
+
+                    <p>
+                        <strong>Comment:</strong>
+                        {{ review.comment }}
+                    </p>
+
+                    <p>
+                        <strong>Submitted:</strong>
+                        {{ review.created_at }}
+                    </p>
+
+                    <div class="actions">
+
+                        <form
+                            method="POST"
+                            action="{% url 'admin_panel:approve_review' review.id %}"
+                        >
+
+                            {% csrf_token %}
+
+                            <button
+                                type="submit"
+                                class="btn-approve"
+                            >
+                                Approve
+                            </button>
+
+                        </form>
+
+
+                        <form
+                            method="POST"
+                            action="{% url 'admin_panel:reject_review' review.id %}"
+                        >
+
+                            {% csrf_token %}
+
+                            <button
+                                type="submit"
+                                class="btn-reject"
+                            >
+                                Reject
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                </article>
+
+            {% endfor %}
+
+        {% else %}
+
+            <div class="card">
+
+                <p>
+                    No pending reviews.
+                </p>
+
+            </div>
+
+        {% endif %}
+
+    </section>
+
+
+    <!-- =========================
+         APPROVED REVIEWS
+    ========================== -->
+
+    <section class="section">
+
+        <h2 class="section-title">
+            Approved Reviews
+        </h2>
+
+        {% if approved_reviews %}
+
+            {% for review in approved_reviews %}
+
+                <article class="card">
+
+                    <h3>
+                        ⭐ {{ review.rating }}/5
+                    </h3>
+
+                    <p>
+                        <strong>Student:</strong>
+                        {{ review.student_id }}
+                    </p>
+
+                    <p>
+                        <strong>Property:</strong>
+                        {{ review.property_id }}
+                    </p>
+
+                    <p>
+                        <strong>Comment:</strong>
+                        {{ review.comment }}
+                    </p>
+
+                    <p>
+                        <strong>Status:</strong>
+                        {{ review.status }}
+                    </p>
+
+                </article>
+
+            {% endfor %}
+
+        {% else %}
+
+            <div class="card">
+
+                <p>
+                    No approved reviews yet.
+                </p>
+
+            </div>
+
+        {% endif %}
+
+    </section>
+
+
+    <!-- =========================
+         REJECTED REVIEWS
+    ========================== -->
+
+    <section class="section">
+
+        <h2 class="section-title">
+            Rejected Reviews
+        </h2>
+
+        {% if rejected_reviews %}
+
+            {% for review in rejected_reviews %}
+
+                <article class="card">
+
+                    <h3>
+                        ⭐ {{ review.rating }}/5
+                    </h3>
+
+                    <p>
+                        <strong>Student:</strong>
+                        {{ review.student_id }}
+                    </p>
+
+                    <p>
+                        <strong>Property:</strong>
+                        {{ review.property_id }}
+                    </p>
+
+                    <p>
+                        <strong>Comment:</strong>
+                        {{ review.comment }}
+                    </p>
+
+                    <p>
+                        <strong>Status:</strong>
+                        {{ review.status }}
+                    </p>
+
+                </article>
+
+            {% endfor %}
+
+        {% else %}
+
+            <div class="card">
+
+                <p>
+                    No rejected reviews.
+                </p>
+
+            </div>
+
+        {% endif %}
+
+    </section>
+
+
+    <!-- =========================
+         NAVIGATION
+    ========================== -->
+
+    <section class="section">
+
+        <a
+            href="{% url 'admin_panel:dashboard' %}"
+            class="link-button"
+        >
+            ← Back to Dashboard
+        </a>
+
+    </section>
+
+</main>
+
+</body>
+</html>

@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Unlock Property | Rongo Homes</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f4f7f5;
+            color: #1f2937;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: #ffffff;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 18px 6%;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 800;
+            color: #087443;
+            letter-spacing: -0.5px;
+        }
+
+        .logo span {
+            color: #111827;
+        }
+
+        /* Main */
+        .container {
+            width: 100%;
+            max-width: 620px;
+            margin: 50px auto;
+            padding: 0 20px;
+        }
+
+        /* Card */
+        .card {
+            background: #ffffff;
+            border-radius: 18px;
+            padding: 35px;
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e5e7eb;
+        }
+
+        .icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            background: #e8f7ef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #087443;
+            font-size: 28px;
+        }
+
+        .title {
+            text-align: center;
+            font-size: 28px;
+            font-weight: 800;
+            color: #111827;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #6b7280;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        /* Property details */
+        .property-box {
+            background: #f8faf9;
+            border: 1px solid #e1e8e4;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .detail {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            padding: 11px 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .detail:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .detail:first-child {
+            padding-top: 0;
+        }
+
+        .label {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .value {
+            color: #111827;
+            font-weight: 600;
+            text-align: right;
+        }
+
+        .fee {
+            color: #087443;
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+        /* Notice */
+        .notice {
+            display: flex;
+            gap: 12px;
+            background: #fff8e6;
+            border: 1px solid #f5d98b;
+            color: #785b13;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 28px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .notice-icon {
+            font-size: 18px;
+        }
+
+        /* Form */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 700;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #087443;
+            font-size: 18px;
+        }
+
+        input[type="tel"] {
+            width: 100%;
+            padding: 14px 15px 14px 45px;
+            border: 1px solid #d1d5db;
+            border-radius: 10px;
+            font-size: 16px;
+            outline: none;
+            transition: 0.2s ease;
+        }
+
+        input[type="tel"]:focus {
+            border-color: #087443;
+            box-shadow: 0 0 0 3px rgba(8, 116, 67, 0.12);
+        }
+
+        /* Button */
+        .pay-button {
+            width: 100%;
+            border: none;
+            background: #087443;
+            color: #ffffff;
+            padding: 15px 20px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+
+        .pay-button:hover {
+            background: #065d35;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 15px rgba(8, 116, 67, 0.2);
+        }
+
+        .pay-button:active {
+            transform: translateY(0);
+        }
+
+        /* Cancel */
+        .cancel {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #6b7280;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .cancel:hover {
+            color: #087443;
+        }
+
+        /* Security */
+        .security {
+            text-align: center;
+            margin-top: 25px;
+            color: #9ca3af;
+            font-size: 12px;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 25px 20px;
+            color: #9ca3af;
+            font-size: 13px;
+        }
+
+        /* Mobile */
+        @media (max-width: 600px) {
+
+            .container {
+                margin: 25px auto;
+                padding: 0 15px;
+            }
+
+            .card {
+                padding: 25px 20px;
+                border-radius: 14px;
+            }
+
+            .title {
+                font-size: 24px;
+            }
+
+            .detail {
+                flex-direction: column;
+                gap: 4px;
+            }
+
+            .value {
+                text-align: left;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="header">
+    <div class="logo">
+        Rongo <span>Homes</span>
+    </div>
+</header>
+
+<main class="container">
+
+    <div class="card">
+
+        <div class="icon">
+            🔐
+        </div>
+
+        <h1 class="title">
+            Unlock Property
+        </h1>
+
+        <p class="subtitle">
+            Pay the unlock fee to access the property's
+            identity and contact information.
+        </p>
+
+        <!-- Property Information -->
+        <div class="property-box">
+
+            <div class="detail">
+                <span class="label">
+                    Property ID
+                </span>
+
+                <span class="value">
+                    {{ property.property_id }}
+                </span>
+            </div>
+
+            <div class="detail">
+                <span class="label">
+                    Location
+                </span>
+
+                <span class="value">
+                    {{ property.location.area }}
+                </span>
+            </div>
+
+            <div class="detail">
+                <span class="label">
+                    Unlock Fee
+                </span>
+
+                <span class="value fee">
+                    KSh {{ unlock_fee }}
+                </span>
+            </div>
+
+        </div>
+
+        <!-- Information Notice -->
+        <div class="notice">
+            <span class="notice-icon">ℹ️</span>
+
+            <span>
+                After your payment is confirmed, the property's
+                identity and contact information will become
+                available to you.
+            </span>
+        </div>
+
+        <!-- Payment Form -->
+        <form method="POST">
+
+            {% csrf_token %}
+
+            <div class="form-group">
+
+                <label
+                    class="form-label"
+                    for="phone_number"
+                >
+                    M-Pesa Phone Number
+                </label>
+
+                <div class="input-wrapper">
+
+                    <span class="input-icon">
+                        📱
+                    </span>
+
+                    <input
+                        type="tel"
+                        id="phone_number"
+                        name="phone_number"
+                        placeholder="0712345678"
+                        autocomplete="tel"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+            <button
+                type="submit"
+                class="pay-button"
+            >
+                Pay KSh {{ unlock_fee }} with M-Pesa
+            </button>
+
+        </form>
+
+        <a
+            href="{% url 'properties:property_detail' property.property_id %}"
+            class="cancel"
+        >
+            ← Cancel and return to property
+        </a>
+
+        <div class="security">
+            🔒 Your payment information is handled securely.
+        </div>
+
+    </div>
+
+</main>
+
+<footer class="footer">
+    © {% now "Y" %} Rongo Homes. All rights reserved.
+</footer>
+
+</body>
+
+</html>

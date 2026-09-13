@@ -1,0 +1,982 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+Student Dashboard | Rongo Homes
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+<!-- Dashboard Header -->
+<div class="dashboard-header mx-4 mx-md-0">
+
+    <h1 class="dashboard-title">
+        <i class="fas fa-home me-3"></i>
+        Student Dashboard
+    </h1>
+
+    <p class="dashboard-subtitle">
+        Find verified accommodation around Rongo University
+    </p>
+    <div>
+   <img
+    src="{% static 'images/rongo-university-logo.png' %}"
+    alt="Rongo University Logo"
+    style="display:block; width:300px; height:auto; opacity:1;"
+>
+ </div>
+</div> 
+
+
+<!-- Main Content -->
+<div class="container-fluid px-4">
+
+    <!-- Statistics -->
+    <div class="stats-grid my-4">
+
+        <div class="stat-card">
+
+            <div class="stat-icon1">
+                <i class="fas fa-heart"></i>
+            </div>
+
+            <div class="stat-value">
+                {{ favourite_count }}
+            </div>
+
+            <div class="stat-label">
+                Favourites
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon3">
+                <i class="fas fa-credit-card"></i>
+            </div>
+
+            <div class="stat-value">
+                {{ payment_count }}
+            </div>
+
+            <div class="stat-label">
+                Payments
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                <i class="fas fa-star"></i>
+            </div>
+
+            <div class="stat-value">
+                {{ review_count }}
+            </div>
+
+            <div class="stat-label">
+                Reviews
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon2">
+                <i class="fas fa-flag"></i>
+            </div>
+
+            <div class="stat-value">
+                {{ report_count }}
+            </div>
+
+            <div class="stat-label">
+                Reports
+            </div>
+
+        </div>
+
+    </div>
+
+
+    
+{% comment %} #QUICK ACTIONS {% endcomment %}
+<div class="row g-3 mb-4">
+
+    <!-- FIND ACCOMMODATION -->
+    <div class="col-md-6 col-lg">
+
+        <a
+            href="{% url 'properties:property_list' %}"
+            class="btn btn-primary w-100 py-3"
+        >
+
+            <i class="fas fa-search me-2"></i>
+
+            Find Accommodation
+
+        </a>
+
+    </div>
+
+
+    <!-- MY FAVOURITES -->
+    <div class="col-md-6 col-lg">
+
+        <a
+            href="{% url 'properties:favourite_list' %}"
+            class="btn btn-outline-danger w-100 py-3"
+        >
+
+            <i class="fas fa-heart me-2"></i>
+
+            My Favourites
+
+        </a>
+
+    </div>
+
+
+    <!-- PAYMENT HISTORY -->
+    <div class="col-md-6 col-lg">
+
+        <a
+            href="{% url 'payments:payment_history' %}"
+            class="btn btn-outline-success w-100 py-3"
+        >
+
+            <i class="fas fa-receipt me-2"></i>
+
+            Payment History
+
+        </a>
+
+    </div>
+
+
+    <!-- UNLOCKED CONTACTS -->
+    <div class="col-md-6 col-lg">
+
+        <a
+            href="{% url 'payments:unlocked_contacts' %}"
+            class="btn btn-outline-info w-100 py-3"
+        >
+
+            <i class="fas fa-address-book me-2"></i>
+
+            Unlocked Contacts
+
+        </a>
+
+    </div>
+
+
+    <!-- REPORTED PROPERTIES -->
+    <div class="col-md-6 col-lg">
+
+        <a
+            href="{% url 'reports:my_reports' %}"
+            class="btn btn-outline-warning w-100 py-3"
+        >
+
+            <i class="fas fa-flag me-2"></i>
+
+            Reported Properties
+
+        </a>
+
+    </div>
+
+
+    <!-- MY PROFILE -->
+    <div class="col-md-6 col-lg">
+
+        <a
+            href="{% url 'accounts:profile' %}"
+            class="btn btn-outline-primary w-100 py-3"
+        >
+
+            <i class="fas fa-user me-2"></i>
+
+            My Profile
+
+        </a>
+
+    </div>
+
+
+    <!-- NOTIFICATIONS -->
+    <div class="col-md-6 col-lg">
+
+        <a
+            href="{% url 'notifications:list' %}"
+            class="btn btn-outline-secondary w-100 py-3"
+        >
+
+            <i class="fas fa-bell me-2"></i>
+
+            Notifications
+
+        </a>
+
+    </div>
+
+</div>
+
+
+
+    <!-- =========================================================
+         RONGO HOMES GUIDE CAROUSEL
+    ========================================================== -->
+
+    <section class="rongo-guide-section mb-5">
+
+        <div class="text-center mb-4">
+
+            <h2 class="fw-bold">
+                How Rongo Student Homes Works
+            </h2>
+
+            <p class="text-muted">
+                Follow these simple steps to find your accommodation.
+            </p>
+
+        </div>
+
+
+        <div
+            id="rongoHomesGuide"
+            class="carousel slide rongo-guide-carousel"
+            data-bs-ride="carousel"
+            data-bs-interval="5000"
+        >
+
+            <div class="carousel-inner">
+
+
+                <!-- =================================================
+                     SLIDE 1
+                ================================================== -->
+
+                <div class="carousel-item active">
+
+                    <div class="rongo-guide-slide">
+
+                        <img
+                            src="{% static 'properties/guide/image1.png' %}"
+                            alt="Find accommodation"
+                            class="rongo-guide-image"
+                        >
+
+                        <div class="rongo-guide-overlay">         <div class="rongo-guide-text">
+
+                            <span class="rongo-guide-step">
+                                Step 1
+                            </span>
+
+                            <h3>
+                                Find Your Accommodation
+                            </h3>
+
+                            <p>
+                                Start by browsing available accommodation
+                                around Rongo University and discover properties
+                                that match your needs.
+                            </p>
+
+                        </div></div>
+
+               
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     SLIDE 2
+                ================================================== -->
+
+                <div class="carousel-item">
+
+                    <div class="rongo-guide-slide">
+
+                        <img
+                            src="{% static 'properties/guide/image2.jpg' %}"
+                            alt="Browse verified properties"
+                            class="rongo-guide-image"
+                        >
+
+                        <div class="rongo-guide-overlay"></div>
+
+                        <div class="rongo-guide-text">
+
+                            <span class="rongo-guide-step">
+                                Step 2
+                            </span>
+
+                            <h3>
+                                Browse Verified Properties
+                            </h3>
+
+                            <p>
+                                Explore accommodation listings that have been
+                                reviewed and approved on Rongo Homes.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     SLIDE 3
+                ================================================== -->
+
+                <div class="carousel-item">
+
+                    <div class="rongo-guide-slide">
+
+                        <img
+                            src="{% static 'properties/guide/image3.jpg' %}"
+                            alt="Check property location"
+                            class="rongo-guide-image"
+                        >
+
+                        <div class="rongo-guide-overlay"></div>
+
+                        <div class="rongo-guide-text">
+
+                            <span class="rongo-guide-step">
+                                Step 3
+                            </span>
+
+                            <h3>
+                                Check the Location
+                            </h3>
+
+                            <p>
+                                Check the area, nearby landmarks and distance
+                                from Rongo University before choosing a property.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     SLIDE 4
+                ================================================== -->
+
+                <div class="carousel-item">
+
+                    <div class="rongo-guide-slide">
+
+                        <img
+                            src="{% static 'properties/guide/image4.png' %}"
+                            alt="Check rooms and amenities"
+                            class="rongo-guide-image"
+                        >
+
+                        <div class="rongo-guide-overlay"></div>
+
+                        <div class="rongo-guide-text">
+
+                            <span class="rongo-guide-step">
+                                Step 4
+                            </span>
+
+                            <h3>
+                                Check Rooms & Amenities
+                            </h3>
+
+                            <p>
+                                Review available rooms, monthly pricing and
+                                the amenities offered by the property.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     SLIDE 5
+                ================================================== -->
+
+                <div class="carousel-item">
+
+                    <div class="rongo-guide-slide">
+
+                        <img
+                            src="{% static 'properties/guide/image5.png' %}"
+                            alt="View property details"
+                            class="rongo-guide-image"
+                        >
+
+                        <div class="rongo-guide-overlay"></div>
+
+                        <div class="rongo-guide-text">
+
+                            <span class="rongo-guide-step">
+                                Step 5
+                            </span>
+
+                            <h3>
+                                View Property Details
+                            </h3>
+
+                            <p>
+                                Open a property to explore its available
+                                accommodation information before deciding.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     SLIDE 6
+                ================================================== -->
+
+                <div class="carousel-item">
+
+                    <div class="rongo-guide-slide">
+
+                        <img
+                            src="{% static 'properties/guide/image6.png' %}"
+                            alt="Compare properties"
+                            class="rongo-guide-image"
+                        >
+
+                        <div class="rongo-guide-overlay"></div>
+
+                        <div class="rongo-guide-text">
+
+                            <span class="rongo-guide-step">
+                                Step 6
+                            </span>
+
+                            <h3>
+                                Compare Your Options
+                            </h3>
+
+                            <p>
+                                Save and compare properties so you can make
+                                a more informed accommodation decision.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     SLIDE 7
+                ================================================== -->
+
+                <div class="carousel-item">
+
+                    <div class="rongo-guide-slide">
+
+                        <img
+                            src="{% static 'properties/guide/image7.png' %}"
+                            alt="Unlock property contacts"
+                            class="rongo-guide-image"
+                        >
+
+                        <div class="rongo-guide-overlay"></div>
+
+                        <div class="rongo-guide-text">
+
+                            <span class="rongo-guide-step">
+                                Step 7
+                            </span>
+
+                            <h3>
+                                Unlock Property Contacts
+                            </h3>
+
+                            <p>
+                                When you are ready to contact a property,
+                                follow the secure contact-unlock process.
+                                Successful payment gives you access to the
+                                available contact details.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     SLIDE 8 — TRUST
+                ================================================== -->
+
+                <div class="carousel-item">
+
+                    <div class="rongo-guide-slide">
+
+                        <img
+                            src="{% static 'properties/guide/image8.png' %}"
+                            alt="Trusted Rongo Homes platform"
+                            class="rongo-guide-image"
+                        >
+
+                        <div class="rongo-guide-overlay"></div>
+
+                        <div class="rongo-guide-text rongo-trust-text">
+
+                            <span class="rongo-guide-step">
+                                Step 8
+                            </span>
+
+                            <h3>
+                                Find Your Home With Confidence
+                            </h3>
+
+                            <p>
+                                Rongo Homes is built to make the search for
+                                student accommodation easier and safer.
+                            </p>
+
+
+                            <div class="rongo-trust-points">
+
+                                <div>
+                                    <i class="fas fa-check-circle"></i>
+                                    Verified accommodation listings
+                                </div>
+
+                                <div>
+                                    <i class="fas fa-shield-alt"></i>
+                                    Protected property contacts
+                                </div>
+
+                                <div>
+                                    <i class="fas fa-flag"></i>
+                                    Property reporting system
+                                </div>
+
+                            </div>
+
+
+                            <p class="rongo-trust-final">
+
+                                Your search for accommodation starts with
+                                Rongo Homes.
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Previous -->
+            <button
+                class="carousel-control-prev"
+                type="button"
+                data-bs-target="#rongoHomesGuide"
+                data-bs-slide="prev"
+            >
+
+                <span
+                    class="carousel-control-prev-icon"
+                    aria-hidden="true"
+                ></span>
+
+                <span class="visually-hidden">
+                    Previous
+                </span>
+
+            </button>
+
+
+            <!-- Next -->
+            <button
+                class="carousel-control-next"
+                type="button"
+                data-bs-target="#rongoHomesGuide"
+                data-bs-slide="next"
+            >
+
+                <span
+                    class="carousel-control-next-icon"
+                    aria-hidden="true"
+                ></span>
+
+                <span class="visually-hidden">
+                    Next
+                </span>
+
+            </button>
+
+
+            <!-- Indicators -->
+            <div class="carousel-indicators">
+
+                <button
+                    type="button"
+                    data-bs-target="#rongoHomesGuide"
+                    data-bs-slide-to="0"
+                    class="active"
+                    aria-current="true"
+                    aria-label="Step 1"
+                ></button>
+
+                <button
+                    type="button"
+                    data-bs-target="#rongoHomesGuide"
+                    data-bs-slide-to="1"
+                    aria-label="Step 2"
+                ></button>
+
+                <button
+                    type="button"
+                    data-bs-target="#rongoHomesGuide"
+                    data-bs-slide-to="2"
+                    aria-label="Step 3"
+                ></button>
+
+                <button
+                    type="button"
+                    data-bs-target="#rongoHomesGuide"
+                    data-bs-slide-to="3"
+                    aria-label="Step 4"
+                ></button>
+
+                <button
+                    type="button"
+                    data-bs-target="#rongoHomesGuide"
+                    data-bs-slide-to="4"
+                    aria-label="Step 5"
+                ></button>
+
+                <button
+                    type="button"
+                    data-bs-target="#rongoHomesGuide"
+                    data-bs-slide-to="5"
+                    aria-label="Step 6"
+                ></button>
+
+                <button
+                    type="button"
+                    data-bs-target="#rongoHomesGuide"
+                    data-bs-slide-to="6"
+                    aria-label="Step 7"
+                ></button>
+
+                <button
+                    type="button"
+                    data-bs-target="#rongoHomesGuide"
+                    data-bs-slide-to="7"
+                    aria-label="Step 8"
+                ></button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+<!-- Compare Properties -->
+    <div class="text-center mb-5">
+
+        <a
+            href="{% url 'properties:compare_properties' %}"
+            class="btn btn-outline-success btn-lg px-5"
+        >
+
+            <i class="fas fa-code-compare me-2"></i>
+
+            Compare Properties
+
+            {% if compare_count > 0 %}
+
+                <span class="badge bg-success ms-2">
+                    {{ compare_count }}
+                </span>
+
+            {% endif %}
+
+        </a>
+
+    </div>
+
+    <!-- =========================================================
+         AVAILABLE PROPERTIES
+    ========================================================== -->
+
+    <div class="mb-5">
+
+        <div class="d-flex align-items-center mb-4">
+
+            <h2 class="mb-0">
+
+                <i class="fas fa-building me-2"></i>
+
+                Available Accommodation
+
+            </h2>
+
+            <span class="badge bg-primary ms-2">
+                {{ properties|length }}
+            </span>
+
+        </div>
+
+
+        {% if properties %}
+
+            <div class="row">
+
+                {% for item in properties %}
+
+                    {% with property=item.property %}
+
+                        <div class="col-lg-6 col-xl-4 mb-4">
+
+                            <div class="property-card">
+
+
+                                <!-- PROPERTY COVER PHOTO -->
+
+                                {% if item.cover_photo %}
+
+                                    <div class="property-image-placeholder">
+
+                                        <img
+                                            src="{{ item.cover_photo.url }}"
+                                            alt="Accommodation"
+                                            class="img-fluid w-100"
+                                        >
+
+                                    </div>
+
+                                {% else %}
+
+                                    <div class="property-image-placeholder">
+
+                                        <i class="fas fa-image"></i>
+
+                                    </div>
+
+                                {% endif %}
+
+
+                                <!-- VERIFIED BADGE -->
+
+                                <div class="property-badge">
+
+                                    <i class="fas fa-check-circle me-1"></i>
+
+                                    Verified
+
+                                </div>
+
+
+                                <!-- PROPERTY INFORMATION -->
+
+                                <div class="property-info">
+
+                                    <h6 class="text-muted mb-2">
+
+                                        Verified Accommodation
+                                        #{{ property.property_id }}
+
+                                    </h6>
+
+
+                                    <div class="property-location">
+
+                                        <i class="fas fa-map-marker-alt"></i>
+
+                                        {{ property.location.area }}
+
+                                    </div>
+
+
+                                    <div class="property-location">
+
+                                        <i class="fas fa-walking"></i>
+
+                                        {{ property.distance_from_university }}
+
+                                        km from University
+
+                                    </div>
+
+
+                                    <div class="property-price">
+
+                                        KSh
+
+                                        {{ property.monthly_price|floatformat:0 }}
+
+                                        <span
+                                            class="text-muted"
+                                            style="font-size: 0.8rem;"
+                                        >
+                                            / month
+                                        </span>
+
+                                    </div>
+
+
+                                    <!-- PROPERTY META -->
+
+                                    <div class="property-meta">
+
+                                        <div class="property-meta-item">
+
+                                            <div class="property-meta-label">
+                                                Available
+                                            </div>
+
+                                            <div class="property-meta-value">
+                                                {{ item.vacant_rooms|length }}
+                                            </div>
+
+                                        </div>
+
+
+                                        <div class="property-meta-item">
+
+                                            <div class="property-meta-label">
+                                                Total
+                                            </div>
+
+                                            <div class="property-meta-value">
+                                                {{ property.rooms|length }}
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- PROPERTY ACTIONS -->
+
+                                    <div class="property-actions">
+
+                                        <a
+                                            href="{% url 'properties:property_detail' property.property_id %}"
+                                            class="btn btn-primary btn-sm"
+                                        >
+
+                                            <i class="fas fa-eye me-1"></i>
+
+                                            View
+
+                                        </a>
+
+
+                                        <a
+                                            href="{% url 'properties:add_to_compare' property.property_id %}"
+                                            class="btn btn-outline-success btn-sm"
+                                        >
+
+                                            <i class="fas fa-code-compare me-1"></i>
+
+                                            Compare
+
+                                        </a>
+
+
+                                        <a
+                                            href="{% url 'properties:add_favourite' property.property_id %}"
+                                            class="btn btn-outline-danger btn-sm"
+                                        >
+
+                                            <i class="fas fa-heart me-1"></i>
+
+                                            Save
+
+                                        </a>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    {% endwith %}
+
+                {% endfor %}
+
+            </div>
+
+
+        {% else %}
+
+            <div class="card text-center py-5">
+
+                <div class="card-body">
+
+                    <i
+                        class="fas fa-inbox fa-3x text-muted mb-3"
+                        style="opacity: 0.5;"
+                    ></i>
+
+
+                    <h5 class="card-title mt-3">
+                        No Accommodation Available
+                    </h5>
+
+
+                    <p class="card-text text-muted mb-4">
+
+                        No properties with available rooms at the moment.
+
+                    </p>
+
+
+                    <a
+                        href="{% url 'properties:property_list' %}"
+                        class="btn btn-primary"
+                    >
+                        Browse All
+                    </a>
+
+                </div>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+
+</div>
+
+{% endblock %}

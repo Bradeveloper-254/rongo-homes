@@ -1,0 +1,842 @@
+<!DOCTYPE html> <html lang="en"> <head>
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>{{ property.name }} - Admin | Rongo Homes</title>
+
+<style>
+
+    /* =========================
+       RESET
+    ========================= */
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    /* =========================
+       BODY
+    ========================= */
+
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+        background: #f4f7f5;
+        color: #26332d;
+        line-height: 1.6;
+        min-height: 100vh;
+    }
+
+    /* =========================
+       HEADER
+    ========================= */
+
+    header {
+        background: #176b4d;
+        color: white;
+        padding: 25px 8%;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    }
+
+    header h1 {
+        font-size: 30px;
+        letter-spacing: 0.5px;
+    }
+
+    /* =========================
+       MAIN CONTAINER
+    ========================= */
+
+    main {
+        width: 90%;
+        max-width: 1000px;
+        margin: 40px auto 60px;
+    }
+
+    /* =========================
+       PROPERTY TITLE
+    ========================= */
+
+    .property-heading {
+        background: white;
+        padding: 28px;
+        border-radius: 14px;
+        border-top: 5px solid #176b4d;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+        margin-bottom: 25px;
+    }
+
+    .property-heading h2 {
+        color: #176b4d;
+        font-size: 28px;
+        margin-bottom: 5px;
+    }
+
+    .property-heading p {
+        color: #68736e;
+        font-size: 14px;
+    }
+
+    /* =========================
+       INFORMATION CARD
+    ========================= */
+
+    .info-card {
+        background: white;
+        padding: 25px;
+        border-radius: 14px;
+        margin-bottom: 25px;
+        border: 1px solid #e3e9e5;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    }
+
+    .info-card h3 {
+        color: #176b4d;
+        font-size: 20px;
+        margin-bottom: 18px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #edf2ef;
+    }
+
+    /* =========================
+       DETAILS GRID
+    ========================= */
+
+    .details-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+    }
+
+    .detail {
+        background: #f8faf9;
+        border: 1px solid #edf0ee;
+        padding: 14px 16px;
+        border-radius: 8px;
+    }
+
+    .detail strong {
+        display: block;
+        color: #68736e;
+        font-size: 13px;
+        margin-bottom: 4px;
+    }
+
+    .detail span {
+        color: #26332d;
+        font-weight: 600;
+    }
+
+    .price {
+        color: #176b4d !important;
+        font-size: 17px;
+    }
+
+    .location {
+        color: #176b4d !important;
+    }
+
+    /* =========================
+       STATUS BADGES
+    ========================= */
+
+    .badge {
+        display: inline-block;
+        padding: 6px 13px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: bold;
+        text-transform: capitalize;
+    }
+
+    .pending {
+        background: #fff5d9;
+        color: #9a6b00;
+    }
+
+    .approved {
+        background: #e4f5eb;
+        color: #218838;
+    }
+
+    .rejected {
+        background: #ffe9e9;
+        color: #c0392b;
+    }
+
+    .active {
+        background: #e4f5eb;
+        color: #218838;
+    }
+
+    .suspended {
+        background: #fff0e1;
+        color: #b45f06;
+    }
+
+    /* =========================
+       DESCRIPTION
+    ========================= */
+
+    .description {
+        color: #59655f;
+        line-height: 1.8;
+    }
+
+    /* =========================
+       ROOMS
+    ========================= */
+
+    .room-list {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+        list-style: none;
+    }
+
+    .room {
+        background: #f8faf9;
+        border: 1px solid #e3e9e5;
+        border-left: 4px solid #176b4d;
+        padding: 13px 15px;
+        border-radius: 7px;
+    }
+
+    .room-number {
+        color: #176b4d;
+        font-weight: bold;
+    }
+
+    .room-type {
+        color: #59655f;
+    }
+
+    /* =========================
+       AMENITIES
+    ========================= */
+
+    .amenity-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        list-style: none;
+    }
+
+    .amenity {
+        background: #eaf5f0;
+        color: #176b4d;
+        padding: 7px 12px;
+        border-radius: 18px;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .empty-text {
+        color: #999;
+        font-style: italic;
+    }
+
+    /* =========================
+       ADMIN ACTIONS
+    ========================= */
+
+    .actions-card {
+        background: white;
+        padding: 25px;
+        border-radius: 14px;
+        margin-top: 25px;
+        border: 1px solid #e3e9e5;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+    }
+
+    .actions-card h3 {
+        color: #176b4d;
+        font-size: 20px;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #edf2ef;
+    }
+
+    .actions {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .action-button {
+        display: inline-block;
+        border: none;
+        border-radius: 8px;
+        padding: 11px 18px;
+        font-size: 14px;
+        font-weight: bold;
+        text-decoration: none;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .view-button {
+        background: #176b4d;
+        color: white;
+    }
+
+    .view-button:hover {
+        background: #0e4935;
+        transform: translateY(-1px);
+    }
+
+    .approve-button {
+        background: #218838;
+        color: white;
+    }
+
+    .approve-button:hover {
+        background: #176b2c;
+    }
+
+    .reject-button {
+        background: #c0392b;
+        color: white;
+    }
+
+    .reject-button:hover {
+        background: #a93226;
+    }
+
+    .suspend-button {
+        background: #f0a500;
+        color: white;
+    }
+
+    .suspend-button:hover {
+        background: #d98f00;
+    }
+
+    .activate-button {
+        background: #176b4d;
+        color: white;
+    }
+
+    .activate-button:hover {
+        background: #0e4935;
+    }
+
+    .actions form {
+        margin: 0;
+    }
+
+    /* =========================
+       BACK BUTTON
+    ========================= */
+
+    .back-button {
+        display: inline-block;
+        margin-top: 25px;
+        background: white;
+        color: #176b4d;
+        border: 1px solid #176b4d;
+        padding: 11px 18px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.2s ease;
+    }
+
+    .back-button:hover {
+        background: #176b4d;
+        color: white;
+        transform: translateY(-1px);
+    }
+
+    /* =========================
+       FOOTER
+    ========================= */
+
+    footer {
+        text-align: center;
+        color: #89938e;
+        font-size: 13px;
+        margin-top: 35px;
+    }
+
+    /* =========================
+       TABLET
+    ========================= */
+
+    @media (max-width: 750px) {
+
+        .details-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .room-list {
+            grid-template-columns: 1fr;
+        }
+
+    }
+
+    /* =========================
+       MOBILE
+    ========================= */
+
+    @media (max-width: 600px) {
+
+        header {
+            padding: 20px;
+        }
+
+        header h1 {
+            font-size: 25px;
+        }
+
+        main {
+            width: 92%;
+            margin: 30px auto 45px;
+        }
+
+        .property-heading {
+            padding: 22px;
+        }
+
+        .property-heading h2 {
+            font-size: 23px;
+        }
+
+        .info-card,
+        .actions-card {
+            padding: 20px;
+        }
+
+        .actions {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .action-button {
+            width: 100%;
+            text-align: center;
+        }
+
+        .actions form {
+            width: 100%;
+        }
+
+        .actions form button {
+            width: 100%;
+        }
+
+        .back-button {
+            width: 100%;
+            text-align: center;
+        }
+
+    }
+
+</style>
+
+</head> <body> <header>
+<h1>
+    Rongo Homes
+</h1>
+
+</header> <main>
+<!-- PROPERTY HEADER -->
+
+<div class="property-heading">
+
+    <h2>
+        🏠 {{ property.name }}
+    </h2>
+
+    <p>
+        Property ID:
+        <strong>{{ property.property_id }}</strong>
+    </p>
+
+</div>
+
+<!-- PROPERTY DETAILS -->
+
+<section class="info-card">
+
+    <h3>
+        📋 Property Details
+    </h3>
+
+    <div class="details-grid">
+
+        <div class="detail">
+
+            <strong>
+                Property ID
+            </strong>
+
+            <span>
+                {{ property.property_id }}
+            </span>
+
+        </div>
+
+        <div class="detail">
+
+            <strong>
+                Owner ID
+            </strong>
+
+            <span>
+                {{ property.owner_id }}
+            </span>
+
+        </div>
+
+        <div class="detail">
+
+            <strong>
+                Location
+            </strong>
+
+            <span class="location">
+                📍 {{ property.location.area }}
+            </span>
+
+        </div>
+
+        <div class="detail">
+
+            <strong>
+                Landmark
+            </strong>
+
+            <span>
+
+                {% if property.location.landmark %}
+
+                    📌 {{ property.location.landmark }}
+
+                {% else %}
+
+                    Not specified
+
+                {% endif %}
+
+            </span>
+
+        </div>
+
+        <div class="detail">
+
+            <strong>
+                Monthly Price
+            </strong>
+
+            <span class="price">
+                KSh {{ property.monthly_price }}
+            </span>
+
+        </div>
+
+        <div class="detail">
+
+            <strong>
+                Semester Price
+            </strong>
+
+            <span class="price">
+                KSh {{ property.semester_price }}
+            </span>
+
+        </div>
+
+        <div class="detail">
+
+            <strong>
+                Approval Status
+            </strong>
+
+            <span>
+
+                {% if property.approval_status == "pending" %}
+
+                    <span class="badge pending">
+                        ⏳ Pending
+                    </span>
+
+                {% elif property.approval_status == "approved" %}
+
+                    <span class="badge approved">
+                        ✓ Approved
+                    </span>
+
+                {% elif property.approval_status == "rejected" %}
+
+                    <span class="badge rejected">
+                        ✕ Rejected
+                    </span>
+
+                {% else %}
+
+                    <span class="badge">
+                        {{ property.approval_status }}
+                    </span>
+
+                {% endif %}
+
+            </span>
+
+        </div>
+
+        <div class="detail">
+
+            <strong>
+                Property Status
+            </strong>
+
+            <span>
+
+                {% if property.status == "active" %}
+
+                    <span class="badge active">
+                        ✓ Active
+                    </span>
+
+                {% elif property.status == "suspended" %}
+
+                    <span class="badge suspended">
+                        ⏸ Suspended
+                    </span>
+
+                {% else %}
+
+                    <span class="badge">
+                        {{ property.status }}
+                    </span>
+
+                {% endif %}
+
+            </span>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- DESCRIPTION -->
+
+<section class="info-card">
+
+    <h3>
+        📝 Description
+    </h3>
+
+    {% if property.description %}
+
+        <p class="description">
+            {{ property.description }}
+        </p>
+
+    {% else %}
+
+        <p class="empty-text">
+            No description provided.
+        </p>
+
+    {% endif %}
+
+</section>
+
+<!-- ROOMS -->
+
+<section class="info-card">
+
+    <h3>
+        🛏️ Rooms
+    </h3>
+
+    {% if property.rooms %}
+
+        <ul class="room-list">
+
+            {% for room in property.rooms %}
+
+                <li class="room">
+
+                    <span class="room-number">
+                        Room {{ room.room_number }}
+                    </span>
+
+                    <br>
+
+                    <span class="room-type">
+                        {{ room.room_type }}
+                        -
+                        {{ room.status }}
+                    </span>
+
+                </li>
+
+            {% endfor %}
+
+        </ul>
+
+    {% else %}
+
+        <p class="empty-text">
+            No rooms added yet.
+        </p>
+
+    {% endif %}
+
+</section>
+
+<!-- AMENITIES -->
+
+<section class="info-card">
+
+    <h3>
+        ✨ Amenities
+    </h3>
+
+    {% if property.amenities %}
+
+        <ul class="amenity-list">
+
+            {% for amenity in property.amenities %}
+
+                <li class="amenity">
+                    ✓ {{ amenity }}
+                </li>
+
+            {% endfor %}
+
+        </ul>
+
+    {% else %}
+
+        <p class="empty-text">
+            No amenities listed.
+        </p>
+
+    {% endif %}
+
+</section>
+
+<!-- ADMIN ACTIONS -->
+
+<section class="actions-card">
+
+    <h3>
+        ⚙️ Admin Actions
+    </h3>
+
+    <div class="actions">
+
+        <a
+            class="action-button view-button"
+            href="{% url 'admin_panel:view_property' property.property_id %}"
+        >
+            👁 View Property
+        </a>
+
+        {% if property.approval_status == "pending" %}
+
+            <form
+                method="POST"
+                action="{% url 'admin_panel:approve_property' property.property_id %}"
+            >
+
+                {% csrf_token %}
+
+                <button
+                    class="action-button approve-button"
+                    type="submit"
+                >
+                    ✓ Approve Property
+                </button>
+
+            </form>
+
+            <form
+                method="POST"
+                action="{% url 'admin_panel:reject_property' property.property_id %}"
+            >
+
+                {% csrf_token %}
+
+                <button
+                    class="action-button reject-button"
+                    type="submit"
+                >
+                    ✕ Reject Property
+                </button>
+
+            </form>
+
+        {% elif property.approval_status == "approved" %}
+
+            {% if property.status == "active" %}
+
+                <form
+                    method="POST"
+                    action="{% url 'admin_panel:suspend_property' property.property_id %}"
+                >
+
+                    {% csrf_token %}
+
+                    <button
+                        class="action-button suspend-button"
+                        type="submit"
+                    >
+                        ⏸ Suspend Property
+                    </button>
+
+                </form>
+
+            {% elif property.status == "suspended" %}
+
+                <form
+                    method="POST"
+                    action="{% url 'admin_panel:activate_property' property.property_id %}"
+                >
+
+                    {% csrf_token %}
+
+                    <button
+                        class="action-button activate-button"
+                        type="submit"
+                    >
+                        ▶ Activate Property
+                    </button>
+
+                </form>
+
+            {% endif %}
+
+        {% endif %}
+
+    </div>
+
+</section>
+
+<!-- BACK -->
+
+<a
+    class="back-button"
+    href="{% url 'admin_panel:properties' %}"
+>
+    ← Back to Properties
+</a>
+
+<footer>
+    © 2026 Rongo Homes. Admin Panel.
+</footer>
+
+</main> </body> </html>
+
+

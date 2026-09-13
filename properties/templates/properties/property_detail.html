@@ -1,0 +1,972 @@
+<!DOCTYPE html> <html lang="en"> <head>
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>
+    Property Details | Rongo Homes
+</title>
+
+
+<style>
+
+    /* =========================
+       RESET
+    ========================= */
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+        background: #f5f7f6;
+        color: #26332d;
+        line-height: 1.6;
+    }
+
+
+    /* =========================
+       HEADER
+    ========================= */
+
+    header {
+        background: #176b4d;
+        color: white;
+        padding: 22px 8%;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    }
+
+
+    header h1 {
+        font-size: 30px;
+        margin-bottom: 15px;
+        letter-spacing: 0.5px;
+    }
+
+
+    nav {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+
+    nav a {
+        color: white;
+        text-decoration: none;
+        font-weight: 600;
+        transition: opacity 0.2s ease;
+    }
+
+
+    nav a:hover {
+        opacity: 0.75;
+        text-decoration: underline;
+    }
+
+
+    /* Hide the "|" separators visually */
+    nav {
+        word-spacing: 5px;
+    }
+
+
+    /* =========================
+       MAIN CONTENT
+    ========================= */
+
+    main {
+        width: 90%;
+        max-width: 1100px;
+        margin: 40px auto 60px;
+    }
+
+
+    /* =========================
+       PROPERTY TITLE
+    ========================= */
+
+    <main > h1 {
+        color: #176b4d;
+        font-size: 32px;
+        margin-bottom: 25px;
+    }
+
+
+    /* =========================
+       SECTIONS / CARDS
+    ========================= */
+
+    section {
+        background: white;
+        padding: 25px;
+        margin: 25px 0;
+        border-radius: 14px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+        border: 1px solid #e8ecea;
+    }
+
+
+    section h2 {
+        color: #176b4d;
+        font-size: 21px;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #e8f1ed;
+    }
+
+
+    section p {
+        color: #59655f;
+        margin: 10px 0;
+    }
+
+
+    /* =========================
+       COVER PHOTO
+    ========================= */
+
+    <main > div {
+        background: white;
+        padding: 15px;
+        border-radius: 14px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
+        margin-bottom: 30px;
+        text-align: center;
+    }
+
+
+    main > div img {
+        width: 100%;
+        max-width: 850px;
+        height: 430px;
+        object-fit: cover;
+        border-radius: 10px;
+        display: block;
+        margin: auto;
+    }
+
+
+    /* =========================
+       PHOTO GALLERY
+    ========================= */
+
+    section img {
+        width: 150px;
+        height: 110px;
+        object-fit: cover;
+        border-radius: 9px;
+        margin: 7px;
+        border: 2px solid transparent;
+        transition: all 0.2s ease;
+    }
+
+
+    section img:hover {
+        border-color: #176b4d;
+        transform: scale(1.03);
+    }
+
+
+    /* =========================
+       LOCATION
+    ========================= */
+
+    section p {
+        font-size: 15px;
+    }
+
+
+    /* =========================
+       PRICE
+    ========================= */
+
+    section p:has(+ p) {
+        margin-bottom: 8px;
+    }
+
+
+    /* Price values */
+    section:nth-of-type(3) p {
+        color: #176b4d;
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+
+    /* =========================
+       DESCRIPTION
+    ========================= */
+
+    section p {
+        line-height: 1.7;
+    }
+
+
+    /* =========================
+       AMENITIES
+    ========================= */
+
+    ul {
+        list-style: none;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+
+    li {
+        background: #f0f7f4;
+        color: #176b4d;
+        padding: 10px 14px;
+        border-radius: 8px;
+        font-weight: 600;
+    }
+
+
+    li::before {
+        content: "✓ ";
+        font-weight: bold;
+    }
+
+
+    /* =========================
+       AVAILABILITY
+    ========================= */
+
+    section p strong {
+        color: #176b4d;
+    }
+
+
+    /* =========================
+       PROPERTY INFORMATION
+    ========================= */
+
+    section p {
+        margin-bottom: 10px;
+    }
+
+
+    /* =========================
+       FAVOURITE BUTTON
+    ========================= */
+
+    a[href*="favourite"] {
+        display: inline-block;
+        padding: 11px 18px;
+        border-radius: 8px;
+        background: #fff0f0;
+        color: #c0392b;
+        border: 1px solid #f0c5c2;
+        text-decoration: none;
+        font-weight: bold;
+        margin-bottom: 15px;
+        transition: all 0.2s ease;
+    }
+
+
+    a[href*="favourite"]:hover {
+        background: #c0392b;
+        color: white;
+    }
+
+
+    /* =========================
+       PAYMENT / UNLOCK BUTTON
+    ========================= */
+
+    a[href*="unlock_property"] {
+        display: inline-block;
+        background: #176b4d;
+        color: white;
+        text-decoration: none;
+        padding: 13px 22px;
+        border-radius: 8px;
+        font-weight: bold;
+        margin-top: 10px;
+        transition: all 0.2s ease;
+    }
+
+
+    a[href*="unlock_property"]:hover {
+        background: #0e4935;
+        transform: translateY(-1px);
+        box-shadow: 0 5px 12px rgba(23, 107, 77, 0.25);
+    }
+
+
+    /* =========================
+       REVIEW BUTTON
+    ========================= */
+
+    a[href*="add_review"] {
+        display: inline-block;
+        background: #f0a500;
+        color: white;
+        text-decoration: none;
+        padding: 12px 20px;
+        border-radius: 8px;
+        font-weight: bold;
+        transition: all 0.2s ease;
+    }
+
+
+    a[href*="add_review"]:hover {
+        background: #d98f00;
+        transform: translateY(-1px);
+    }
+
+
+    /* =========================
+       BACK BUTTON
+    ========================= */
+
+    main > a[href*="student_home"] {
+        display: inline-block;
+        margin-top: 10px;
+        padding: 11px 18px;
+        color: #176b4d;
+        background: white;
+        border: 1px solid #176b4d;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.2s ease;
+    }
+
+
+    main > a[href*="student_home"]:hover {
+        background: #176b4d;
+        color: white;
+    }
+
+    /* =========================
+   REVIEWS
+========================= */
+
+.reviews-section {
+    margin-top: 25px;
+}
+
+.review-card {
+    background: #f8faf9;
+    border: 1px solid #e1e8e4;
+    border-radius: 12px;
+    padding: 18px;
+    margin-bottom: 15px;
+}
+
+.review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 10px;
+}
+
+.review-rating {
+    font-size: 18px;
+    white-space: nowrap;
+}
+
+.review-comment {
+    color: #59655f;
+    line-height: 1.7;
+    margin: 10px 0;
+}
+
+.review-date {
+    color: #7a847f;
+    font-size: 13px;
+}
+
+.no-reviews {
+    background: #f8faf9;
+    border: 1px dashed #cfd9d4;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    color: #68736d;
+}
+    /* =========================
+       LOCKED INFORMATION
+    ========================= */
+
+    section h2 {
+        letter-spacing: 0.2px;
+    }
+
+
+    /* =========================
+       RESPONSIVE DESIGN
+    ========================= */
+
+    @media (max-width: 700px) {
+
+        header {
+            padding: 20px;
+        }
+
+
+        header h1 {
+            font-size: 25px;
+        }
+
+
+        nav {
+            gap: 7px;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+
+        main {
+            width: 92%;
+            margin: 30px auto 45px;
+        }
+
+
+        main > h1 {
+            font-size: 25px;
+        }
+
+
+        main > div img {
+            height: 250px;
+        }
+
+
+        section {
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+
+        section h2 {
+            font-size: 19px;
+        }
+
+
+        section img {
+            width: calc(50% - 18px);
+            height: 100px;
+            margin: 5px;
+        }
+
+
+        ul {
+            grid-template-columns: 1fr;
+        }
+
+
+        a[href*="unlock_property"] {
+            width: 100%;
+            text-align: center;
+        }
+
+
+        a[href*="add_review"] {
+            width: 100%;
+            text-align: center;
+        }
+
+    }
+
+
+    /* =========================
+       SMALL PHONES
+    ========================= */
+
+    @media (max-width: 400px) {
+
+        nav {
+            display: block;
+        }
+
+
+        nav a {
+            display: inline-block;
+            margin-right: 5px;
+        }
+
+
+        main > div img {
+            height: 210px;
+        }
+
+
+        section img {
+            width: 100%;
+            height: 180px;
+            margin: 5px 0;
+        }
+        .back-button {
+        display: inline-block;
+        background: #176b4d;
+        color: white;
+        text-decoration: none;
+        padding: 12px 20px;
+        border-radius: 8px;
+        font-size: 15px;
+        font-weight: 600;
+        transition: all 0.2s ease;
+    }
+
+    .back-button:hover {
+        background: #0e4935;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 12px rgba(23, 107, 77, 0.25);
+    }
+    }
+
+</style>
+
+</head> <body> <header>
+<h1>
+    Rongo Homes
+</h1>
+
+<nav>
+
+    <a href="{% url 'properties:student_home' %}">
+        Home
+    </a>
+
+    |
+
+    <a href="{% url 'accounts:profile' %}">
+        Profile
+    </a>
+
+    |
+
+    <a href="{% url 'properties:favourite_list' %}">
+        My Favourites
+    </a>
+
+    |
+
+    <a href="{% url 'accounts:logout' %}">
+        Logout
+    </a>
+
+</nav>
+
+</header> <main>
+<!-- PROPERTY ID / NAME -->
+
+{% if unlocked %}
+
+    <h1>
+        {{ property.name }}
+    </h1>
+
+{% else %}
+
+    <h3>
+        Verified Accommodation #{{ property.property_id }}
+    </h3>
+
+{% endif %}
+
+
+<!-- COVER PHOTO -->
+
+{% if cover_photo %}
+
+    <div>
+
+        <img
+            src="{{ cover_photo.url }}"
+            alt="Accommodation"
+        >
+
+    </div>
+
+{% endif %}
+
+
+<!-- PHOTO GALLERY -->
+
+{% if property.photos %}
+
+    <section>
+
+        <h2>
+            Photos
+        </h2>
+
+        {% for photo in property.photos %}
+
+            <img
+                src="{{ photo.url }}"
+                alt="Accommodation photo"
+            >
+
+        {% endfor %}
+
+    </section>
+
+{% endif %}
+
+
+<!-- LOCATION -->
+
+<section>
+
+    <h2>
+         Location
+    </h2>
+
+    <p>
+        {{ property.location.area }}
+    </p>
+
+
+    {% if property.location.landmark %}
+
+        <p>
+            Near {{ property.location.landmark }}
+        </p>
+
+    {% endif %}
+
+
+    {% if property.distance_from_university %}
+
+        <p>
+             {{ property.distance_from_university }}
+            km from Rongo University
+        </p>
+
+    {% endif %}
+
+</section>
+
+
+<!-- PRICING -->
+
+<section>
+
+    <h2>
+        Price
+    </h2>
+
+
+    {% if property.monthly_price %}
+
+        <p>
+            KSh {{ property.monthly_price }}
+            / month
+        </p>
+
+    {% endif %}
+
+
+    {% if property.semester_price %}
+
+        <p>
+            KSh {{ property.semester_price }}
+            / semester
+        </p>
+
+    {% endif %}
+    {% if property.Cost_Sharing %}
+
+        <p>
+            KSh {{ property.Cost_Sharing }}
+            / semester
+        </p>
+
+    {% endif %}
+
+</section>
+
+
+<!-- DESCRIPTION -->
+
+{% if property.description %}
+
+    <section>
+
+        <h2>
+            Description
+        </h2>
+
+        <p>
+            {{ property.description }}
+        </p>
+
+    </section>
+
+{% endif %}
+
+
+<!-- AMENITIES -->
+
+{% if property.amenities %}
+
+    <section>
+
+        <h2>
+             Amenities
+        </h2>
+
+        <ul>
+
+            {% for amenity in property.amenities %}
+
+                <li>
+                    {{ amenity }}
+                </li>
+
+            {% endfor %}
+
+        </ul>
+
+    </section>
+
+{% endif %}
+
+
+<!-- AVAILABLE ROOMS -->
+
+<section>
+
+    <h2>
+        🏠 Availability
+    </h2>
+
+    <p>
+        <strong>
+            {{ vacant_rooms|length }}
+        </strong>
+        room(s) currently available.
+    </p>
+
+</section>
+
+
+<!-- PROPERTY INFORMATION -->
+
+{% if unlocked %}
+
+    <section>
+
+        <h2>
+            Hostel/Property Information
+        </h2>
+
+        <p>
+            <strong>Hostel Name:</strong>
+            {{ property.name }}
+        </p>
+
+
+        {% if property.caretaker_name %}
+
+            <p>
+                <strong>Caretaker's Name:</strong>
+                {{ property.caretaker_name }}
+            </p>
+
+        {% endif %}
+
+
+        {% if property.caretaker_contact %}
+
+            <p>
+                <strong>Caretaker's Contact:</strong>
+                {{ property.caretaker_contact }}
+            </p>
+
+        {% endif %}
+
+
+        {% if property.landlord_name %}
+
+            <p>
+                <strong>Landlord's Name:</strong>
+                {{ property.landlord_name }}
+            </p>
+
+        {% endif %}
+
+
+        {% if property.landlord_contact %}
+
+            <p>
+                <strong>Landlord's Contact:</strong>
+                {{ property.landlord_contact }}
+            </p>
+
+        {% endif %}
+
+    </section>
+
+
+{% else %}
+
+    <section>
+
+        <h2>
+             Property/Hostel Information
+        </h2>
+
+       <p>
+            The property identity and contact
+            information are hidden until the
+            unlock payment is completed.
+        </p>
+        {% if request.session.role == "student" %}
+
+            {% if is_favourite %}
+
+                <a href="{% url 'properties:remove_favourite' property.property_id %}">
+                    ❤️ Remove from Favourites
+                </a>
+
+            {% else %}
+
+                <a href="{% url 'properties:add_favourite' property.property_id %}">
+                    🤍 Add to Favourites
+                </a>
+
+            {% endif %}
+
+        {% endif %}
+
+
+        
+
+
+        <a href="{% url 'payments:unlock_property' property.property_id %}">
+             Pay To Unlock 
+        </a>
+
+
+{% endif %}
+{% if request.session.role == "student" %}
+
+    <div class="mt-3">
+
+        <a
+            href="{% url 'properties:report_property' property.property_id %}"
+            class="btn btn-outline-danger"
+        >
+            <i class="fas fa-flag me-2"></i>
+            🚩Report Property
+        </a>
+
+    </div>
+    </section>
+
+{% endif %}
+
+<!-- =========================
+     APPROVED REVIEWS
+========================= -->
+
+<section class="reviews-section">
+
+    <h2>
+        ⭐ Student Reviews
+    </h2>
+
+    {% if approved_reviews %}
+
+        <div class="reviews-list">
+
+            {% for review in approved_reviews %}
+
+                <div class="review-card">
+
+                    <div class="review-header">
+
+                        <div>
+                            <strong>
+                                Student Review
+                            </strong>
+                        </div>
+
+                        <div class="review-rating">
+
+                            {% for star in "12345" %}
+
+                                {% if forloop.counter <= review.rating %}
+                                    ⭐
+                                {% else %}
+                                    ☆
+                                {% endif %}
+
+                            {% endfor %}
+
+                        </div>
+
+                    </div>
+
+                    {% if review.comment %}
+
+                        <p class="review-comment">
+                            {{ review.comment }}
+                        </p>
+
+                    {% endif %}
+
+                    <small class="review-date">
+                        Reviewed on
+                        {{ review.created_at|date:"d M Y" }}
+                    </small>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <div class="no-reviews">
+
+            <p>
+                No approved reviews for this property yet.
+            </p>
+
+        </div>
+
+    {% endif %}
+
+</section>
+<!-- REVIEW -->
+
+{% if request.session.role == "student" and unlocked %}
+
+    <p>
+
+        <a href="{% url 'reviews:add_review' property.property_id %}">
+            ⭐ Write a Review
+        </a>
+
+    </p>
+
+{% endif %}
+
+
+<!-- BACK -->
+
+<br>
+
+<a class="back-button"
+href="{% url 'properties:student_home' %}">
+    ← Back to Accommodation
+</a>
+</main> </body> </html>

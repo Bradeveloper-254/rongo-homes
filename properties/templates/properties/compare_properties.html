@@ -1,0 +1,368 @@
+
+{% extends 'base.html' %}
+
+{% block title %}
+    Compare Properties | Rongo Homes
+{% endblock %}
+
+{% block content %}
+
+<div class="container py-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h1>
+                <i class="fas fa-code-compare me-2"></i>
+                Compare Properties
+            </h1>
+
+            <p class="text-muted mb-0">
+                Compare accommodation options side by side.
+            </p>
+        </div>
+
+        {% if properties %}
+            <a
+                href="{% url 'properties:clear_comparison' %}"
+                class="btn btn-outline-danger"
+            >
+                <i class="fas fa-trash me-1"></i>
+                Clear
+            </a>
+        {% endif %}
+
+    </div>
+
+
+    {% if properties %}
+
+        <div class="table-responsive">
+
+            <table class="table table-bordered align-middle">
+
+                <thead class="table-success">
+
+                    <tr>
+
+                        <th>
+                            Feature
+                        </th>
+
+                        {% for item in properties %}
+
+                            <th>
+                                Property {{ forloop.counter }}
+                            </th>
+
+                        {% endfor %}
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    <!-- PROPERTY NAME -->
+
+                    <tr>
+
+                        <th>
+                            Property
+                        </th>
+
+                        {% for item in properties %}
+
+                            <td>
+
+                               
+
+                                <br>
+
+                                <small class="text-muted">
+                                    #{{ item.property.property_id }}
+                                </small>
+
+                            </td>
+
+                        {% endfor %}
+
+                    </tr>
+
+
+                    <!-- LOCATION -->
+
+                    <tr>
+
+                        <th>
+                            Location
+                        </th>
+
+                        {% for item in properties %}
+
+                            <td>
+                                {{ item.property.location.area }}
+
+                                {% if item.property.location.landmark %}
+                                    <br>
+                                    <small class="text-muted">
+                                        Near
+                                        {{ item.property.location.landmark }}
+                                    </small>
+                                {% endif %}
+                            </td>
+
+                        {% endfor %}
+
+                    </tr>
+
+
+                    <!-- DISTANCE -->
+
+                    <tr>
+
+                        <th>
+                            Distance from University
+                        </th>
+
+                        {% for item in properties %}
+
+                            <td>
+
+                                {% if item.property.distance_from_university %}
+                                    {{ item.property.distance_from_university }}
+                                    km
+                                {% else %}
+                                    Not specified
+                                {% endif %}
+
+                            </td>
+
+                        {% endfor %}
+
+                    </tr>
+
+
+                    <!-- MONTHLY PRICE -->
+
+                    <tr>
+
+                        <th>
+                            Monthly Price
+                        </th>
+
+                        {% for item in properties %}
+
+                            <td>
+
+                                {% if item.property.monthly_price %}
+                                    <strong>
+                                        KSh
+                                        {{ item.property.monthly_price|floatformat:0 }}
+                                    </strong>
+                                {% else %}
+                                    Not specified
+                                {% endif %}
+
+                            </td>
+
+                        {% endfor %}
+
+                    </tr>
+
+
+                    <!-- SEMESTER PRICE -->
+
+                    <tr>
+
+                        <th>
+                            Semester Price
+                        </th>
+
+                        {% for item in properties %}
+
+                            <td>
+
+                                {% if item.property.semester_price %}
+                                    KSh
+                                    {{ item.property.semester_price|floatformat:0 }}
+                                {% else %}
+                                    Not specified
+                                {% endif %}
+
+                            </td>
+
+                        {% endfor %}
+
+                    </tr>
+
+
+                    <!-- AVAILABLE ROOMS -->
+
+                    <tr>
+
+                        <th>
+                            Available Rooms
+                        </th>
+
+                        {% for item in properties %}
+
+                            <td>
+
+                                <strong>
+                                    {{ item.vacant_rooms|length }}
+                                </strong>
+
+                                room(s)
+
+                            </td>
+
+                        {% endfor %}
+
+                    </tr>
+
+
+                    <!-- AMENITIES -->
+
+                    <tr>
+
+                        <th>
+                            Amenities
+                        </th>
+
+                        {% for item in properties %}
+
+                            <td>
+
+                                {% if item.property.amenities %}
+
+                                    <ul class="mb-0">
+
+                                        {% for amenity in item.property.amenities %}
+
+                                            <li>
+                                                {{ amenity }}
+                                            </li>
+
+                                        {% endfor %}
+
+                                    </ul>
+
+                                {% else %}
+
+                                    No amenities listed.
+
+                                {% endif %}
+
+                            </td>
+
+                        {% endfor %}
+
+                    </tr>
+
+
+                    <!-- DESCRIPTION -->
+
+                    <tr>
+
+                        <th>
+                            Description
+                        </th>
+
+                        {% for item in properties %}
+
+                            <td>
+
+                                {% if item.property.description %}
+                                    {{ item.property.description }}
+                                {% else %}
+                                    No description available.
+                                {% endif %}
+
+                            </td>
+
+                        {% endfor %}
+
+                    </tr>
+
+
+                    <!-- ACTIONS -->
+
+                    <tr>
+
+                        <th>
+                            Actions
+                        </th>
+
+                        {% for item in properties %}
+
+                            <td>
+
+                                <a
+                                    href="{% url 'properties:property_detail' item.property.property_id %}"
+                                    class="btn btn-primary btn-sm mb-2"
+                                >
+                                    <i class="fas fa-eye me-1"></i>
+                                    View
+                                </a>
+
+                                <br>
+
+                                <a
+                                    href="{% url 'properties:remove_from_compare' item.property.property_id %}"
+                                    class="btn btn-outline-danger btn-sm"
+                                >
+                                    <i class="fas fa-times me-1"></i>
+                                    Remove
+                                </a>
+
+                            </td>
+
+                        {% endfor %}
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    {% else %}
+
+        <div class="card text-center py-5">
+
+            <div class="card-body">
+
+                <i
+                    class="fas fa-code-compare fa-3x text-muted mb-3"
+                ></i>
+
+                <h3>
+                    No Properties Selected
+                </h3>
+
+                <p class="text-muted">
+                    Select two or three properties to compare them
+                    side by side.
+                </p>
+
+                <a
+                    href="{% url 'properties:student_home' %}"
+                    class="btn btn-primary"
+                >
+                    <i class="fas fa-search me-1"></i>
+                    Browse Properties
+                </a>
+
+            </div>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}
+

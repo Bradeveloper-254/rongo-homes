@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        M-Pesa Payment | Rongo Homes
+    </title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            background: #f4f7f5;
+            color: #1f2937;
+            min-height: 100vh;
+        }
+
+        /* =========================
+           HEADER
+        ========================== */
+
+        .header {
+            background: #ffffff;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 18px 6%;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 800;
+            color: #087443;
+            letter-spacing: -0.5px;
+        }
+
+        .logo span {
+            color: #111827;
+        }
+
+        /* =========================
+           CONTAINER
+        ========================== */
+
+        .container {
+            width: 100%;
+            max-width: 620px;
+            margin: 45px auto;
+            padding: 0 20px;
+        }
+
+        /* =========================
+           CARD
+        ========================== */
+
+        .card {
+            background: #ffffff;
+            border-radius: 18px;
+            padding: 35px;
+            border: 1px solid #e5e7eb;
+
+            box-shadow:
+                0 10px 35px rgba(0, 0, 0, 0.08);
+        }
+
+        /* =========================
+           STATUS ICON
+        ========================== */
+
+        .status-icon {
+            width: 70px;
+            height: 70px;
+
+            margin: 0 auto 20px;
+
+            border-radius: 50%;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 32px;
+        }
+
+        .pending-icon {
+            background: #fff7df;
+        }
+
+        .success-icon {
+            background: #e8f7ef;
+        }
+
+        .failed-icon {
+            background: #feecec;
+        }
+
+        /* =========================
+           TITLE
+        ========================== */
+
+        .title {
+            text-align: center;
+
+            font-size: 28px;
+            font-weight: 800;
+
+            color: #111827;
+
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            text-align: center;
+
+            color: #6b7280;
+
+            line-height: 1.6;
+
+            margin-bottom: 30px;
+        }
+
+        /* =========================
+           PAYMENT DETAILS
+        ========================== */
+
+        .payment-details {
+            background: #f8faf9;
+
+            border: 1px solid #e1e8e4;
+
+            border-radius: 12px;
+
+            padding: 20px;
+
+            margin-bottom: 25px;
+        }
+
+        .detail {
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            gap: 20px;
+
+            padding: 12px 0;
+
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .detail:first-child {
+            padding-top: 0;
+        }
+
+        .detail:last-child {
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .label {
+            color: #6b7280;
+
+            font-size: 14px;
+        }
+
+        .value {
+            color: #111827;
+
+            font-weight: 700;
+
+            text-align: right;
+
+            word-break: break-word;
+        }
+
+        .amount {
+            color: #087443;
+
+            font-size: 19px;
+        }
+
+        /* =========================
+           PENDING
+        ========================== */
+
+        .pending-box {
+            background: #fff9e8;
+
+            border: 1px solid #f4d98b;
+
+            color: #725b1a;
+
+            padding: 17px;
+
+            border-radius: 11px;
+
+            margin-bottom: 25px;
+
+            line-height: 1.6;
+
+            font-size: 14px;
+        }
+
+        .pending-box strong {
+            display: block;
+
+            margin-bottom: 5px;
+
+            font-size: 15px;
+        }
+
+        /* =========================
+           SUCCESS
+        ========================== */
+
+        .success-box {
+            background: #eaf8f0;
+
+            border: 1px solid #b7e4c9;
+
+            color: #176b3a;
+
+            padding: 17px;
+
+            border-radius: 11px;
+
+            margin-bottom: 25px;
+
+            line-height: 1.6;
+
+            font-size: 14px;
+        }
+
+        /* =========================
+           FAILED
+        ========================== */
+
+        .failed-box {
+            background: #fff0f0;
+
+            border: 1px solid #f2bcbc;
+
+            color: #9b2c2c;
+
+            padding: 17px;
+
+            border-radius: 11px;
+
+            margin-bottom: 25px;
+
+            line-height: 1.6;
+
+            font-size: 14px;
+        }
+
+        /* =========================
+           BUTTONS
+        ========================== */
+
+        .button {
+            display: block;
+
+            width: 100%;
+
+            padding: 15px 20px;
+
+            border-radius: 10px;
+
+            text-align: center;
+
+            text-decoration: none;
+
+            font-size: 16px;
+
+            font-weight: 700;
+
+            transition: 0.2s ease;
+
+            margin-bottom: 12px;
+        }
+
+        .primary-button {
+            background: #087443;
+            color: #ffffff;
+        }
+
+        .primary-button:hover {
+            background: #065d35;
+
+            transform: translateY(-1px);
+
+            box-shadow:
+                0 6px 15px rgba(8, 116, 67, 0.2);
+        }
+
+        .retry-button {
+            background: #dc2626;
+            color: #ffffff;
+        }
+
+        .retry-button:hover {
+            background: #b91c1c;
+
+            transform: translateY(-1px);
+        }
+
+        .secondary-button {
+            background: #f3f4f6;
+            color: #374151;
+        }
+
+        .secondary-button:hover {
+            background: #e5e7eb;
+        }
+
+        /* =========================
+           BACK LINK
+        ========================== */
+
+        .back-link {
+            display: block;
+
+            text-align: center;
+
+            margin-top: 22px;
+
+            color: #6b7280;
+
+            text-decoration: none;
+
+            font-size: 14px;
+
+            font-weight: 600;
+        }
+
+        .back-link:hover {
+            color: #087443;
+        }
+
+        /* =========================
+           SECURITY
+        ========================== */
+
+        .security {
+            text-align: center;
+
+            margin-top: 25px;
+
+            color: #9ca3af;
+
+            font-size: 12px;
+        }
+
+        /* =========================
+           FOOTER
+        ========================== */
+
+        .footer {
+            text-align: center;
+
+            padding: 25px 20px;
+
+            color: #9ca3af;
+
+            font-size: 13px;
+        }
+
+        /* =========================
+           MOBILE
+        ========================== */
+
+        @media (max-width: 600px) {
+
+            .container {
+                margin: 25px auto;
+
+                padding: 0 15px;
+            }
+
+            .card {
+                padding: 25px 20px;
+
+                border-radius: 14px;
+            }
+
+            .title {
+                font-size: 24px;
+            }
+
+            .detail {
+                flex-direction: column;
+
+                align-items: flex-start;
+
+                gap: 5px;
+            }
+
+            .value {
+                text-align: left;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<!-- =========================
+     HEADER
+========================== -->
+
+<header class="header">
+
+    <div class="logo">
+        Rongo <span>Homes</span>
+    </div>
+
+</header>
+
+
+<!-- =========================
+     MAIN
+========================== -->
+
+<main class="container">
+
+    <div class="card">
+
+
+        {% if payment.status == "pending" %}
+
+            <!-- Pending Icon -->
+
+            <div class="status-icon pending-icon">
+                ⏳
+            </div>
+
+
+            <h1 class="title">
+                Payment Pending
+            </h1>
+
+
+            <p class="subtitle">
+                We've initiated your M-Pesa payment.
+                Please check your phone and complete
+                the payment.
+            </p>
+
+
+        {% elif payment.status == "successful" %}
+
+            <!-- Success Icon -->
+
+            <div class="status-icon success-icon">
+                ✓
+            </div>
+
+
+            <h1 class="title">
+                Payment Successful
+            </h1>
+
+
+            <p class="subtitle">
+                Your payment has been successfully
+                confirmed.
+            </p>
+
+
+        {% elif payment.status == "failed" %}
+
+            <!-- Failed Icon -->
+
+            <div class="status-icon failed-icon">
+                ✕
+            </div>
+
+
+            <h1 class="title">
+                Payment Failed
+            </h1>
+
+
+            <p class="subtitle">
+                We couldn't complete your M-Pesa
+                payment.
+            </p>
+
+        {% endif %}
+
+
+        <!-- =========================
+             PAYMENT DETAILS
+        ========================== -->
+
+        <div class="payment-details">
+
+            <div class="detail">
+
+                <span class="label">
+                    Property
+                </span>
+
+                <span class="value">
+                    {{ property.property_id }}
+                </span>
+
+            </div>
+
+
+            <div class="detail">
+
+                <span class="label">
+                    Amount
+                </span>
+
+                <span class="value amount">
+                    KSh {{ payment.amount }}
+                </span>
+
+            </div>
+
+
+            <div class="detail">
+
+                <span class="label">
+                    Transaction
+                </span>
+
+                <span class="value">
+                    {{ payment.transaction_id }}
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             PENDING STATE
+        ========================== -->
+
+        {% if payment.status == "pending" %}
+
+            <div class="pending-box">
+
+                <strong>
+                    📱 Check your phone
+                </strong>
+
+                An M-Pesa payment prompt has been
+                sent to your phone. Enter your M-Pesa
+                PIN to complete the transaction.
+
+                <br><br>
+
+                <strong>
+                    ⚠️ Don't close this page
+                </strong>
+
+                Complete the payment on your phone
+                before checking the payment status.
+
+            </div>
+
+
+            <a
+                href="{% url 'payments:payment_status' payment.transaction_id %}"
+                class="button primary-button"
+            >
+                Check Payment Status
+            </a>
+
+
+        <!-- =========================
+             SUCCESS STATE
+        ========================== -->
+
+        {% elif payment.status == "successful" %}
+
+            <div class="success-box">
+
+                <strong>
+                    ✓ Payment confirmed
+                </strong>
+
+                Your payment has been received.
+                You can now access the property's
+                identity and contact information.
+
+            </div>
+
+
+            <a
+                href="{% url 'properties:property_detail' property.property_id %}"
+                class="button primary-button"
+            >
+                View Property Information
+            </a>
+
+
+        <!-- =========================
+             FAILED STATE
+        ========================== -->
+
+        {% elif payment.status == "failed" %}
+
+            <div class="failed-box">
+
+                <strong>
+                    Payment was not completed
+                </strong>
+
+                The M-Pesa transaction failed or was
+                cancelled. Please try the payment again.
+
+            </div>
+
+
+            <a
+                href="{% url 'payments:unlock_property' property.property_id %}"
+                class="button retry-button"
+            >
+                Try Payment Again
+            </a>
+
+        {% endif %}
+
+
+        <!-- Back -->
+
+        <a
+            href="{% url 'properties:property_detail' property.property_id %}"
+            class="back-link"
+        >
+            ← Back to Property
+        </a>
+
+
+        <div class="security">
+            🔒 Your payment information is handled securely.
+        </div>
+
+
+    </div>
+
+</main>
+
+
+<!-- =========================
+     FOOTER
+========================== -->
+
+<footer class="footer">
+
+    © {% now "Y" %} Rongo Homes.
+    All rights reserved.
+
+</footer>
+
+
+</body>
+
+</html>

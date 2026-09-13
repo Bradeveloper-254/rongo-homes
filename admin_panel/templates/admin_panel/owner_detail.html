@@ -1,0 +1,996 @@
+
+{% load static %}
+{% get_media_prefix %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Owner Details | Rongo Homes
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{% static 'admin_panel/css/dashboard.css' %}"
+    >
+
+    <style>
+
+        .page-header {
+            margin-bottom: 30px;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(
+                auto-fit,
+                minmax(280px, 1fr)
+            );
+            gap: 20px;
+        }
+
+        .detail-card {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 22px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .detail-card h3 {
+            margin-top: 0;
+            margin-bottom: 18px;
+        }
+
+        .detail-row {
+            margin: 10px 0;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .status-active {
+            background: #dff5e3;
+            color: #176b2c;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-rejected {
+            background: #f8d7da;
+            color: #842029;
+        }
+
+        .status-suspended {
+            background: #e2e3e5;
+            color: #41464b;
+        }
+
+        .document-item {
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .document-item:last-child {
+            border-bottom: none;
+        }
+
+        .document-available {
+            color: #176b2c;
+            font-weight: bold;
+        }
+
+        .document-missing {
+            color: #842029;
+        }
+
+        .owner-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .owner-actions form {
+            margin: 0;
+        }
+
+        .owner-actions button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .approve-button {
+            background: #198754;
+            color: #fff;
+        }
+
+        .reject-button {
+            background: #dc3545;
+            color: #fff;
+        }
+
+        .suspend-button {
+            background: #ffc107;
+            color: #212529;
+        }
+
+        .activate-button {
+            background: #0d6efd;
+            color: #fff;
+        }
+
+        .back-section {
+            margin-top: 30px;
+        }
+    
+
+.properties-section {
+    margin-top: 30px;
+}
+
+.section-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 24px;
+}
+
+.section-heading h2 {
+    margin-bottom: 5px;
+}
+
+.section-description {
+    margin: 0;
+    color: #666;
+}
+
+.property-count {
+    padding: 8px 14px;
+    border-radius: 20px;
+    background: #f1f1f1;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.properties-list {
+    display: grid;
+    gap: 20px;
+}
+
+.property-card {
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    padding: 20px;
+    background: #fff;
+}
+
+.property-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.property-card-header h3 {
+    margin: 0 0 6px;
+}
+
+.property-id {
+    margin: 0;
+    color: #777;
+    font-size: 14px;
+}
+
+.status-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
+.property-card-details {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 18px;
+    padding: 18px 0;
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+}
+
+.property-card-details strong {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 13px;
+    color: #555;
+}
+
+.property-card-details p {
+    margin: 0;
+}
+
+.property-card-actions {
+    margin-top: 18px;
+}
+
+.empty-properties {
+    text-align: center;
+    padding: 45px 20px;
+    border: 1px dashed #ccc;
+    border-radius: 12px;
+}
+
+.empty-icon {
+    font-size: 35px;
+    margin-bottom: 10px;
+}
+
+.empty-properties h3 {
+    margin-bottom: 8px;
+}
+
+.empty-properties p {
+    margin: 0;
+    color: #777;
+}
+
+
+/* Approval statuses */
+
+.status-pending {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.status-approved {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-rejected {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+
+/* Property statuses */
+
+.status-active {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-suspended {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.status-inactive {
+    background: #e2e3e5;
+    color: #383d41;
+}
+
+
+@media (max-width: 700px) {
+
+    .section-heading {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .property-card-header {
+        flex-direction: column;
+    }
+
+    .status-group {
+        justify-content: flex-start;
+    }
+
+}
+
+
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<header>
+
+    <div>
+
+        <h1>
+            Rongo Homes
+        </h1>
+
+        <p>
+            Admin Panel
+        </p>
+
+    </div>
+
+
+    <nav>
+
+        <a href="{% url 'admin_panel:dashboard' %}">
+            Dashboard
+        </a>
+
+        |
+
+        <a href="{% url 'admin_panel:owners' %}">
+            Manage Owners
+        </a>
+
+        |
+
+        <a href="{% url 'accounts:profile' %}">
+            My Profile
+        </a>
+
+        |
+
+        <a href="{% url 'accounts:logout' %}">
+            Logout
+        </a>
+
+    </nav>
+
+</header>
+
+
+<main>
+
+
+    <!-- PAGE HEADER -->
+
+    <section class="section page-header">
+
+        <h2 class="section-title">
+            Owner Details
+        </h2>
+
+        <p>
+            Review the complete owner account information
+            before taking an administrative action.
+        </p>
+
+    </section>
+
+
+    <!-- OWNER INFORMATION -->
+
+    <section class="section">
+
+        <div class="details-grid">
+
+
+            <!-- PERSONAL INFORMATION -->
+
+            <div class="detail-card">
+
+                <h3>
+                    Personal Information
+                </h3>
+
+
+                <p class="detail-row">
+
+                    <strong>
+                        Full Name:
+                    </strong>
+
+                    {{ owner.full_name }}
+
+                </p>
+
+
+                <p class="detail-row">
+
+                    <strong>
+                        Email:
+                    </strong>
+
+                    {{ owner.email }}
+
+                </p>
+
+
+                <p class="detail-row">
+
+                    <strong>
+                        Phone:
+                    </strong>
+
+                    {{ owner.phone }}
+
+                </p>
+
+
+                <p class="detail-row">
+
+                    <strong>
+                        Role:
+                    </strong>
+
+                    {{ owner.role|title }}
+
+                </p>
+
+
+                {% if owner.created_at %}
+
+                    <p class="detail-row">
+
+                        <strong>
+                            Registered:
+                        </strong>
+
+                        {{ owner.created_at|date:"F j, Y, g:i A" }}
+
+                    </p>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- ACCOUNT STATUS -->
+
+            <div class="detail-card">
+
+                <h3>
+                    Account Status
+                </h3>
+
+
+                <p class="detail-row">
+
+                    <strong>
+                        Status:
+                    </strong>
+
+
+                    {% if owner.status == "active" %}
+
+                        <span class="status-badge status-active">
+                            Active
+                        </span>
+
+                    {% elif owner.status == "pending" %}
+
+                        <span class="status-badge status-pending">
+                            Pending
+                        </span>
+
+                    {% elif owner.status == "rejected" %}
+
+                        <span class="status-badge status-rejected">
+                            Rejected
+                        </span>
+
+                    {% elif owner.status == "suspended" %}
+
+                        <span class="status-badge status-suspended">
+                            Suspended
+                        </span>
+
+                    {% else %}
+
+                        <span class="status-badge">
+                            {{ owner.status|title }}
+                        </span>
+
+                    {% endif %}
+
+                </p>
+
+
+                <p class="detail-row">
+
+                    <strong>
+                        Account Active:
+                    </strong>
+
+
+                    {% if owner.is_active %}
+
+                        <span class="document-available">
+                            Yes
+                        </span>
+
+                    {% else %}
+
+                        <span class="document-missing">
+                            No
+                        </span>
+
+                    {% endif %}
+
+                </p>
+
+
+                <p class="detail-row">
+
+                    <strong>
+                        Verified:
+                    </strong>
+
+
+                    {% if owner.is_verified %}
+
+                        <span class="document-available">
+                            ✓ Verified
+                        </span>
+
+                    {% else %}
+
+                        <span class="document-missing">
+                            ✗ Not Verified
+                        </span>
+
+                    {% endif %}
+
+                </p>
+
+
+                {% if owner.updated_at %}
+
+                    <p class="detail-row">
+
+                        <strong>
+                            Last Updated:
+                        </strong>
+
+                        {{ owner.updated_at|date:"F j, Y, g:i A" }}
+
+                    </p>
+
+                {% endif %}
+
+            </div>
+
+
+         
+
+
+<!-- DOCUMENTS -->
+
+<div class="detail-card">
+
+    <h3>
+        Verification Documents
+    </h3>
+
+
+    <!-- ID DOCUMENT -->
+
+    <div class="document-item">
+
+        <strong>
+            ID Document
+        </strong>
+
+
+        {% if owner.id_document %}
+
+            <p class="document-available">
+                ✓ Submitted
+            </p>
+
+            <a
+                href="{{ MEDIA_URL }}{{ owner.id_document }}"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="link-button"
+            >
+                View Document
+            </a>
+
+        {% else %}
+
+            <p class="document-missing">
+                ✗ Not Provided
+            </p>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- OWNERSHIP DOCUMENT -->
+
+    <div class="document-item">
+
+        <strong>
+            Ownership Document
+        </strong>
+
+
+        {% if owner.ownership_document %}
+
+            <p class="document-available">
+                ✓ Submitted
+            </p>
+
+            <a
+                href="{{ MEDIA_URL }}{{ owner.ownership_document }}"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="link-button"
+            >
+                View Document
+            </a>
+
+        {% else %}
+
+            <p class="document-missing">
+                ✗ Not Provided
+            </p>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- ADDITIONAL DOCUMENT -->
+
+    <div class="document-item">
+
+        <strong>
+            Additional Document
+        </strong>
+
+
+        {% if owner.additional_document %}
+
+            <p class="document-available">
+                ✓ Submitted
+            </p>
+
+            <a
+                href="{{ MEDIA_URL }}{{ owner.additional_document }}"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="link-button"
+            >
+                View Document
+            </a>
+
+        {% else %}
+
+            <p class="document-missing">
+                ✗ Not Provided
+            </p>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+
+
+
+        </div>
+
+    </section>
+
+<section class="details-card properties-section">
+
+    <div class="section-heading">
+
+        <div>
+            <h2>
+                Owner Properties
+            </h2>
+
+            <p class="section-description">
+                Properties registered under this owner account.
+            </p>
+        </div>
+
+        <span class="property-count">
+            {{ owner_properties|length }}
+            {% if owner_properties|length == 1 %}
+                Property
+            {% else %}
+                Properties
+            {% endif %}
+        </span>
+
+    </div>
+
+
+    {% if owner_properties %}
+
+        <div class="properties-list">
+
+            {% for property in owner_properties %}
+
+                <article class="property-card">
+
+                    <div class="property-card-header">
+
+                        <div>
+
+                            <h3>
+                                {{ property.name }}
+                            </h3>
+
+                            <p class="property-id">
+                                Property #{{ property.property_id }}
+                            </p>
+
+                        </div>
+
+
+                        <div class="status-group">
+
+                            <span class="status-badge status-{{ property.approval_status }}">
+                                Approval:
+                                {{ property.approval_status|title }}
+                            </span>
+
+
+                            <span class="status-badge status-{{ property.status }}">
+                                {{ property.status|title }}
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="property-card-details">
+
+                        <div>
+                            <strong>Location</strong>
+
+                            <p>
+                                {{ property.location.area }}
+
+                                {% if property.location.landmark %}
+                                    <br>
+                                    Near {{ property.location.landmark }}
+                                {% endif %}
+                            </p>
+                        </div>
+
+
+                        <div>
+                            <strong>Monthly Price</strong>
+
+                            <p>
+                                {% if property.monthly_price %}
+                                    KSh {{ property.monthly_price }}
+                                    / month
+                                {% else %}
+                                    Not specified
+                                {% endif %}
+                            </p>
+                        </div>
+
+
+                        <div>
+                            <strong>Distance</strong>
+
+                            <p>
+                                {% if property.distance_from_university %}
+                                    {{ property.distance_from_university }}
+                                    km from Rongo University
+                                {% else %}
+                                    Not specified
+                                {% endif %}
+                            </p>
+                        </div>
+
+
+                        <div>
+                            <strong>Vacant Rooms</strong>
+
+                            <p>
+                                {{ property.vacant_room_count }}
+                            </p>
+                        </div>
+
+
+                        <div>
+                            <strong>Created</strong>
+
+                            <p>
+                                {% if property.created_at %}
+                                    {{ property.created_at|date:"d M Y, H:i" }}
+                                {% else %}
+                                    Not available
+                                {% endif %}
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="property-card-actions">
+
+                        <a
+                            href="{% url 'admin_panel:view_property' property.property_id %}"
+                            class="link-button"
+                        >
+                            View Property →
+                        </a>
+
+                    </div>
+
+                </article>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <div class="empty-properties">
+
+            <div class="empty-icon">
+                🏠
+            </div>
+
+            <h3>
+                No Properties Registered
+            </h3>
+
+            <p>
+                This owner has not registered any properties yet.
+            </p>
+
+        </div>
+
+    {% endif %}
+
+</section>
+
+
+
+    <!-- ADMIN ACTIONS -->
+
+    <section class="section">
+
+        <h2 class="section-title">
+            Owner Actions
+        </h2>
+
+
+        <div class="owner-actions">
+
+
+            {% if owner.status == "pending" %}
+
+
+                <form
+                    method="post"
+                    action="{% url 'admin_panel:approve_owner' owner.id %}"
+                >
+
+                    {% csrf_token %}
+
+                    <button
+                        type="submit"
+                        class="approve-button"
+                    >
+                        Approve Owner
+                    </button>
+
+                </form>
+
+
+                <form
+                    method="post"
+                    action="{% url 'admin_panel:reject_owner' owner.id %}"
+                >
+
+                    {% csrf_token %}
+
+                    <button
+                        type="submit"
+                        class="reject-button"
+                    >
+                        Reject Owner
+                    </button>
+
+                </form>
+
+
+            {% elif owner.status == "active" %}
+
+
+                <form
+                    method="post"
+                    action="{% url 'admin_panel:suspend_owner' owner.id %}"
+                >
+
+                    {% csrf_token %}
+
+                    <button
+                        type="submit"
+                        class="suspend-button"
+                    >
+                        Suspend Owner
+                    </button>
+
+                </form>
+
+
+            {% elif owner.status == "suspended" %}
+
+
+                <form
+                    method="post"
+                    action="{% url 'admin_panel:activate_owner' owner.id %}"
+                >
+
+                    {% csrf_token %}
+
+                    <button
+                        type="submit"
+                        class="activate-button"
+                    >
+                        Reactivate Owner
+                    </button>
+
+                </form>
+
+
+            {% endif %}
+
+
+        </div>
+
+    </section>
+
+
+    <!-- NAVIGATION -->
+
+    <section class="section back-section">
+
+        <a
+            href="{% url 'admin_panel:owners' %}"
+            class="link-button"
+        >
+            ← Back to Manage Owners
+        </a>
+
+    </section>
+
+
+</main>
+
+
+</body>
+
+</html>
+

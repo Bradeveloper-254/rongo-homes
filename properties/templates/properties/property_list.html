@@ -1,0 +1,1059 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Find Accommodation - Rongo Homes{% endblock %}
+
+{% block content %}
+
+<style>
+    /* ========================================================
+       PROPERTY SEARCH PAGE
+       ======================================================== */
+
+    .property-search-page {
+        padding-bottom: 40px;
+    }
+
+    /* --------------------------------------------------------
+       Header
+       -------------------------------------------------------- */
+
+    .property-search-header {
+        padding: 25px 0 20px;
+    }
+
+    .property-search-header h1 {
+        font-weight: 700;
+        margin-bottom: 6px;
+    }
+
+    .property-search-header p {
+        margin-bottom: 0;
+        color: #6c757d;
+    }
+
+    /* --------------------------------------------------------
+       Refine Search
+       -------------------------------------------------------- */
+
+    .search-section {
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 14px;
+        padding: 22px;
+        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06);
+    }
+
+    /*
+       The navbar in base.html is fixed.
+       Keep the refine panel underneath it.
+    */
+    .refine-search-wrapper {
+        position: sticky;
+        top: 90px;
+        z-index: 100;
+    }
+
+    .search-section h5 {
+        font-weight: 700;
+    }
+
+    .filter-group {
+        margin-bottom: 18px;
+    }
+
+    .filter-title {
+        display: block;
+        font-size: 0.88rem;
+        font-weight: 600;
+        margin-bottom: 7px;
+    }
+
+    .search-input,
+    .filter-input,
+    .search-form select {
+        border-radius: 9px;
+        min-height: 42px;
+    }
+
+    .search-form .form-control:focus,
+    .search-form .form-select:focus {
+        box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.12);
+    }
+
+    /* --------------------------------------------------------
+       Results Header
+       -------------------------------------------------------- */
+
+    .results-header {
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 14px;
+        padding: 16px 20px;
+        margin-bottom: 22px;
+    }
+
+    .results-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .sort-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .sort-wrapper label {
+        font-size: 0.9rem;
+        font-weight: 600;
+        white-space: nowrap;
+        margin: 0;
+    }
+
+    .sort-wrapper select {
+        min-width: 185px;
+        border-radius: 8px;
+    }
+
+    /* --------------------------------------------------------
+       Property Card
+       -------------------------------------------------------- */
+
+    .property-card {
+        height: 100%;
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 14px;
+        overflow: hidden;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+        transition:
+            transform 0.2s ease,
+            box-shadow 0.2s ease;
+    }
+
+    .property-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.10);
+    }
+
+    /* --------------------------------------------------------
+       Property Image
+       -------------------------------------------------------- */
+
+    .property-image-placeholder {
+        height: 190px;
+        background: linear-gradient(
+            135deg,
+            #eef2f7,
+            #dfe6ee
+        );
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #8a96a3;
+        font-size: 3rem;
+    }
+
+    .property-info {
+        padding: 18px;
+    }
+
+    .property-name {
+        font-size: 1.08rem;
+        font-weight: 700;
+        line-height: 1.35;
+        margin-bottom: 10px;
+    }
+
+    .property-location {
+        color: #6c757d;
+        font-size: 0.9rem;
+        margin-bottom: 7px;
+    }
+
+    .property-location i {
+        width: 18px;
+    }
+
+    .property-price {
+        font-size: 1.15rem;
+        font-weight: 700;
+        margin: 14px 0;
+    }
+
+    /* --------------------------------------------------------
+       Property Meta
+       -------------------------------------------------------- */
+
+    .property-meta {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-bottom: 15px;
+    }
+
+    .property-meta-item {
+        background: #f8f9fa;
+        border-radius: 9px;
+        padding: 10px;
+        text-align: center;
+    }
+
+    .property-meta-label {
+        color: #6c757d;
+        font-size: 0.72rem;
+        margin-bottom: 3px;
+    }
+
+    .property-meta-value {
+        font-weight: 700;
+    }
+
+    /* --------------------------------------------------------
+       Property Badge
+       -------------------------------------------------------- */
+
+    .property-image-wrapper {
+        position: relative;
+    }
+
+    .property-badge {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        background: rgba(25, 135, 84, 0.94);
+        color: #ffffff;
+        padding: 6px 11px;
+        border-radius: 7px;
+        font-size: 0.78rem;
+        font-weight: 600;
+        z-index: 2;
+    }
+
+    .property-lock-badge {
+        position: absolute;
+        top: 50px;
+        right: 12px;
+        background: rgba(220, 53, 69, 0.94);
+        color: #ffffff;
+        padding: 6px 11px;
+        border-radius: 7px;
+        font-size: 0.78rem;
+        font-weight: 600;
+        z-index: 2;
+    }
+
+    /* --------------------------------------------------------
+       Actions
+       -------------------------------------------------------- */
+
+    .property-actions {
+        display: flex;
+        gap: 8px;
+    }
+
+    .property-actions .btn {
+        flex: 1;
+        border-radius: 8px;
+    }
+
+    /* --------------------------------------------------------
+       Empty State
+       -------------------------------------------------------- */
+
+    .empty-property-state {
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 14px;
+        padding: 60px 25px;
+    }
+
+    /* --------------------------------------------------------
+       Mobile
+       -------------------------------------------------------- */
+
+    @media (max-width: 991.98px) {
+
+        .refine-search-wrapper {
+            position: static;
+        }
+
+        .sort-wrapper {
+            margin-top: 12px;
+        }
+
+        .sort-wrapper select {
+            width: 100%;
+        }
+
+        .results-header {
+            display: block !important;
+        }
+    }
+
+    @media (max-width: 575.98px) {
+
+        .property-search-header h1 {
+            font-size: 1.6rem;
+        }
+
+        .property-info {
+            padding: 15px;
+        }
+
+        .sort-wrapper {
+            display: block;
+        }
+
+        .sort-wrapper label {
+            display: block;
+            margin-bottom: 6px;
+        }
+    }
+</style>
+
+
+<div class="container-fluid property-search-page">
+
+    <!-- ======================================================
+         PAGE HEADER
+         ====================================================== -->
+
+    <div class="property-search-header mx-4 mx-md-0">
+
+        <h1>
+            <i class="fas fa-search me-2"></i>
+            Find Accommodation
+        </h1>
+
+        <p>
+            Discover verified properties around Rongo University
+        </p>
+
+    </div>
+
+
+    <div class="container-fluid px-4">
+
+        <div class="row g-4">
+
+            <!-- ==================================================
+                 SIDEBAR FILTERS
+                 ================================================== -->
+
+            <div class="col-lg-3">
+
+                <div class="refine-search-wrapper">
+
+                    <div class="search-section">
+
+                        <h5 class="mb-4">
+                            <i class="fas fa-filter me-2"></i>
+                            Refine Search
+                        </h5>
+
+
+                        <form
+                            method="GET"
+                            class="search-form"
+                            id="filterForm"
+                        >
+
+                            <!-- Keyword -->
+
+                            <div class="filter-group">
+
+                                <label class="filter-title">
+                                    Search Keyword
+                                </label>
+
+                                <input
+                                    type="text"
+                                    name="keyword"
+                                    class="form-control search-input"
+                                    placeholder="Search accommodation..."
+                                    value="{{ request.GET.keyword }}"
+                                >
+
+                            </div>
+
+
+                            <!-- Location -->
+
+                            <div class="filter-group">
+
+                                <label class="filter-title">
+                                    Location
+                                </label>
+
+                                <input
+                                    type="text"
+                                    name="location"
+                                    class="form-control search-input"
+                                    placeholder="Enter area"
+                                    value="{{ request.GET.location }}"
+                                >
+
+                            </div>
+
+
+                            <!-- Maximum Price -->
+
+                            <div class="filter-group">
+
+                                <label class="filter-title">
+                                    Maximum Monthly Price (KSh)
+                                </label>
+
+                                <input
+                                    type="number"
+                                    name="max_price"
+                                    class="form-control filter-input"
+                                    placeholder="Maximum price"
+                                    value="{{ request.GET.max_price }}"
+                                >
+
+                            </div>
+
+
+                            <!-- Maximum Distance -->
+
+                            <div class="filter-group">
+
+                                <label class="filter-title">
+                                    Maximum Distance (km)
+                                </label>
+
+                                <input
+                                    type="number"
+                                    step="0.1"
+                                    name="max_distance"
+                                    class="form-control filter-input"
+                                    placeholder="Maximum distance"
+                                    value="{{ request.GET.max_distance }}"
+                                >
+
+                            </div>
+
+
+                            <!-- Room Type -->
+
+                            {% if form.room_type %}
+
+                                <div class="filter-group">
+
+                                    <label class="filter-title">
+                                        Room Type
+                                    </label>
+
+                                    {{ form.room_type }}
+
+                                </div>
+
+                            {% endif %}
+
+
+                            <!-- Amenities -->
+
+                            {% if form.amenities %}
+
+                                <div class="filter-group">
+
+                                    <label class="filter-title">
+                                        Amenities
+                                    </label>
+
+                                    {{ form.amenities }}
+
+                                </div>
+
+                            {% endif %}
+
+
+                            <!-- Sort -->
+
+                            <div class="filter-group">
+
+                                <label class="filter-title">
+                                    Sort Results
+                                </label>
+
+                                <select
+                                    name="sort"
+                                    class="form-select"
+                                >
+
+                                    <option
+                                        value="latest"
+                                        {% if sort_by == "latest" %}
+                                            selected
+                                        {% endif %}
+                                    >
+                                        Latest
+                                    </option>
+
+                                    <option
+                                        value="price"
+                                        {% if sort_by == "price" %}
+                                            selected
+                                        {% endif %}
+                                    >
+                                        Price: Low to High
+                                    </option>
+
+                                    <option
+                                        value="distance"
+                                        {% if sort_by == "distance" %}
+                                            selected
+                                        {% endif %}
+                                    >
+                                        Distance: Nearest
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+                            <!-- Buttons -->
+
+                            <div class="d-grid gap-2">
+
+                                <button
+                                    type="submit"
+                                    class="btn btn-primary"
+                                >
+                                    <i class="fas fa-search me-2"></i>
+                                    Apply Filters
+                                </button>
+
+
+                                <a
+                                    href="{% url 'properties:property_list' %}"
+                                    class="btn btn-outline-secondary"
+                                >
+                                    <i class="fas fa-redo me-2"></i>
+                                    Clear Filters
+                                </a>
+
+                            </div>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ==================================================
+                 PROPERTY RESULTS
+                 ================================================== -->
+
+            <div class="col-lg-9">
+
+
+                <!-- Results Header -->
+
+                <div
+                    class="results-header d-flex justify-content-between align-items-center"
+                >
+
+                    <h2 class="results-title">
+
+                        <i class="fas fa-building me-2"></i>
+
+                        Available Accommodation
+
+                        <span class="badge bg-primary ms-2">
+                            {{ properties|length }}
+                        </span>
+
+                    </h2>
+
+
+                    <!-- Sort -->
+
+                    <div class="sort-wrapper">
+
+                        <label for="sortResults">
+                            Sort By:
+                        </label>
+
+                        <select
+                            id="sortResults"
+                            class="form-select form-select-sm"
+                            onchange="changeSort(this.value)"
+                        >
+
+                            <option
+                                value="latest"
+                                {% if sort_by == "latest" %}
+                                    selected
+                                {% endif %}
+                            >
+                                Latest
+                            </option>
+
+                            <option
+                                value="price"
+                                {% if sort_by == "price" %}
+                                    selected
+                                {% endif %}
+                            >
+                                Price: Low to High
+                            </option>
+
+                            <option
+                                value="price_high"
+                                {% if sort_by == "price_high" %}
+                                    selected
+                                {% endif %}
+                            >
+                                Price: High to Low
+                            </option>
+
+                            <option
+                                value="distance"
+                                {% if sort_by == "distance" %}
+                                    selected
+                                {% endif %}
+                            >
+                                Distance: Nearest
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ==================================================
+                     PROPERTY CARDS
+                     ================================================== -->
+
+                {% if properties %}
+
+                    <div class="row">
+
+                        {% for property in properties %}
+
+                            <div class="col-md-6 col-xl-4 mb-4">
+
+                                <div class="property-card">
+
+                                    <!-- Property Image -->
+
+                                    <div class="property-image-wrapper">
+
+                                        {% if property.photos %}
+
+                                            {% for photo in property.photos %}
+
+                                                {% if photo.is_cover %}
+
+                                                    <img
+                                                        src="{{ photo.url }}"
+                                                        alt="Property accommodation"
+                                                        class="w-100"
+                                                        style="height:190px; object-fit:cover;"
+                                                    >
+
+                                                {% endif %}
+
+                                            {% endfor %}
+
+                                        {% else %}
+
+                                            <div class="property-image-placeholder">
+
+                                                <i class="fas fa-home"></i>
+
+                                            </div>
+
+                                        {% endif %}
+
+
+                                        <!-- Availability Badge -->
+
+                                        <div class="property-badge">
+
+                                            {% if property.vacant_room_count > 0 %}
+
+                                                <i class="fas fa-check-circle me-1"></i>
+
+                                                {{ property.vacant_room_count }}
+                                                Available
+
+                                            {% else %}
+
+                                                Full
+
+                                            {% endif %}
+
+                                        </div>
+
+
+                                        <!-- Locked Badge -->
+
+                                        {% if not unlocked %}
+
+                                            <div class="property-lock-badge">
+
+                                                <i class="fas fa-lock me-1"></i>
+                                                Locked
+
+                                            </div>
+
+                                        {% endif %}
+
+                                    </div>
+
+
+                                    <!-- Property Information -->
+
+                                    <div class="property-info">
+
+
+                                        <!-- Name -->
+
+                                        <div class="property-name">
+
+                                            {% if unlocked %}
+
+                                                {{ property.name }}
+
+                                            {% else %}
+
+                                                Verified Accommodation
+                                                #{{ property.property_id }}
+
+                                            {% endif %}
+
+                                        </div>
+
+
+                                        <!-- Location -->
+
+                                        {% if property.location %}
+
+                                            <div class="property-location">
+
+                                                <i class="fas fa-map-marker-alt"></i>
+
+                                                {{ property.location.area }}
+
+                                            </div>
+
+                                        {% endif %}
+
+
+                                        <!-- Distance -->
+
+                                        {% if property.distance_from_university is not None %}
+
+                                            <div class="property-location">
+
+                                                <i class="fas fa-walking"></i>
+
+                                                {{ property.distance_from_university }}
+                                                km from University
+
+                                            </div>
+
+                                        {% endif %}
+
+
+                                        <!-- Price -->
+
+                                        {% if property.monthly_price is not None %}
+
+                                            <div class="property-price">
+
+                                                KSh
+                                                {{ property.monthly_price|floatformat:0 }}
+
+                                                <span
+                                                    class="text-muted"
+                                                    style="font-size:0.8rem;"
+                                                >
+                                                    / month
+                                                </span>
+
+                                            </div>
+
+                                        {% endif %}
+
+
+                                        <!-- Meta -->
+
+                                        <div class="property-meta">
+
+                                            <div class="property-meta-item">
+
+                                                <div class="property-meta-label">
+                                                    Available
+                                                </div>
+
+                                                <div class="property-meta-value">
+                                                    {{ property.vacant_room_count }}
+                                                </div>
+
+                                            </div>
+
+
+                                            <div class="property-meta-item">
+
+                                                <div class="property-meta-label">
+                                                    Total Rooms
+                                                </div>
+
+                                                <div class="property-meta-value">
+                                                    {{ property.rooms|length }}
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+
+                                        <!-- Unlock Notice -->
+
+                                        {% if unlocked %}
+
+                                            <div
+                                                class="alert alert-info p-2 mb-3"
+                                                role="alert"
+                                            >
+
+                                                <small>
+
+                                                    <i class="fas fa-info-circle me-1"></i>
+
+                                                    Owner/Caretaker details unlocked
+
+                                                </small>
+
+                                            </div>
+
+                                        {% else %}
+
+                                            <div
+                                                class="alert alert-warning p-2 mb-3"
+                                                role="alert"
+                                            >
+
+                                                <small>
+
+                                                    <i class="fas fa-lock me-1"></i>
+
+                                                    Property details are hidden
+
+                                                </small>
+
+                                            </div>
+
+                                        {% endif %}
+
+
+                                        <!-- Actions -->
+
+                                        <div class="property-actions">
+
+                                            <a
+                                                href="{% url 'properties:property_detail' property.property_id %}"
+                                                class="btn btn-primary btn-sm"
+                                            >
+
+                                                <i class="fas fa-eye me-1"></i>
+
+                                                View
+
+                                            </a>
+
+
+                                            {% if not unlocked %}
+
+                                                <a
+                                                    href="{% url 'payments:unlock_property' property.property_id %}"
+                                                    class="btn btn-outline-warning btn-sm"
+                                                >
+
+                                                    <i class="fas fa-unlock me-1"></i>
+
+                                                    Unlock
+
+                                                </a>
+
+                                            {% else %}
+
+                                                <a
+                                                    href="{% url 'properties:add_favourite' property.property_id %}"
+                                                    class="btn btn-outline-danger btn-sm"
+                                                >
+
+                                                    <i class="far fa-heart me-1"></i>
+
+                                                    Save
+
+                                                </a>
+
+                                            {% endif %}
+
+                                        </div>
+
+
+                                        <!-- Notify -->
+
+                                        {% if property.vacant_room_count == 0 %}
+
+                                            {% if request.session.user_id %}
+
+                                                {% if request.session.role == "student" %}
+
+                                                    <form
+                                                        method="POST"
+                                                        action="{% url 'properties:notify_when_available' property.property_id %}"
+                                                        class="mt-3"
+                                                    >
+
+                                                        {% csrf_token %}
+
+                                                        <button
+                                                            type="submit"
+                                                            class="btn btn-outline-secondary btn-sm w-100"
+                                                        >
+
+                                                            <i class="fas fa-bell me-1"></i>
+
+                                                            Notify Me
+
+                                                        </button>
+
+                                                    </form>
+
+                                                {% endif %}
+
+                                            {% endif %}
+
+                                        {% endif %}
+
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+
+                {% else %}
+
+
+                    <!-- Empty State -->
+
+                    <div class="empty-property-state text-center">
+
+                        <i
+                            class="fas fa-search fa-3x text-muted mb-3"
+                            style="opacity:0.5;"
+                        ></i>
+
+                        <h5 class="mt-3">
+                            No Properties Found
+                        </h5>
+
+                        <p class="text-muted mb-4">
+
+                            No accommodation matches your
+                            search criteria.
+
+                            Try adjusting your filters.
+
+                        </p>
+
+
+                        <a
+                            href="{% url 'properties:property_list' %}"
+                            class="btn btn-primary"
+                        >
+
+                            <i class="fas fa-redo me-2"></i>
+
+                            Clear Filters
+
+                        </a>
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+
+{% block extra_js %}
+
+<script>
+
+    /*
+     * --------------------------------------------------------
+     * SORT RESULTS
+     * --------------------------------------------------------
+     *
+     * Keep all existing GET filters and only change "sort".
+     */
+
+    function changeSort(sortValue) {
+
+        const url = new URL(
+            window.location.href
+        );
+
+        url.searchParams.set(
+            "sort",
+            sortValue
+        );
+
+        window.location.href = url.toString();
+    }
+
+
+    /*
+     * --------------------------------------------------------
+     * STYLE FORM CONTROLS
+     * --------------------------------------------------------
+     */
+
+    document
+        .querySelectorAll(
+            '.search-form input[type="text"], ' +
+            '.search-form input[type="number"], ' +
+            '.search-form select'
+        )
+        .forEach(function(input) {
+
+            input.classList.add(
+                'form-control'
+            );
+
+        });
+
+</script>
+
+{% endblock %}
+

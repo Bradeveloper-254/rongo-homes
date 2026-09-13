@@ -1,0 +1,367 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+    .contacts-page {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .page-header {
+        background: linear-gradient(135deg, #198754, #157347);
+        color: white;
+        border-radius: 18px;
+        padding: 28px;
+        margin-bottom: 25px;
+        box-shadow: 0 8px 25px rgba(25, 135, 84, 0.15);
+    }
+
+    .page-header h2 {
+        margin: 0;
+        font-weight: 700;
+    }
+
+    .page-header p {
+        margin: 7px 0 0;
+        opacity: 0.9;
+    }
+
+    .back-btn {
+        border-radius: 10px;
+        padding: 9px 16px;
+        font-weight: 600;
+    }
+
+    .contact-card {
+        border: none;
+        border-radius: 18px;
+        overflow: hidden;
+        background: white;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        height: 100%;
+    }
+
+    .contact-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+    }
+
+    .property-image {
+        width: 100%;
+        height: 210px;
+        object-fit: cover;
+    }
+
+    .property-placeholder {
+        height: 210px;
+        background: linear-gradient(135deg, #e9f7ef, #d1e7dd);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #198754;
+        font-size: 55px;
+    }
+
+    .property-name {
+        font-weight: 700;
+        color: #212529;
+    }
+
+    .location-text {
+        color: #6c757d;
+        font-size: 14px;
+    }
+
+    .contact-section {
+        background: #f8f9fa;
+        border-radius: 12px;
+        padding: 14px;
+        margin-bottom: 12px;
+    }
+
+    .contact-title {
+        font-size: 13px;
+        font-weight: 700;
+        color: #495057;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        margin-bottom: 6px;
+    }
+
+    .contact-name {
+        font-weight: 600;
+        margin-bottom: 4px;
+    }
+
+    .phone-link {
+        color: #198754;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    .phone-link:hover {
+        text-decoration: underline;
+    }
+
+    .unlocked-badge {
+        display: inline-block;
+        background: #d1e7dd;
+        color: #0f5132;
+        border-radius: 20px;
+        padding: 5px 10px;
+        font-size: 12px;
+        font-weight: 600;
+        margin-bottom: 12px;
+    }
+
+    .empty-state {
+        border: 2px dashed #dee2e6;
+        border-radius: 18px;
+        padding: 55px 25px;
+        text-align: center;
+        background: #fafafa;
+    }
+
+    .empty-state i {
+        font-size: 45px;
+        color: #adb5bd;
+        margin-bottom: 15px;
+    }
+
+    @media (max-width: 767px) {
+        .page-header {
+            padding: 22px;
+        }
+
+        .page-header .back-btn {
+            margin-top: 18px;
+            width: 100%;
+        }
+    }
+</style>
+
+
+<div class="container py-4 contacts-page">
+
+    <div class="page-header">
+
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center">
+
+            <div>
+
+                <h2>
+                    <i class="fas fa-address-book me-2"></i>
+                    Unlocked Contacts
+                </h2>
+
+                <p>
+                    Contact details for properties you have unlocked.
+                </p>
+
+            </div>
+
+            <a
+                href="{% url 'properties:student_home' %}"
+                class="btn btn-light back-btn"
+            >
+                <i class="fas fa-arrow-left me-1"></i>
+                Student Home
+            </a>
+
+        </div>
+
+    </div>
+
+
+    {% if contacts %}
+
+        <div class="row g-4">
+
+            {% for item in contacts %}
+
+                <div class="col-md-6 col-lg-4">
+
+                    <div class="card contact-card">
+
+                        {% if item.property.photos %}
+
+                            {% for photo in item.property.photos %}
+
+                                {% if photo.is_cover %}
+
+                                    <img
+                                        src="{{ photo.url }}"
+                                        class="property-image"
+                                        alt="{{ item.property.name }}"
+                                    >
+
+                                {% endif %}
+
+                            {% endfor %}
+
+                        {% else %}
+
+                            <div class="property-placeholder">
+                                <i class="fas fa-house"></i>
+                            </div>
+
+                        {% endif %}
+
+
+                        <div class="card-body p-4">
+
+                            <span class="unlocked-badge">
+                                <i class="fas fa-unlock me-1"></i>
+                                Contact Unlocked
+                            </span>
+
+
+                            <h5 class="property-name mb-2">
+                                {{ item.property.name }}
+                            </h5>
+
+
+                            {% if item.property.location %}
+
+                                <div class="location-text mb-3">
+
+                                    <i class="fas fa-location-dot me-1"></i>
+
+                                    {{ item.property.location.area }}
+
+                                </div>
+
+                            {% endif %}
+
+
+                            <div class="contact-section">
+
+                                <div class="contact-title">
+                                    <i class="fas fa-user-tie me-1"></i>
+                                    Caretaker
+                                </div>
+
+                                <div class="contact-name">
+
+                                    {{ item.property.caretaker_name|default:"Not provided" }}
+
+                                </div>
+
+                                {% if item.property.caretaker_contact %}
+
+                                    <a
+                                        href="tel:{{ item.property.caretaker_contact }}"
+                                        class="phone-link"
+                                    >
+
+                                        <i class="fas fa-phone me-1"></i>
+
+                                        {{ item.property.caretaker_contact }}
+
+                                    </a>
+
+                                {% else %}
+
+                                    <span class="text-muted small">
+                                        Contact not provided
+                                    </span>
+
+                                {% endif %}
+
+                            </div>
+
+
+                            <div class="contact-section">
+
+                                <div class="contact-title">
+                                    <i class="fas fa-user-shield me-1"></i>
+                                    Landlord
+                                </div>
+
+                                <div class="contact-name">
+
+                                    {{ item.property.landlord_name|default:"Not provided" }}
+
+                                </div>
+
+                                {% if item.property.landlord_contact %}
+
+                                    <a
+                                        href="tel:{{ item.property.landlord_contact }}"
+                                        class="phone-link"
+                                    >
+
+                                        <i class="fas fa-phone me-1"></i>
+
+                                        {{ item.property.landlord_contact }}
+
+                                    </a>
+
+                                {% else %}
+
+                                    <span class="text-muted small">
+                                        Contact not provided
+                                    </span>
+
+                                {% endif %}
+
+                            </div>
+
+
+                            <a
+                                href="{% url 'properties:property_detail' item.property.property_id %}"
+                                class="btn btn-success w-100 mt-2"
+                            >
+
+                                <i class="fas fa-eye me-1"></i>
+
+                                View Property
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <div class="empty-state">
+
+            <i class="fas fa-address-book d-block"></i>
+
+            <h4>
+                No Unlocked Contacts
+            </h4>
+
+            <p class="text-muted mb-4">
+                You have not unlocked any property contacts yet.
+            </p>
+
+            <a
+                href="{% url 'properties:property_list' %}"
+                class="btn btn-success"
+            >
+
+                <i class="fas fa-search me-1"></i>
+
+                Find Accommodation
+
+            </a>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}
+

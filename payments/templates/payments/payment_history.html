@@ -1,0 +1,315 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+    .history-page {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .page-header {
+        background: linear-gradient(135deg, #0d6efd, #0b5ed7);
+        color: white;
+        border-radius: 18px;
+        padding: 28px;
+        margin-bottom: 25px;
+        box-shadow: 0 8px 25px rgba(13, 110, 253, 0.15);
+    }
+
+    .page-header h2 {
+        margin: 0;
+        font-weight: 700;
+    }
+
+    .page-header p {
+        margin: 7px 0 0;
+        opacity: 0.9;
+    }
+
+    .history-card {
+        border: none;
+        border-radius: 16px;
+        overflow: hidden;
+        background: #fff;
+        box-shadow: 0 5px 18px rgba(0, 0, 0, 0.07);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .history-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 9px 25px rgba(0, 0, 0, 0.10);
+    }
+
+    .payment-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: #eaf2ff;
+        color: #0d6efd;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+    }
+
+    .payment-label {
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: #6c757d;
+        font-weight: 600;
+        margin-bottom: 4px;
+    }
+
+    .payment-value {
+        font-weight: 600;
+        color: #212529;
+    }
+
+    .transaction-id {
+        font-size: 12px;
+        word-break: break-all;
+        color: #6c757d;
+    }
+
+    .empty-state {
+        border: 2px dashed #dee2e6;
+        border-radius: 18px;
+        padding: 55px 25px;
+        text-align: center;
+        background: #fafafa;
+    }
+
+    .empty-state i {
+        font-size: 45px;
+        color: #adb5bd;
+        margin-bottom: 15px;
+    }
+
+    .back-btn {
+        border-radius: 10px;
+        padding: 9px 16px;
+        font-weight: 600;
+    }
+
+    @media (max-width: 767px) {
+        .page-header {
+            padding: 22px;
+        }
+
+        .page-header .back-btn {
+            margin-top: 18px;
+            width: 100%;
+        }
+
+        .payment-icon {
+            margin-bottom: 15px;
+        }
+    }
+</style>
+
+
+<div class="container py-4 history-page">
+
+    <div class="page-header">
+
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center">
+
+            <div>
+                <h2>
+                    <i class="fas fa-receipt me-2"></i>
+                    Payment History
+                </h2>
+
+                <p>
+                    View your previous payments and transactions.
+                </p>
+            </div>
+
+            <a
+                href="{% url 'properties:student_home' %}"
+                class="btn btn-light back-btn"
+            >
+                <i class="fas fa-arrow-left me-1"></i>
+                Student Home
+            </a>
+
+        </div>
+
+    </div>
+
+
+    {% if payments %}
+
+        <div class="row g-4">
+
+            {% for payment in payments %}
+
+                <div class="col-12">
+
+                    <div class="card history-card">
+
+                        <div class="card-body p-4">
+
+                            <div class="row align-items-center g-4">
+
+                                <div class="col-md-3">
+
+                                    <div class="d-flex align-items-center">
+
+                                        <div class="payment-icon me-3">
+                                            <i class="fas fa-money-bill-wave"></i>
+                                        </div>
+
+                                        <div>
+
+                                            <div class="payment-label">
+                                                Transaction
+                                            </div>
+
+                                            <div class="transaction-id">
+                                                {{ payment.transaction_id }}
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="col-6 col-md-2">
+
+                                    <div class="payment-label">
+                                        Amount
+                                    </div>
+
+                                    <div class="payment-value">
+                                        KSh {{ payment.amount }}
+                                    </div>
+
+                                </div>
+
+
+                                <div class="col-6 col-md-2">
+
+                                    <div class="payment-label">
+                                        Method
+                                    </div>
+
+                                    <div class="payment-value">
+                                        {{ payment.payment_method|default:"—"|title }}
+                                    </div>
+
+                                </div>
+
+
+                                <div class="col-6 col-md-2">
+
+                                    <div class="payment-label">
+                                        Type
+                                    </div>
+
+                                    <div class="payment-value">
+                                        {{ payment.payment_type|default:"—"|title }}
+                                    </div>
+
+                                </div>
+
+
+                                <div class="col-6 col-md-2">
+
+                                    <div class="payment-label">
+                                        Status
+                                    </div>
+
+                                    {% if payment.status == "successful" %}
+
+                                        <span class="badge rounded-pill bg-success px-3 py-2">
+                                            <i class="fas fa-check-circle me-1"></i>
+                                            Successful
+                                        </span>
+
+                                    {% elif payment.status == "pending" %}
+
+                                        <span class="badge rounded-pill bg-warning text-dark px-3 py-2">
+                                            <i class="fas fa-clock me-1"></i>
+                                            Pending
+                                        </span>
+
+                                    {% elif payment.status == "failed" %}
+
+                                        <span class="badge rounded-pill bg-danger px-3 py-2">
+                                            <i class="fas fa-times-circle me-1"></i>
+                                            Failed
+                                        </span>
+
+                                    {% else %}
+
+                                        <span class="badge rounded-pill bg-secondary px-3 py-2">
+                                            {{ payment.status|title }}
+                                        </span>
+
+                                    {% endif %}
+
+                                </div>
+
+
+                                <div class="col-12">
+
+                                    <hr class="my-1">
+
+                                    <div class="small text-muted">
+
+                                        <i class="far fa-calendar-alt me-1"></i>
+
+                                        {{ payment.created_at|date:"d M Y, H:i" }}
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <div class="empty-state">
+
+            <i class="fas fa-receipt d-block"></i>
+
+            <h4>
+                No Payment History
+            </h4>
+
+            <p class="text-muted mb-4">
+                You do not have any payment transactions yet.
+            </p>
+
+            <a
+                href="{% url 'properties:property_list' %}"
+                class="btn btn-primary"
+            >
+                <i class="fas fa-search me-1"></i>
+                Find Accommodation
+            </a>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}
+

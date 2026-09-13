@@ -1,0 +1,320 @@
+
+{% load static %}
+
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Admin Notifications | Rongo Homes
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{% static 'admin_panel/css/dashboard.css' %}"
+    >
+
+</head>
+
+
+<body>
+
+
+<header class="header">
+
+    <h1>
+        RONGO HOMES
+    </h1>
+
+</header>
+
+
+<div class="page-title">
+
+    <h2>
+        Notifications
+    </h2>
+
+</div>
+
+
+<main class="container">
+
+
+    {% if messages %}
+
+        {% for message in messages %}
+
+            <div class="message">
+                {{ message }}
+            </div>
+
+        {% endfor %}
+
+    {% endif %}
+
+
+    <!-- ========================================================
+         HEADER
+         ======================================================== -->
+
+    <section class="section">
+
+        <div
+            style="
+                display:flex;
+                justify-content:space-between;
+                align-items:center;
+                gap:15px;
+                flex-wrap:wrap;
+            "
+        >
+
+            <div>
+
+                <h2 class="section-title">
+                    Admin Notifications
+                </h2>
+
+                <p>
+                    You have
+                    <strong>
+                        {{ unread_count }}
+                    </strong>
+                    unread notification{{ unread_count|pluralize }}.
+                </p>
+
+            </div>
+
+
+            {% if unread_count %}
+
+                <form
+                    method="post"
+                    action="{% url 'admin_panel:mark_all_notifications_read' %}"
+                >
+
+                    {% csrf_token %}
+
+                    <button
+                        type="submit"
+                        class="link-button"
+                    >
+                        Mark All as Read
+                    </button>
+
+                </form>
+
+            {% endif %}
+
+        </div>
+
+    </section>
+
+
+    <!-- ========================================================
+         NOTIFICATIONS
+         ======================================================== -->
+
+    <section class="section">
+
+
+        {% if notifications %}
+
+
+            {% for notification in notifications %}
+
+
+                <article
+                    class="card"
+                    style="
+                        border-left:
+                        5px solid
+                        {% if notification.is_read %}
+                            #ddd
+                        {% else %}
+                            #0d6efd
+                        {% endif %};
+                    "
+                >
+
+
+                    <div
+                        style="
+                            display:flex;
+                            justify-content:space-between;
+                            align-items:flex-start;
+                            gap:15px;
+                        "
+                    >
+
+                        <div>
+
+                            <h3>
+
+                                {% if not notification.is_read %}
+                                    🔵
+                                {% endif %}
+
+                                {{ notification.title }}
+
+                            </h3>
+
+
+                            <p>
+                                {{ notification.message }}
+                            </p>
+
+                        </div>
+
+
+                        {% if not notification.is_read %}
+
+                            <span class="badge">
+                                Unread
+                            </span>
+
+                        {% else %}
+
+                            <span class="badge">
+                                Read
+                            </span>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <p>
+
+                        <strong>
+                            Type:
+                        </strong>
+
+                        {{ notification.notification_type|title }}
+
+                    </p>
+
+
+                    <p>
+
+                        <strong>
+                            Received:
+                        </strong>
+
+                        {{ notification.created_at|date:"d M Y, H:i" }}
+
+                    </p>
+
+
+                    {% if not notification.is_read %}
+
+                        <div class="actions">
+
+                            <form
+                                method="post"
+                                action="{% url 'admin_panel:mark_notification_read' notification.id %}"
+                            >
+
+                                {% csrf_token %}
+
+                                <button
+                                    type="submit"
+                                    class="link-button"
+                                >
+                                    Mark as Read
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                    {% endif %}
+
+
+                </article>
+
+
+            {% endfor %}
+
+
+        {% else %}
+
+
+            <div class="card">
+
+                <h3>
+                    No Notifications
+                </h3>
+
+                <p>
+                    You currently have no notifications.
+                </p>
+
+            </div>
+
+
+        {% endif %}
+
+
+    </section>
+
+
+    <!-- ========================================================
+         NAVIGATION
+         ======================================================== -->
+
+    <section class="section">
+
+        <h2 class="section-title">
+            Navigation
+        </h2>
+
+
+        <div class="navigation">
+
+            <a
+                href="{% url 'admin_panel:dashboard' %}"
+                class="link-button"
+            >
+                ← Back to Dashboard
+            </a>
+
+
+            <a
+                href="{% url 'admin_panel:owners' %}"
+                class="link-button"
+            >
+                Manage Owners
+            </a>
+
+
+            <a
+                href="{% url 'admin_panel:properties' %}"
+                class="link-button"
+            >
+                Manage Properties
+            </a>
+
+
+        </div>
+
+    </section>
+
+
+</main>
+
+
+</body>
+
+</html>
+

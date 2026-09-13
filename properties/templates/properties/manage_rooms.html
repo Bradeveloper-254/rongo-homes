@@ -1,0 +1,29 @@
+<form method="post">
+    {% csrf_token %}
+
+    <select name="status">
+        <option value="vacant"
+            {% if room.status == "vacant" %}selected{% endif %}>
+            Vacant
+        </option>
+
+        <option value="occupied"
+            {% if room.status == "occupied" %}selected{% endif %}>
+            Occupied
+        </option>
+
+        <option value="reserved"
+            {% if room.status == "reserved" %}selected{% endif %}>
+            Reserved
+        </option>
+
+        <option value="maintenance"
+            {% if room.status == "maintenance" %}selected{% endif %}>
+            Maintenance
+        </option>
+    </select>
+
+    <button type="submit">
+        Update
+    </button>
+</form>

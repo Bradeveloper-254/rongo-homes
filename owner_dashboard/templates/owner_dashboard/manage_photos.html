@@ -1,0 +1,572 @@
+
+{% extends "owner_dashboard/dashboard.html" %}
+
+{% block content %}
+
+<div class="container-fluid px-3 px-md-4 py-4">
+
+    <!-- Header -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+
+        <div>
+
+            <h2 class="fw-bold mb-1">
+                <i class="fas fa-images me-2"></i>
+                Manage Photos
+            </h2>
+
+            <p class="text-muted mb-1">
+                {{ property.name }}
+            </p>
+
+            <small class="text-muted">
+                Property ID: {{ property.property_id }}
+            </small>
+
+        </div>
+
+
+        <a
+            href="{% url 'owner_dashboard:my_properties' %}"
+            class="btn btn-outline-secondary"
+        >
+            <i class="fas fa-arrow-left me-1"></i>
+            Back to My Properties
+        </a>
+
+    </div>
+
+
+    <!-- Photo Statistics -->
+    <div class="row g-3 mb-4">
+
+        <div class="col-md-6">
+
+            <div class="card border-0 shadow-sm h-100">
+
+                <div class="card-body d-flex align-items-center">
+
+                    <div class="stat-icon bg-primary-subtle text-primary">
+                        <i class="fas fa-camera"></i>
+                    </div>
+
+                    <div>
+
+                        <div class="text-muted small">
+                            Photos Uploaded
+                        </div>
+
+                        <h4 class="fw-bold mb-0">
+                            {{ photo_count }} / 4
+                        </h4>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-md-6">
+
+            <div class="card border-0 shadow-sm h-100">
+
+                <div class="card-body d-flex align-items-center">
+
+                    <div class="stat-icon bg-success-subtle text-success">
+                        <i class="fas fa-cloud-arrow-up"></i>
+                    </div>
+
+                    <div>
+
+                        <div class="text-muted small">
+                            Remaining Upload Slots
+                        </div>
+
+                        <h4 class="fw-bold mb-0">
+                            {{ remaining_slots }}
+                        </h4>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Upload Section -->
+    <div class="card border-0 shadow-sm mb-4">
+
+        <div class="card-header bg-white py-3">
+
+            <h5 class="fw-bold mb-0">
+                <i class="fas fa-cloud-upload-alt me-2"></i>
+                Upload Photos
+            </h5>
+
+        </div>
+
+
+        <div class="card-body">
+
+            {% if remaining_slots > 0 %}
+
+                <div class="alert alert-info border-0">
+
+                    <i class="fas fa-circle-info me-2"></i>
+
+                    You can upload up to
+                    <strong>{{ remaining_slots }}</strong>
+                    more photo{{ remaining_slots|pluralize }}.
+
+                    Your first uploaded photo is automatically
+                    used as the cover photo.
+
+                </div>
+
+
+                <form
+                    method="POST"
+                    enctype="multipart/form-data"
+                >
+
+                    {% csrf_token %}
+
+                    <div class="upload-form">
+
+                        {{ form.as_p }}
+
+                    </div>
+
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary"
+                    >
+                        <i class="fas fa-upload me-2"></i>
+                        Upload Photos
+                    </button>
+
+                </form>
+
+            {% else %}
+
+                <div class="alert alert-warning border-0 mb-0">
+
+                    <i class="fas fa-circle-exclamation me-2"></i>
+
+                    You have reached the maximum of
+                    <strong>4 photos</strong>
+                    for this property.
+
+                    Delete an existing photo if you need to
+                    upload a replacement.
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+
+    <!-- Current Photos -->
+    <div class="card border-0 shadow-sm">
+
+        <div class="card-header bg-white py-3">
+
+            <div class="d-flex justify-content-between align-items-center">
+
+                <h5 class="fw-bold mb-0">
+                    <i class="fas fa-photo-film me-2"></i>
+                    Current Photos
+                </h5>
+
+                <span class="badge bg-primary">
+                    {{ photo_count }} / 4
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="card-body">
+
+            {% if property.photos %}
+
+                <div class="row g-4">
+
+                    {% for photo in property.photos %}
+
+                        <div class="col-sm-6 col-lg-4 col-xl-3">
+
+                            <div class="photo-card">
+
+
+                                <!-- Photo -->
+                                <div class="photo-wrapper">
+
+                                    <img
+                                        src="{{ photo.url }}"
+                                        alt="Photo of {{ property.name }}"
+                                        class="property-photo"
+                                    >
+
+
+                                    {% if photo.is_cover %}
+
+                                        <div class="cover-badge">
+
+                                            <i class="fas fa-star me-1"></i>
+                                            Cover Photo
+
+                                        </div>
+
+                                    {% endif %}
+
+                                </div>
+
+
+                                <!-- Photo Actions -->
+                                <div class="photo-actions">
+
+                                    <div class="small text-muted mb-2">
+
+                                        Photo {{ forloop.counter }}
+
+                                    </div>
+
+
+                                    {% if photo.is_cover %}
+
+                                        <div class="current-cover">
+
+                                            <i class="fas fa-circle-check me-1"></i>
+                                            Current Cover Photo
+
+                                        </div>
+
+                                    {% else %}
+
+                                        <form
+                                            method="POST"
+                                            action="{% url 'owner_dashboard:set_cover_photo' property.property_id forloop.counter0 %}"
+                                            class="mb-2"
+                                        >
+
+                                            {% csrf_token %}
+
+                                            <button
+                                                type="submit"
+                                                class="btn btn-outline-primary btn-sm w-100"
+                                            >
+                                                <i class="fas fa-star me-1"></i>
+                                                Set as Cover
+                                            </button>
+
+                                        </form>
+
+                                    {% endif %}
+
+
+                                    <form
+                                        method="POST"
+                                        action="{% url 'owner_dashboard:delete_photo' property.property_id forloop.counter0 %}"
+                                    >
+
+                                        {% csrf_token %}
+
+                                        <button
+                                            type="submit"
+                                            class="btn btn-outline-danger btn-sm w-100"
+                                        >
+                                            <i class="fas fa-trash me-1"></i>
+                                            Delete Photo
+                                        </button>
+
+                                    </form>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            {% else %}
+
+                <div class="empty-state">
+
+                    <div class="empty-icon">
+
+                        <i class="fas fa-images"></i>
+
+                    </div>
+
+                    <h5 class="fw-bold">
+                        No Photos Yet
+                    </h5>
+
+                    <p class="text-muted mb-0">
+                        Upload photos of your property to help
+                        students see the accommodation.
+                    </p>
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+
+    <!-- Back -->
+    <div class="mt-4">
+
+        <a
+            href="{% url 'owner_dashboard:dashboard' %}"
+            class="text-decoration-none fw-semibold"
+        >
+            <i class="fas fa-arrow-left me-1"></i>
+            Back to Dashboard
+        </a>
+
+    </div>
+
+</div>
+
+
+<style>
+
+    .card {
+        border-radius: 14px;
+    }
+
+    .card-header {
+        border-bottom: 1px solid #e5e7eb;
+        border-radius: 14px 14px 0 0 !important;
+    }
+
+
+    /* Statistics */
+
+    .stat-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        font-size: 20px;
+
+        margin-right: 15px;
+    }
+
+
+    /* Upload */
+
+    .upload-form input[type="file"] {
+
+        width: 100%;
+
+        padding: 10px;
+
+        border: 1px solid #d1d5db;
+
+        border-radius: 8px;
+
+        background: #fff;
+
+    }
+
+
+    .upload-form input[type="file"]:focus {
+
+        border-color: #2563eb;
+
+        outline: none;
+
+        box-shadow:
+            0 0 0 3px
+            rgba(37, 99, 235, 0.12);
+
+    }
+
+
+    /* Photos */
+
+    .photo-card {
+
+        height: 100%;
+
+        background: white;
+
+        border: 1px solid #e5e7eb;
+
+        border-radius: 12px;
+
+        overflow: hidden;
+
+        transition: 0.2s;
+
+    }
+
+
+    .photo-card:hover {
+
+        transform: translateY(-3px);
+
+        box-shadow:
+            0 8px 20px
+            rgba(0, 0, 0, 0.08);
+
+    }
+
+
+    .photo-wrapper {
+
+        position: relative;
+
+        width: 100%;
+
+        height: 210px;
+
+        background: #f3f4f6;
+
+        overflow: hidden;
+
+    }
+
+
+    .property-photo {
+
+        width: 100%;
+
+        height: 100%;
+
+        object-fit: cover;
+
+        display: block;
+
+    }
+
+
+    .cover-badge {
+
+        position: absolute;
+
+        top: 10px;
+
+        left: 10px;
+
+        background: rgba(17, 24, 39, 0.88);
+
+        color: white;
+
+        padding: 6px 10px;
+
+        border-radius: 20px;
+
+        font-size: 12px;
+
+        font-weight: 600;
+
+    }
+
+
+    .photo-actions {
+
+        padding: 15px;
+
+    }
+
+
+    .current-cover {
+
+        background: #ecfdf5;
+
+        color: #166534;
+
+        border-radius: 7px;
+
+        padding: 8px;
+
+        text-align: center;
+
+        font-size: 13px;
+
+        font-weight: 600;
+
+        margin-bottom: 8px;
+
+    }
+
+
+    /* Empty state */
+
+    .empty-state {
+
+        text-align: center;
+
+        padding: 55px 20px;
+
+        color: #6b7280;
+
+    }
+
+
+    .empty-icon {
+
+        width: 70px;
+
+        height: 70px;
+
+        border-radius: 50%;
+
+        background: #f3f4f6;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        margin: 0 auto 18px;
+
+        font-size: 28px;
+
+        color: #9ca3af;
+
+    }
+
+
+    /* Mobile */
+
+    @media (max-width: 576px) {
+
+        .photo-wrapper {
+
+            height: 230px;
+
+        }
+
+    }
+
+</style>
+
+{% endblock %}
+

@@ -1,0 +1,272 @@
+<!DOCTYPE html> <html lang="en"> <head>
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>Notifications | Rongo Homes</title>
+
+<style>
+
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+        background: #f5f7f6;
+        color: #26332d;
+        min-height: 100vh;
+    }
+
+    header {
+        background: #176b4d;
+        color: white;
+        padding: 25px 8%;
+    }
+
+    header h1 {
+        font-size: 28px;
+    }
+
+    main {
+        width: 90%;
+        max-width: 850px;
+        margin: 40px auto;
+    }
+
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+        gap: 15px;
+    }
+
+    .page-header h2 {
+        color: #176b4d;
+    }
+
+    .unread {
+        background: #176b4d;
+        color: white;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 13px;
+    }
+
+    .notification {
+        background: white;
+        border-radius: 10px;
+        margin-bottom: 15px;
+        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
+        border-left: 4px solid #d6ded9;
+        overflow: hidden;
+    }
+
+    .notification.unread-item {
+        border-left-color: #176b4d;
+        background: #f0f7f4;
+    }
+
+    .notification-item {
+        display: block;
+        padding: 20px;
+        text-decoration: none;
+        color: #26332d;
+        transition: background 0.2s ease;
+    }
+
+    .notification-item:hover {
+        background: #f3f8f5;
+    }
+
+    .notification-item.unread {
+        background: #eef8f3;
+    }
+
+    .notification-title {
+        font-weight: 700;
+        color: #176b4d;
+        margin-bottom: 7px;
+        font-size: 17px;
+    }
+
+    .notification-message {
+        font-size: 14px;
+        color: #59655f;
+        margin-bottom: 8px;
+        line-height: 1.5;
+    }
+
+    .notification-time {
+        font-size: 12px;
+        color: #89938e;
+    }
+
+    .mark-all {
+        display: inline-block;
+        background: #176b4d;
+        color: white;
+        padding: 10px 15px;
+        border-radius: 7px;
+        text-decoration: none;
+        font-size: 14px;
+    }
+
+    .mark-all:hover {
+        background: #12563e;
+    }
+
+    .empty {
+        background: white;
+        padding: 40px;
+        text-align: center;
+        border-radius: 10px;
+        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
+    }
+
+    .empty h3 {
+        color: #176b4d;
+        margin-bottom: 8px;
+    }
+
+    .empty p {
+        color: #68736e;
+    }
+
+    .back {
+        display: inline-block;
+        margin-top: 25px;
+        color: #176b4d;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+    .back:hover {
+        text-decoration: underline;
+    }
+
+    @media (max-width: 600px) {
+
+        .page-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        main {
+            width: 94%;
+            margin: 25px auto;
+        }
+
+        header {
+            padding: 20px 5%;
+        }
+
+    }
+
+</style>
+
+</head> <body> <header>
+<h1>
+    RONGO HOMES
+</h1>
+
+</header> <main>
+<div class="page-header">
+
+    <h2>
+        Notifications
+    </h2>
+
+    {% if unread_count %}
+        <span class="unread">
+            {{ unread_count }} unread
+        </span>
+    {% endif %}
+
+</div>
+
+
+{% if unread_count %}
+
+    <p style="margin-bottom: 20px;">
+
+        <a
+            href="{% url 'notifications:mark_all_read' %}"
+            class="mark-all"
+        >
+            Mark All as Read
+        </a>
+
+    </p>
+
+{% endif %}
+
+
+{% if notifications %}
+
+    {% for notification in notifications %}
+
+        <article
+            class="notification {% if not notification.is_read %}unread-item{% endif %}"
+        >
+
+            <a
+                href="{% url 'notifications:notification_click' notification.id %}"
+                class="notification-item {% if not notification.is_read %}unread{% endif %}"
+            >
+
+                <div class="notification-title">
+                    {{ notification.title }}
+                </div>
+
+                <div class="notification-message">
+                    {{ notification.message }}
+                </div>
+
+                <div class="notification-time">
+                    {{ notification.created_at }}
+                </div>
+
+                {% if not notification.is_read %}
+                    <div style="margin-top: 8px; color: #176b4d; font-size: 13px; font-weight: bold;">
+                        Mark as read
+                    </div>
+                {% endif %}
+
+            </a>
+
+        </article>
+
+    {% endfor %}
+
+{% else %}
+
+    <div class="empty">
+
+        <h3>
+            No notifications
+        </h3>
+
+        <p>
+            You're all caught up.
+        </p>
+
+    </div>
+
+{% endif %}
+
+
+<a
+    href="{% url 'accounts:profile' %}"
+    class="back"
+>
+    ← Back to Profile
+</a>
+
+</main> </body> </html>

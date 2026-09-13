@@ -1,0 +1,255 @@
+{% extends "base.html" %}
+
+{% block title %}Add Property - Rongo Homes{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+<div class="row justify-content-center">
+
+    <div class="col-lg-9">
+
+        <div class="card shadow-sm">
+
+            <div class="card-body p-4 p-md-5">
+
+                <div class="mb-4">
+
+                    <h2>
+                        <i class="fas fa-building me-2"></i>
+                        Add Property
+                    </h2>
+
+                    <p class="text-muted mb-0">
+                        Add your property to Rongo Homes.
+                        Your property will be reviewed before it is approved.
+                    </p>
+
+                </div>
+
+                <form method="POST">
+
+                    {% csrf_token %}
+
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {{ form.non_field_errors }}
+                        </div>
+                    {% endif %}
+
+                    <div class="row">
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="form-label">
+                                Property Name
+                            </label>
+
+                            {{ form.name }}
+
+                            {% for error in form.name.errors %}
+                                <div class="text-danger small">
+                                    {{ error }}
+                                </div>
+                            {% endfor %}
+
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="form-label">
+                                Area
+                            </label>
+
+                            {{ form.area }}
+
+                            {% for error in form.area.errors %}
+                                <div class="text-danger small">
+                                    {{ error }}
+                                </div>
+                            {% endfor %}
+
+                        </div>
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Description
+                        </label>
+
+                        {{ form.description }}
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="form-label">
+                                Landmark
+                            </label>
+
+                            {{ form.landmark }}
+
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="form-label">
+                                Distance from University (km)
+                            </label>
+
+                            {{ form.distance_from_university }}
+
+                        </div>
+
+                    </div>
+                    <div class="row">
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="form-label">
+                                Caretake's Name
+                            </label>
+
+                            {{ form.caretaker_name }}
+
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="form-label">
+                                Caretaker's contact
+                            </label>
+
+                            {{ form.caretaker_contact }}
+
+                        </div>
+
+                    </div>
+                    <div class="row">
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="form-label">
+                                Landlord's name
+                            </label>
+
+                            {{ form.landlord_name}}
+
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="form-label">
+                                Landlord's contact
+                            </label>
+
+                            {{ form.landlord_contact }}
+
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="form-label">
+                                Latitude
+                            </label>
+
+                            {{ form.latitude }}
+
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="form-label">
+                                Longitude
+                            </label>
+
+                            {{ form.longitude }}
+
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="form-label">
+                                Monthly Price
+                            </label>
+
+                            {{ form.monthly_price }}
+
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="form-label">
+                                Semester Price
+                            </label>
+
+                            {{ form.semester_price }}
+
+                        </div>
+                        <div class="col-md-6 mb-3">
+
+                            <label class="form-label">
+                                Cost sharing per semester
+                            </label>
+
+                            {{ form.Cost_Sharing }}
+
+                        </div>
+
+                    </div>
+
+                    <div class="mb-4">
+
+                        <label class="form-label d-block">
+                            Amenities
+                        </label>
+
+                        {{ form.amenities }}
+
+                    </div>
+
+                    <div class="d-flex gap-2">
+
+                        <a
+                            href="{% url 'owner_dashboard:dashboard' %}"
+                            class="btn btn-outline-secondary"
+                        >
+                            <i class="fas fa-arrow-left me-2"></i>
+                            Cancel
+                        </a>
+
+                        <button
+                            type="submit"
+                            class="btn btn-primary"
+                        >
+                            <i class="fas fa-plus me-2"></i>
+                            Add Property
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</div>
+
+{% endblock %}

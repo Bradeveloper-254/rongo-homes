@@ -1,0 +1,833 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Create Account - Rongo Homes{% endblock %}
+
+
+{% block content %}
+
+<div class="container mt-5 mb-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-6">
+
+
+            <!-- Register Card -->
+
+            <div class="card shadow-lg">
+
+                <div class="card-body p-5">
+
+
+                    <!-- Header -->
+
+                    <div class="text-center mb-4">
+
+                        <h1 class="card-title mb-2">
+
+                            <i class="fas fa-user-plus me-2 text-success"></i>
+
+                            Create Account
+
+                        </h1>
+
+                        <p class="text-muted">
+
+                            Join Rongo Homes and find verified accommodation
+
+                        </p>
+
+                    </div>
+
+
+
+                    <!-- Register Form -->
+
+                    <form
+                        method="POST"
+                        enctype="multipart/form-data"
+                        class="register-form"
+                        novalidate
+                    >
+
+                        {% csrf_token %}
+
+
+
+                        <!-- Non-field errors -->
+
+                        {% if form.non_field_errors %}
+
+                            <div class="alert alert-danger">
+
+                                {% for error in form.non_field_errors %}
+
+                                    <div>
+                                        {{ error }}
+                                    </div>
+
+                                {% endfor %}
+
+                            </div>
+
+                        {% endif %}
+
+
+
+                        <!-- =========================
+                             BASIC INFORMATION
+                        ========================== -->
+
+                        <div id="basic-info">
+
+
+                            <!-- Full Name -->
+
+                            <div class="form-group mb-4">
+
+                                <label
+                                    for="{{ form.full_name.id_for_label }}"
+                                    class="form-label"
+                                >
+
+                                    {{ form.full_name.label }}
+
+                                    <span class="text-danger">*</span>
+
+                                </label>
+
+                                {{ form.full_name }}
+
+                                {% if form.full_name.errors %}
+
+                                    <div class="invalid-feedback d-block">
+
+                                        {{ form.full_name.errors.0 }}
+
+                                    </div>
+
+                                {% endif %}
+
+                            </div>
+
+
+
+                            <!-- Email -->
+
+                            <div class="form-group mb-4">
+
+                                <label
+                                    for="{{ form.email.id_for_label }}"
+                                    class="form-label"
+                                >
+
+                                    {{ form.email.label }}
+
+                                    <span class="text-danger">*</span>
+
+                                </label>
+
+                                {{ form.email }}
+
+                                {% if form.email.errors %}
+
+                                    <div class="invalid-feedback d-block">
+
+                                        {{ form.email.errors.0 }}
+
+                                    </div>
+
+                                {% endif %}
+
+                            </div>
+
+
+
+                            <!-- Phone -->
+
+                            <div class="form-group mb-4">
+
+                                <label
+                                    for="{{ form.phone.id_for_label }}"
+                                    class="form-label"
+                                >
+
+                                    {{ form.phone.label }}
+
+                                    <span class="text-danger">*</span>
+
+                                </label>
+
+                                {{ form.phone }}
+
+                                {% if form.phone.errors %}
+
+                                    <div class="invalid-feedback d-block">
+
+                                        {{ form.phone.errors.0 }}
+
+                                    </div>
+
+                                {% endif %}
+
+                            </div>
+
+
+
+                            <!-- Password -->
+
+                            <div class="form-group mb-4">
+
+                                <label
+                                    for="{{ form.password.id_for_label }}"
+                                    class="form-label"
+                                >
+
+                                    {{ form.password.label }}
+
+                                    <span class="text-danger">*</span>
+
+                                </label>
+
+
+                                <div class="input-group">
+
+                                    {{ form.password }}
+
+                                    <button
+                                        type="button"
+                                        class="btn btn-outline-secondary toggle-password"
+                                        data-target="{{ form.password.id_for_label }}"
+                                        title="Show password"
+                                    >
+
+                                        <i class="fas fa-eye"></i>
+
+                                    </button>
+
+                                </div>
+
+
+                                <small class="text-muted">
+
+                                    Your password is securely encrypted when
+                                    your account is created.
+
+                                </small>
+
+
+                                {% if form.password.errors %}
+
+                                    <div class="invalid-feedback d-block">
+
+                                        {{ form.password.errors.0 }}
+
+                                    </div>
+
+                                {% endif %}
+
+                            </div>
+
+
+
+                            <!-- Confirm Password -->
+
+                            <div class="form-group mb-4">
+
+                                <label
+                                    for="{{ form.confirm_password.id_for_label }}"
+                                    class="form-label"
+                                >
+
+                                    {{ form.confirm_password.label }}
+
+                                    <span class="text-danger">*</span>
+
+                                </label>
+
+
+                                <div class="input-group">
+
+                                    {{ form.confirm_password }}
+
+                                    <button
+                                        type="button"
+                                        class="btn btn-outline-secondary toggle-password"
+                                        data-target="{{ form.confirm_password.id_for_label }}"
+                                        title="Show password"
+                                    >
+
+                                        <i class="fas fa-eye"></i>
+
+                                    </button>
+
+                                </div>
+
+
+                                {% if form.confirm_password.errors %}
+
+                                    <div class="invalid-feedback d-block">
+
+                                        {{ form.confirm_password.errors.0 }}
+
+                                    </div>
+
+                                {% endif %}
+
+                            </div>
+
+
+
+                            <!-- Account Type -->
+
+                            <div class="form-group mb-4">
+
+                                <label
+                                    for="{{ form.role.id_for_label }}"
+                                    class="form-label"
+                                >
+
+                                    {{ form.role.label }}
+
+                                    <span class="text-danger">*</span>
+
+                                </label>
+
+
+                                {{ form.role }}
+
+
+                                <small class="text-muted d-block mt-2">
+
+                                    Select Property Owner / Caretaker if you
+                                    want to list and manage accommodation.
+
+                                </small>
+
+
+                                {% if form.role.errors %}
+
+                                    <div class="invalid-feedback d-block">
+
+                                        {{ form.role.errors.0 }}
+
+                                    </div>
+
+                                {% endif %}
+
+                            </div>
+
+
+                        </div>
+
+
+
+                        <!-- =========================
+                             OWNER DOCUMENTS
+                        ========================== -->
+
+                        <div
+                            id="owner-documents"
+                            class="mt-5 pt-4 border-top"
+                            style="display: none;"
+                        >
+
+                            <div class="alert alert-info">
+
+                                <i class="fas fa-info-circle me-2"></i>
+
+                                <strong>Property Owner / Caretaker Verification</strong>
+
+                                <p class="small mb-0 mt-2">
+
+                                    Owner and caretaker accounts must provide
+                                    verification documents. Your account will
+                                    remain pending until an administrator
+                                    reviews and approves your application.
+
+                                </p>
+
+                            </div>
+
+
+                            <h4 class="mb-4">
+
+                                <i class="fas fa-file-upload me-2"></i>
+
+                                Verification Documents
+
+                            </h4>
+
+
+
+                            <!-- ID Document -->
+
+                            <div class="form-group mb-4">
+
+                                <label
+                                    for="id_id_document"
+                                    class="form-label"
+                                >
+
+                                    <i class="fas fa-id-card me-2"></i>
+
+                                    Identification Document
+
+                                    <span class="text-danger">*</span>
+
+                                </label>
+
+
+                                {{ form.id_document }}
+
+
+                                <small class="form-text text-muted d-block mt-1">
+
+                                    Upload a clear copy of your ID
+                                    (PDF, JPG, PNG).
+
+                                </small>
+
+
+                                {% if form.id_document.errors %}
+
+                                    <div class="invalid-feedback d-block">
+
+                                        {{ form.id_document.errors.0 }}
+
+                                    </div>
+
+                                {% endif %}
+
+                            </div>
+
+
+
+                            <!-- Ownership Document -->
+
+                            <div class="form-group mb-4">
+
+                                <label
+                                    for="id_ownership_document"
+                                    class="form-label"
+                                >
+
+                                    <i class="fas fa-certificate me-2"></i>
+
+                                    Ownership / Management Document
+
+                                    <span class="text-danger">*</span>
+
+                                </label>
+
+
+                                {{ form.ownership_document }}
+
+
+                                <small class="form-text text-muted d-block mt-1">
+
+                                    Upload proof of ownership or property
+                                    management.
+
+                                </small>
+
+
+                                {% if form.ownership_document.errors %}
+
+                                    <div class="invalid-feedback d-block">
+
+                                        {{ form.ownership_document.errors.0 }}
+
+                                    </div>
+
+                                {% endif %}
+
+                            </div>
+
+
+
+                            <!-- Additional Document -->
+
+                            <div class="form-group mb-4">
+
+                                <label
+                                    for="id_additional_document"
+                                    class="form-label"
+                                >
+
+                                    <i class="fas fa-file me-2"></i>
+
+                                    Additional Document
+
+                                </label>
+
+
+                                {{ form.additional_document }}
+
+
+                                <small class="form-text text-muted d-block mt-1">
+
+                                    Optional: Upload any additional supporting
+                                    documents.
+
+                                </small>
+
+
+                                {% if form.additional_document.errors %}
+
+                                    <div class="invalid-feedback d-block">
+
+                                        {{ form.additional_document.errors.0 }}
+
+                                    </div>
+
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+
+
+                        <!-- =========================
+                             TERMS AND CONDITIONS
+                        ========================== -->
+
+                        <div class="mt-5 pt-4 border-top">
+
+
+                            <div class="form-check">
+
+
+                                {{ form.terms_accepted }}
+
+
+                                <label
+                                    class="form-check-label"
+                                    for="{{ form.terms_accepted.id_for_label }}"
+                                >
+
+                                    I have read and agree to the
+
+                                    <a
+                                        href="{% url 'accounts:terms' %}"
+                                        target="_blank"
+                                        class="fw-bold text-primary"
+                                    >
+
+                                        Rongo Homes Terms and Conditions
+
+                                    </a>
+
+                                    <span class="text-danger">*</span>
+
+                                </label>
+
+
+                            </div>
+
+
+                            {% if form.terms_accepted.errors %}
+
+                                <div class="invalid-feedback d-block">
+
+                                    {{ form.terms_accepted.errors.0 }}
+
+                                </div>
+
+                            {% endif %}
+
+
+                            <small class="text-muted d-block mt-2">
+
+                                You must agree to the Terms and Conditions
+                                before creating your account.
+
+                            </small>
+
+                        </div>
+
+
+
+                        <!-- =========================
+                             SUBMIT
+                        ========================== -->
+
+                        <div class="d-grid gap-2 mt-4">
+
+                            <button
+                                type="submit"
+                                class="btn btn-success btn-lg"
+                            >
+
+                                <i class="fas fa-check me-2"></i>
+
+                                Create Account
+
+                            </button>
+
+                        </div>
+
+
+
+                        <!-- Divider -->
+
+                        <hr class="my-4">
+
+
+
+                        <!-- Login -->
+
+                        <p class="text-center text-muted">
+
+                            Already have an account?
+
+                            <a
+                                href="{% url 'accounts:login' %}"
+                                class="text-primary fw-bold text-decoration-none"
+                            >
+
+                                Sign In
+
+                            </a>
+
+                        </p>
+
+
+                    </form>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- Privacy Box -->
+
+            <div
+                class="alert alert-warning mt-4"
+                role="alert"
+            >
+
+                <i class="fas fa-lock me-2"></i>
+
+                <strong>Privacy & Security:</strong>
+
+                Your verification documents are securely stored and reviewed
+                by authorized Rongo Homes administrators before owner/caretaker
+                account activation.
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+
+
+{% block extra_js %}
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+
+    /*
+    ==========================================
+    APPLY BOOTSTRAP CLASSES
+    ==========================================
+    */
+
+    document.querySelectorAll(
+        '.register-form input[type="text"],' +
+        '.register-form input[type="email"],' +
+        '.register-form input[type="password"],' +
+        '.register-form input[type="tel"],' +
+        '.register-form select,' +
+        '.register-form textarea,' +
+        '.register-form input[type="file"]'
+    ).forEach(function (field) {
+
+        field.classList.add("form-control");
+
+    });
+
+
+
+    /*
+    ==========================================
+    OWNER DOCUMENT VISIBILITY
+    ==========================================
+    */
+
+    const roleField = document.getElementById(
+        "{{ form.role.id_for_label }}"
+    );
+
+    const ownerDocuments = document.getElementById(
+        "owner-documents"
+    );
+
+
+    function updateOwnerDocuments() {
+
+        if (roleField.value === "owner") {
+
+            ownerDocuments.style.display = "block";
+
+        } else {
+
+            ownerDocuments.style.display = "none";
+
+
+            /*
+            Clear owner document inputs when
+            switching back to Student.
+            */
+
+            document.getElementById(
+                "id_id_document"
+            ).value = "";
+
+            document.getElementById(
+                "id_ownership_document"
+            ).value = "";
+
+            document.getElementById(
+                "id_additional_document"
+            ).value = "";
+
+        }
+
+    }
+
+
+    roleField.addEventListener(
+        "change",
+        updateOwnerDocuments
+    );
+
+
+    /*
+    Show the document section automatically
+    when the form returns with an owner selected.
+    */
+
+    updateOwnerDocuments();
+
+
+
+    /*
+    ==========================================
+    PASSWORD SHOW / HIDE
+    ==========================================
+    */
+
+    document.querySelectorAll(
+        ".toggle-password"
+    ).forEach(function (button) {
+
+
+        button.addEventListener(
+            "click",
+            function () {
+
+
+                const targetId =
+                    button.getAttribute("data-target");
+
+
+                const passwordField =
+                    document.getElementById(targetId);
+
+
+                const icon =
+                    button.querySelector("i");
+
+
+                if (
+                    passwordField.type === "password"
+                ) {
+
+                    passwordField.type = "text";
+
+                    icon.classList.remove(
+                        "fa-eye"
+                    );
+
+                    icon.classList.add(
+                        "fa-eye-slash"
+                    );
+
+                    button.setAttribute(
+                        "title",
+                        "Hide password"
+                    );
+
+                } else {
+
+                    passwordField.type = "password";
+
+                    icon.classList.remove(
+                        "fa-eye-slash"
+                    );
+
+                    icon.classList.add(
+                        "fa-eye"
+                    );
+
+                    button.setAttribute(
+                        "title",
+                        "Show password"
+                    );
+
+                }
+
+            }
+        );
+
+    });
+
+
+
+    /*
+    ==========================================
+    CLIENT-SIDE FORM VALIDATION
+    ==========================================
+    */
+
+    document.querySelector(
+        ".register-form"
+    ).addEventListener(
+        "submit",
+        function (e) {
+
+
+            if (!this.checkValidity()) {
+
+                e.preventDefault();
+
+                e.stopPropagation();
+
+            }
+
+
+            this.classList.add(
+                "was-validated"
+            );
+
+        }
+    );
+
+});
+
+</script>
+
+{% endblock %}
+

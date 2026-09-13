@@ -1,0 +1,629 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Rongo Homes Admin</title>
+
+   <link rel="stylesheet" href="{% static 'admin_panel/css/dashboard.css' %}">
+
+</head>
+
+<body>
+
+    <!-- Header -->
+    <header class="header">
+        <h1>RONGO HOMES</h1>
+    </header>
+
+
+    <!-- Page Title -->
+    <div class="page-title">
+        <h2>Admin Dashboard</h2>
+    </div>
+
+
+    <main class="container">
+
+        <!-- Messages -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="message">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+
+        <!-- Overview -->
+        <section class="section">
+
+            <h2 class="section-title">
+                Overview
+            </h2>
+
+            <div class="stats-grid">
+
+                <div class="stat-card">
+                    <div class="label">Students</div>
+                    <div class="value">
+                        {{ total_students }}
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="label">Owners</div>
+                    <div class="value">
+                        {{ total_owners }}
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="label">Pending Owners</div>
+                    <div class="value">
+                        {{ pending_owners }}
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="label">Properties</div>
+                    <div class="value">
+                        {{ total_properties }}
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- Pending Properties -->
+        <section class="section">
+
+            <h2 class="section-title">
+                Pending Properties
+            </h2>
+
+            {% if pending_property_list %}
+
+                {% for property in pending_property_list %}
+
+                    <article class="card">
+
+                        <h3>
+                            {{ property.name }}
+                        </h3>
+
+                        <p>
+                            <strong>Property ID:</strong>
+                            {{ property.property_id }}
+                        </p>
+
+                        <p>
+                            <strong>Location:</strong>
+                            {{ property.location.area }}
+                        </p>
+
+                        <p>
+                            <strong>Owner ID:</strong>
+                            {{ property.owner_id }}
+                        </p>
+
+                        <p>
+                            <strong>Monthly Price:</strong>
+                            KSh {{ property.monthly_price }}
+                        </p>
+
+                        <div class="actions">
+
+                            <form
+                                method="POST"
+                                action="{% url 'admin_panel:approve_property' property.property_id %}"
+                            >
+                                {% csrf_token %}
+
+                                <button
+                                    type="submit"
+                                    class="btn-approve"
+                                >
+                                    Approve
+                                </button>
+                            </form>
+
+                            <form
+                                method="POST"
+                                action="{% url 'admin_panel:reject_property' property.property_id %}"
+                            >
+                                {% csrf_token %}
+
+                                <button
+                                    type="submit"
+                                    class="btn-reject"
+                                >
+                                    Reject
+                                </button>
+                            </form>
+
+                        </div>
+
+                        <p>
+                            <a href="{% url 'admin_panel:properties' %}">
+                                View All Properties →
+                            </a>
+                        </p>
+
+                    </article>
+
+                {% endfor %}
+
+            {% else %}
+
+                <div class="card">
+                    <p>No pending properties.</p>
+                </div>
+
+            {% endif %}
+
+        </section>
+
+
+        <!-- Reports -->
+        <section class="section">
+
+            <h2 class="section-title">
+                Reports
+            </h2>
+
+            <div class="stats-grid">
+
+                <div class="stat-card">
+                    <div class="label">Total Reports</div>
+                    <div class="value">
+                        {{ total_reports }}
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="label">Pending</div>
+                    <div class="value">
+                        {{ pending_reports }}
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="label">Resolved</div>
+                    <div class="value">
+                        {{ resolved_reports }}
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="label">Rejected</div>
+                    <div class="value">
+                        {{ rejected_reports }}
+                    </div>
+                </div>
+
+            </div>
+
+            <br>
+
+            <a
+                href="{% url 'admin_panel:reports' %}"
+                class="link-button"
+            >
+                Manage Reports
+            </a>
+
+        </section>
+
+
+        <!-- Pending Reports -->
+        <section class="section">
+
+            <h2 class="section-title">
+                Pending Reports
+            </h2>
+
+            {% if pending_report_list %}
+
+                {% for report in pending_report_list %}
+
+                    <article class="card">
+
+                        <h3>
+                            {{ report.reason }}
+                        </h3>
+
+                        <p>
+                            <strong>Property:</strong>
+                            {{ report.property_id }}
+                        </p>
+
+                        <p>
+                            <strong>Student:</strong>
+                            {{ report.student_id }}
+                        </p>
+
+                        <p>
+                            <strong>Description:</strong>
+                            {{ report.description }}
+                        </p>
+
+                        <p>
+                            <strong>Submitted:</strong>
+                            {{ report.created_at }}
+                        </p>
+
+                        <div class="actions">
+
+                            <form
+                                method="POST"
+                                action="{% url 'admin_panel:resolve_report' report.id %}"
+                            >
+                                {% csrf_token %}
+
+                                <button
+                                    type="submit"
+                                    class="btn-resolve"
+                                >
+                                    Resolve
+                                </button>
+                            </form>
+
+                            <form
+                                method="POST"
+                                action="{% url 'admin_panel:dismiss_report' report.id %}"
+                            >
+                                {% csrf_token %}
+
+                                <button
+                                    type="submit"
+                                    class="btn-dismiss"
+                                >
+                                    Dismiss
+                                </button>
+                            </form>
+
+                        </div>
+
+                        <p>
+                            <a href="{% url 'admin_panel:reports' %}">
+                                View All Reports →
+                            </a>
+                        </p>
+
+                    </article>
+
+                {% endfor %}
+
+            {% else %}
+
+                <div class="card">
+                    <p>No pending reports.</p>
+                </div>
+
+            {% endif %}
+
+        </section>
+
+
+        <!-- Payments -->
+        <section class="section">
+
+            <h2 class="section-title">
+                Payments
+            </h2>
+
+            <div class="stats-grid">
+
+                <div class="stat-card">
+                    <div class="label">
+                        Total Payments
+                    </div>
+
+                    <div class="value">
+                        {{ total_payments }}
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="label">
+                        Pending Payments
+                    </div>
+
+                    <div class="value">
+                        {{ pending_payments }}
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="label">
+                        Revenue
+                    </div>
+
+                    <div class="value">
+                        KSh {{ total_revenue }}
+                    </div>
+                </div>
+
+            </div>
+
+            <br>
+
+            {% if payment %}
+                <p>
+                    <strong>Payment Type:</strong>
+                    {{ payment.payment_type }}
+                </p>
+            {% endif %}
+
+            <br>
+
+            <a
+                href="{% url 'admin_panel:payments' %}"
+                class="link-button"
+            >
+                Manage Payments
+            </a>
+
+        </section>
+
+
+        <!-- Pending Owner Applications -->
+        <section class="section">
+
+            <h2 class="section-title">
+                Pending Owner Applications
+            </h2>
+
+            {% if pending_owner_list %}
+
+                {% for owner in pending_owner_list %}
+
+                    <article class="card">
+
+                        <h3>
+                            {{ owner.full_name }}
+                        </h3>
+
+                        <p>
+                            <strong>Email:</strong>
+                            {{ owner.email }}
+                        </p>
+
+                        <p>
+                            <strong>Phone:</strong>
+                            {{ owner.phone }}
+                        </p>
+
+                        <p>
+                            <strong>Status:</strong>
+
+                            <span class="badge">
+                                {{ owner.status }}
+                            </span>
+                        </p>
+
+                        <div class="document-status">
+
+                            <p>
+                                <strong>ID Document:</strong>
+
+                                {% if owner.id_document %}
+                                    Submitted
+                                {% else %}
+                                    Missing
+                                {% endif %}
+                            </p>
+
+                            <p>
+                                <strong>Ownership Document:</strong>
+
+                                {% if owner.ownership_document %}
+                                    Submitted
+                                {% else %}
+                                    Missing
+                                {% endif %}
+                            </p>
+
+                        </div>
+
+                        <div class="actions">
+
+                            <form
+                                method="POST"
+                                action="{% url 'admin_panel:approve_owner' owner.id %}"
+                            >
+                                {% csrf_token %}
+
+                                <button
+                                    type="submit"
+                                    class="btn-approve"
+                                >
+                                    Approve
+                                </button>
+                            </form>
+
+                            <form
+                                method="POST"
+                                action="{% url 'admin_panel:reject_owner' owner.id %}"
+                            >
+                                {% csrf_token %}
+
+                                <button
+                                    type="submit"
+                                    class="btn-reject"
+                                >
+                                    Reject
+                                </button>
+                            </form>
+
+                            <form
+                                method="POST"
+                                action="{% url 'admin_panel:suspend_owner' owner.id %}"
+                            >
+                                {% csrf_token %}
+
+                                <button
+                                    type="submit"
+                                    class="btn-suspend"
+                                >
+                                    Suspend
+                                </button>
+                            </form>
+
+                        </div>
+
+                    </article>
+
+                {% endfor %}
+
+            {% else %}
+
+                <div class="card">
+                    <p>
+                        No pending owner applications.
+                    </p>
+                </div>
+
+            {% endif %}
+
+        </section>
+
+
+        <!-- Navigation -->
+        <section class="section">
+
+            <h2 class="section-title">
+                Navigation
+            </h2>
+
+            <div class="navigation">
+
+                <a
+                    href="{% url 'admin_panel:students' %}"
+                    class="link-button"
+                >
+                    Manage Students
+                </a>
+            
+                    <a
+                        href="{% url 'admin_panel:owners' %}"
+                        class="link-button"
+                    >
+                        Manage Owners
+                    </a>
+
+
+                <a
+                    href="{% url 'admin_panel:properties' %}"
+                    class="link-button"
+                >
+                    Manage Properties
+                </a>
+
+                <a
+                    href="{% url 'admin_panel:payments' %}"
+                    class="link-button"
+                >
+                    Manage Payments
+                </a>
+                <a
+                            href="{% url 'admin_panel:send_announcement' %}"
+                            class="link-button"
+                        >
+                            {% comment %} <i class="fas fa-bullhorn me-2"></i> {% endcomment %}
+                            Send Announcement
+                        </a>
+                                                
+                            <a
+                                href="{% url 'admin_panel:notifications' %}"
+                                class="link-button"
+                            >
+                                🔔 Notifications
+
+                                {% if admin_unread_notifications %}
+                                    <span>
+                                        {{ admin_unread_notifications }}
+                                    </span>
+                                {% endif %}
+                            </a>
+
+
+             <!-- Reviews -->
+
+<section class="section">
+
+    <h2 class="section-title">
+        Reviews
+    </h2>
+
+    <div class="stats-grid">
+
+        <div class="stat-card">
+            <div class="label">
+                Pending Reviews
+            </div>
+
+            <div class="value">
+                {{ pending_reviews_count }}
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="label">
+                Approved Reviews
+            </div>
+
+            <div class="value">
+                {{ approved_reviews_count }}
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="label">
+                Rejected Reviews
+            </div>
+
+            <div class="value">
+                {{ rejected_reviews_count }}
+            </div>
+        </div>
+
+    </div>
+
+    <br>
+
+    <a
+        href="{% url 'admin_panel:reviews' %}"
+        class="link-button"
+    >
+        Moderate Reviews
+    </a>
+
+</section>
+                <a
+                    href="{% url 'accounts:profile' %}"
+                    class="link-button"
+                >
+                    My Profile
+                </a>
+
+                <a
+                    href="{% url 'accounts:logout' %}"
+                    class="link-button"
+                >
+                    Logout
+                </a>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</body>
+</html>

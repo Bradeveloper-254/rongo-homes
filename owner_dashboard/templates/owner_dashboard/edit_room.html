@@ -1,0 +1,275 @@
+
+{% extends "owner_dashboard/dashboard.html" %}
+
+{% block content %}
+
+<div class="container-fluid px-3 px-md-4 py-4">
+
+    <!-- Header -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+
+        <div>
+            <h2 class="fw-bold mb-1">
+                <i class="fas fa-pen-to-square me-2"></i>
+                Edit Room
+            </h2>
+
+            <p class="text-muted mb-0">
+                Update Room
+                <strong>{{ room.room_number }}</strong>
+                in
+                <strong>{{ property.name }}</strong>
+            </p>
+        </div>
+
+        <a
+            href="{% url 'owner_dashboard:manage_rooms' property.property_id %}"
+            class="btn btn-outline-secondary"
+        >
+            <i class="fas fa-arrow-left me-1"></i>
+            Back to Rooms
+        </a>
+
+    </div>
+
+
+    <!-- Information Notice -->
+    <div class="alert alert-info border-0 shadow-sm mb-4">
+
+        <div class="d-flex align-items-start">
+
+            <i class="fas fa-circle-info fs-4 me-3 mt-1"></i>
+
+            <div>
+                <h6 class="fw-bold mb-1">
+                    Room Information
+                </h6>
+
+                <p class="mb-0">
+                    Update the room number, room type, price,
+                    or current availability status.
+                </p>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-7 col-xl-6">
+
+            <div class="card border-0 shadow-sm">
+
+                <div class="card-header bg-white py-3">
+
+                    <h5 class="mb-0 fw-bold">
+                        <i class="fas fa-door-open me-2"></i>
+                        Room Details
+                    </h5>
+
+                </div>
+
+
+                <div class="card-body p-4">
+
+                    <form method="post">
+
+                        {% csrf_token %}
+
+
+                        {% if form.non_field_errors %}
+
+                            <div class="alert alert-danger">
+                                {{ form.non_field_errors }}
+                            </div>
+
+                        {% endif %}
+
+
+                        {% for field in form %}
+
+                            <div class="mb-4">
+
+                                <label
+                                    for="{{ field.id_for_label }}"
+                                    class="form-label fw-semibold"
+                                >
+                                    {{ field.label }}
+                                </label>
+
+                                {{ field }}
+
+
+                                {% if field.help_text %}
+
+                                    <div class="form-text">
+                                        {{ field.help_text }}
+                                    </div>
+
+                                {% endif %}
+
+
+                                {% if field.errors %}
+
+                                    <div class="text-danger small mt-1">
+
+                                        {{ field.errors }}
+
+                                    </div>
+
+                                {% endif %}
+
+                            </div>
+
+                        {% endfor %}
+
+
+                        <!-- Buttons -->
+
+                        <div class="d-flex flex-column flex-sm-row gap-2 pt-2">
+
+                            <button
+                                type="submit"
+                                class="btn btn-primary flex-grow-1"
+                            >
+                                <i class="fas fa-save me-2"></i>
+                                Save Room Changes
+                            </button>
+
+
+                            <a
+                                href="{% url 'owner_dashboard:manage_rooms' property.property_id %}"
+                                class="btn btn-outline-secondary"
+                            >
+                                Cancel
+                            </a>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+
+            <!-- Current Room Summary -->
+
+            <div class="card border-0 shadow-sm mt-4">
+
+                <div class="card-body">
+
+                    <h6 class="fw-bold mb-3">
+                        <i class="fas fa-circle-check me-2"></i>
+                        Current Room Information
+                    </h6>
+
+                    <div class="row g-3">
+
+                        <div class="col-sm-6">
+
+                            <div class="small text-muted">
+                                Room Number
+                            </div>
+
+                            <div class="fw-semibold">
+                                {{ room.room_number }}
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-sm-6">
+
+                            <div class="small text-muted">
+                                Room Type
+                            </div>
+
+                            <div class="fw-semibold">
+                                {{ room.room_type }}
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-sm-6">
+
+                            <div class="small text-muted">
+                                Price
+                            </div>
+
+                            <div class="fw-semibold">
+                                KSh {{ room.price }}
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-sm-6">
+
+                            <div class="small text-muted">
+                                Status
+                            </div>
+
+                            <div class="fw-semibold text-capitalize">
+                                {{ room.status }}
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<style>
+
+    .card {
+        border-radius: 14px;
+    }
+
+    .card-header {
+        border-bottom: 1px solid #e5e7eb;
+        border-radius: 14px 14px 0 0 !important;
+    }
+
+    .form-control,
+    .form-select {
+        width: 100%;
+        border-radius: 8px;
+        padding: 11px 13px;
+        border: 1px solid #d1d5db;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+    }
+
+    .alert {
+        border-radius: 10px;
+    }
+
+    @media (max-width: 576px) {
+
+        .card-body {
+            padding: 20px !important;
+        }
+
+    }
+
+</style>
+
+{% endblock %}
+

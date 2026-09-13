@@ -1,0 +1,682 @@
+
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Manage Owners | Rongo Homes
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{% static 'admin_panel/css/dashboard.css' %}"
+    >
+
+    <style>
+
+        /* PAGE HEADER */
+
+        .page-header {
+            margin-bottom: 30px;
+        }
+
+        .page-header h2 {
+            margin-bottom: 8px;
+        }
+
+        .page-header p {
+            margin: 0;
+        }
+
+
+        /* SEARCH */
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        .search-box input {
+            flex: 1;
+            min-width: 220px;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 15px;
+        }
+
+        .search-box button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+
+        /* OWNER GRID */
+
+        .owners-grid {
+            display: grid;
+            grid-template-columns: repeat(
+                auto-fit,
+                minmax(300px, 1fr)
+            );
+            gap: 20px;
+        }
+
+
+        /* OWNER CARD */
+
+        .owner-card {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 22px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .owner-card h3 {
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+
+        .owner-info {
+            margin-bottom: 18px;
+        }
+
+        .owner-info p {
+            margin: 7px 0;
+        }
+
+
+        /* STATUS BADGES */
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .status-active {
+            background: #dff5e3;
+            color: #176b2c;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-rejected {
+            background: #f8d7da;
+            color: #842029;
+        }
+
+        .status-suspended {
+            background: #e2e3e5;
+            color: #41464b;
+        }
+
+
+        /* VERIFICATION */
+
+        .verified {
+            font-weight: bold;
+        }
+
+        .verified-yes {
+            color: #176b2c;
+        }
+
+        .verified-no {
+            color: #842029;
+        }
+
+
+        /* DOCUMENTS */
+
+        .documents {
+            border-top: 1px solid #eee;
+            border-bottom: 1px solid #eee;
+            padding: 15px 0;
+            margin: 15px 0;
+        }
+
+        .documents h4 {
+            margin-top: 0;
+        }
+
+        .documents ul {
+            padding-left: 20px;
+            margin-bottom: 0;
+        }
+
+        .documents li {
+            margin: 6px 0;
+        }
+
+
+        /* ACTIONS */
+
+        .owner-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .owner-actions form {
+            margin: 0;
+        }
+
+        .owner-actions button {
+            padding: 9px 13px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .approve-button {
+            background: #198754;
+            color: #fff;
+        }
+
+        .reject-button {
+            background: #dc3545;
+            color: #fff;
+        }
+
+        .suspend-button {
+            background: #ffc107;
+            color: #212529;
+        }
+
+        .activate-button {
+            background: #0d6efd;
+            color: #fff;
+        }
+
+
+        /* EMPTY STATE */
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+        }
+
+
+        /* DASHBOARD LINK */
+
+        .back-link {
+            margin-top: 30px;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<header>
+
+    <div>
+
+        <h1>
+            Rongo Homes
+        </h1>
+
+        <p>
+            Admin Panel
+        </p>
+
+    </div>
+
+
+    <nav>
+
+        <a href="{% url 'admin_panel:dashboard' %}">
+            Dashboard
+        </a>
+
+        |
+
+        <a href="{% url 'accounts:profile' %}">
+            My Profile
+        </a>
+
+        |
+
+        <a href="{% url 'accounts:logout' %}">
+            Logout
+        </a>
+
+    </nav>
+
+</header>
+
+
+<main>
+
+
+    <!-- PAGE INTRODUCTION -->
+
+    <section class="section page-header">
+
+        <h2 class="section-title">
+            Manage Owners
+        </h2>
+
+        <p>
+            Review, verify and manage owner accounts
+            registered on Rongo Homes.
+        </p>
+
+    </section>
+
+
+    <!-- SEARCH -->
+
+    <section class="section">
+
+        <h2 class="section-title">
+            Search Owners
+        </h2>
+
+
+        <form
+            method="get"
+            class="search-box"
+        >
+
+            <input
+                type="text"
+                name="search"
+                value="{{ search_query }}"
+                placeholder="Search by name or email..."
+            >
+
+
+            <button type="submit">
+                Search
+            </button>
+
+
+            {% if search_query %}
+
+                <a
+                    href="{% url 'admin_panel:owners' %}"
+                    class="link-button"
+                >
+                    Clear Search
+                </a>
+
+            {% endif %}
+
+        </form>
+
+    </section>
+
+
+    <!-- OWNER LIST -->
+
+    <section class="section">
+
+        <h2 class="section-title">
+            Registered Owners
+        </h2>
+
+
+        {% if owners %}
+
+            <div class="owners-grid">
+
+                {% for owner in owners %}
+
+                    <article class="owner-card">
+
+
+                        <!-- OWNER NAME -->
+
+                        <h3>
+                            {{ owner.full_name }}
+                        </h3>
+
+
+                        <!-- BASIC INFORMATION -->
+
+                        <div class="owner-info">
+
+                            <p>
+                                <strong>Email:</strong>
+                                {{ owner.email }}
+                            </p>
+
+
+                            <p>
+                                <strong>Phone:</strong>
+                                {{ owner.phone }}
+                            </p>
+
+
+                            <p>
+                                <strong>Status:</strong>
+
+                                {% if owner.status == "active" %}
+
+                                    <span class="status-badge status-active">
+                                        Active
+                                    </span>
+
+                                {% elif owner.status == "pending" %}
+
+                                    <span class="status-badge status-pending">
+                                        Pending
+                                    </span>
+
+                                {% elif owner.status == "rejected" %}
+
+                                    <span class="status-badge status-rejected">
+                                        Rejected
+                                    </span>
+
+                                {% elif owner.status == "suspended" %}
+
+                                    <span class="status-badge status-suspended">
+                                        Suspended
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="status-badge">
+                                        {{ owner.status|title }}
+                                    </span>
+
+                                {% endif %}
+
+                            </p>
+
+
+                            <p>
+
+                                <strong>
+                                    Verification:
+                                </strong>
+
+
+                                {% if owner.is_verified %}
+
+                                    <span class="verified verified-yes">
+                                        ✓ Verified
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="verified verified-no">
+                                        ✗ Not Verified
+                                    </span>
+
+                                {% endif %}
+
+                            </p>
+
+                        </div>
+
+
+                        <!-- DOCUMENTS -->
+
+                        <div class="documents">
+
+                            <h4>
+                                Documents
+                            </h4>
+
+
+                            <ul>
+
+                                <li>
+
+                                    ID Document:
+
+                                    {% if owner.id_document %}
+
+                                        ✓ Available
+
+                                    {% else %}
+
+                                        Not provided
+
+                                    {% endif %}
+
+                                </li>
+
+
+                                <li>
+
+                                    Ownership Document:
+
+                                    {% if owner.ownership_document %}
+
+                                        ✓ Available
+
+                                    {% else %}
+
+                                        Not provided
+
+                                    {% endif %}
+
+                                </li>
+
+
+                                <li>
+
+                                    Additional Document:
+
+                                    {% if owner.additional_document %}
+
+                                        ✓ Available
+
+                                    {% else %}
+
+                                        Not provided
+
+                                    {% endif %}
+
+                                </li>
+
+                            </ul>
+
+                        </div>
+
+
+                        <!-- ACTIONS -->
+                      
+                      
+<a
+    href="{% url 'admin_panel:owner_detail' owner.id %}"
+    class="link-button"
+>
+    View Details
+</a>
+
+
+                      
+                        <div class="owner-actions">
+
+
+                            {% if owner.status == "pending" %}
+
+
+                                <form
+                                    method="post"
+                                    action="{% url 'admin_panel:approve_owner' owner.id %}"
+                                >
+
+                                    {% csrf_token %}
+
+                                    <button
+                                        type="submit"
+                                        class="approve-button"
+                                    >
+                                        Approve
+                                    </button>
+
+                                </form>
+
+
+                                <form
+                                    method="post"
+                                    action="{% url 'admin_panel:reject_owner' owner.id %}"
+                                >
+
+                                    {% csrf_token %}
+
+                                    <button
+                                        type="submit"
+                                        class="reject-button"
+                                    >
+                                        Reject
+                                    </button>
+
+                                </form>
+
+
+                            {% elif owner.status == "active" %}
+
+
+                                <form
+                                    method="post"
+                                    action="{% url 'admin_panel:suspend_owner' owner.id %}"
+                                >
+
+                                    {% csrf_token %}
+
+                                    <button
+                                        type="submit"
+                                        class="suspend-button"
+                                    >
+                                        Suspend
+                                    </button>
+
+                                </form>
+
+
+                            {% elif owner.status == "suspended" %}
+
+
+                                <form
+                                    method="post"
+                                    action="{% url 'admin_panel:activate_owner' owner.id %}"
+                                >
+
+                                    {% csrf_token %}
+
+                                    <button
+                                        type="submit"
+                                        class="activate-button"
+                                    >
+                                        Reactivate
+                                    </button>
+
+                                </form>
+
+
+                            {% endif %}
+
+
+                        </div>
+
+
+                    </article>
+
+                {% endfor %}
+
+            </div>
+
+
+        {% else %}
+
+
+            <!-- EMPTY / NO SEARCH RESULTS -->
+
+            <div class="empty-state">
+
+                {% if search_query %}
+
+                    <h3>
+                        No Owners Found
+                    </h3>
+
+                    <p>
+                        No owner accounts match
+                        "{{ search_query }}".
+                    </p>
+
+
+                    <a
+                        href="{% url 'admin_panel:owners' %}"
+                        class="link-button"
+                    >
+                        View All Owners
+                    </a>
+
+                {% else %}
+
+                    <h3>
+                        No Owner Accounts
+                    </h3>
+
+                    <p>
+                        No owner accounts have been
+                        registered yet.
+                    </p>
+
+                {% endif %}
+
+            </div>
+
+
+        {% endif %}
+
+    </section>
+
+
+    <!-- BACK TO DASHBOARD -->
+
+    <section class="section back-link">
+
+        <a
+            href="{% url 'admin_panel:dashboard' %}"
+            class="link-button"
+        >
+            ← Back to Dashboard
+        </a>
+
+    </section>
+
+
+</main>
+
+
+</body>
+
+</html>
+

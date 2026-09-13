@@ -1,0 +1,387 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+    .reports-page {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .page-header {
+        background: linear-gradient(135deg, #fd7e14, #e8590c);
+        color: white;
+        border-radius: 18px;
+        padding: 28px;
+        margin-bottom: 25px;
+        box-shadow: 0 8px 25px rgba(253, 126, 20, 0.15);
+    }
+
+    .page-header h2 {
+        margin: 0;
+        font-weight: 700;
+    }
+
+    .page-header p {
+        margin: 7px 0 0;
+        opacity: 0.9;
+    }
+
+    .back-btn {
+        border-radius: 10px;
+        padding: 9px 16px;
+        font-weight: 600;
+    }
+
+    .report-card {
+        border: none;
+        border-radius: 18px;
+        background: white;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.07);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        overflow: hidden;
+    }
+
+    .report-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 26px rgba(0, 0, 0, 0.10);
+    }
+
+    .report-icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 14px;
+        background: #fff3cd;
+        color: #fd7e14;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 21px;
+        flex-shrink: 0;
+    }
+
+    .property-name {
+        font-weight: 700;
+        color: #212529;
+    }
+
+    .location-text {
+        color: #6c757d;
+        font-size: 14px;
+    }
+
+    .info-label {
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-weight: 700;
+        color: #6c757d;
+        margin-bottom: 4px;
+    }
+
+    .reason-box {
+        background: #f8f9fa;
+        border-radius: 12px;
+        padding: 14px;
+        margin-top: 15px;
+    }
+
+    .description-box {
+        background: #fff8e1;
+        border-left: 4px solid #fd7e14;
+        border-radius: 8px;
+        padding: 14px;
+        color: #495057;
+    }
+
+    .status-area {
+        background: #f8f9fa;
+        border-radius: 14px;
+        padding: 18px;
+        height: 100%;
+    }
+
+    .empty-state {
+        border: 2px dashed #dee2e6;
+        border-radius: 18px;
+        padding: 55px 25px;
+        text-align: center;
+        background: #fafafa;
+    }
+
+    .empty-state i {
+        font-size: 45px;
+        color: #adb5bd;
+        margin-bottom: 15px;
+    }
+
+    @media (max-width: 767px) {
+        .page-header {
+            padding: 22px;
+        }
+
+        .page-header .back-btn {
+            margin-top: 18px;
+            width: 100%;
+        }
+
+        .status-area {
+            margin-top: 10px;
+        }
+    }
+</style>
+
+
+<div class="container py-4 reports-page">
+
+    <div class="page-header">
+
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center">
+
+            <div>
+
+                <h2>
+                    <i class="fas fa-flag me-2"></i>
+                    Reported Properties
+                </h2>
+
+                <p>
+                    View the property reports you have submitted.
+                </p>
+
+            </div>
+
+            <a
+                href="{% url 'properties:student_home' %}"
+                class="btn btn-light back-btn"
+            >
+
+                <i class="fas fa-arrow-left me-1"></i>
+
+                Student Home
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+    {% if reported_properties %}
+
+        <div class="row g-4">
+
+            {% for item in reported_properties %}
+
+                <div class="col-12">
+
+                    <div class="card report-card">
+
+                        <div class="card-body p-4">
+
+                            <div class="row g-4">
+
+                                <div class="col-md-8">
+
+                                    <div class="d-flex align-items-start">
+
+                                        <div class="report-icon me-3">
+
+                                            <i class="fas fa-flag"></i>
+
+                                        </div>
+
+                                        <div>
+
+                                            {% if item.property %}
+
+                                                <h5 class="property-name mb-1">
+
+                                                    {{ item.property.name }}
+
+                                                </h5>
+
+                                                {% if item.property.location %}
+
+                                                    <div class="location-text">
+
+                                                        <i class="fas fa-location-dot me-1"></i>
+
+                                                        {{ item.property.location.area }}
+
+                                                    </div>
+
+                                                {% endif %}
+
+                                            {% else %}
+
+                                                <h5 class="property-name mb-1">
+
+                                                    Property #{{ item.report.property_id }}
+
+                                                </h5>
+
+                                            {% endif %}
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="reason-box">
+
+                                        <div class="info-label">
+                                            Reason
+                                        </div>
+
+                                        <div class="fw-semibold">
+
+                                            {{ item.report.reason }}
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="mt-3">
+
+                                        <div class="info-label">
+                                            Description
+                                        </div>
+
+                                        <div class="description-box">
+
+                                            {{ item.report.description }}
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="small text-muted mt-3">
+
+                                        <i class="far fa-calendar-alt me-1"></i>
+
+                                        Submitted:
+                                        {{ item.report.created_at|date:"d M Y, H:i" }}
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="col-md-4">
+
+                                    <div class="status-area text-center">
+
+                                        <div class="info-label mb-2">
+                                            Report Status
+                                        </div>
+
+
+                                        {% if item.report.status == "pending" %}
+
+                                            <span class="badge rounded-pill bg-warning text-dark px-4 py-2">
+
+                                                <i class="fas fa-clock me-1"></i>
+
+                                                Pending
+
+                                            </span>
+
+                                        {% elif item.report.status == "approved" %}
+
+                                            <span class="badge rounded-pill bg-success px-4 py-2">
+
+                                                <i class="fas fa-check-circle me-1"></i>
+
+                                                Approved
+
+                                            </span>
+
+                                        {% elif item.report.status == "rejected" %}
+
+                                            <span class="badge rounded-pill bg-danger px-4 py-2">
+
+                                                <i class="fas fa-times-circle me-1"></i>
+
+                                                Rejected
+
+                                            </span>
+
+                                        {% else %}
+
+                                            <span class="badge rounded-pill bg-secondary px-4 py-2">
+
+                                                {{ item.report.status|title }}
+
+                                            </span>
+
+                                        {% endif %}
+
+
+                                        {% if item.property %}
+
+                                            <a
+                                                href="{% url 'properties:property_detail' item.property.property_id %}"
+                                                class="btn btn-outline-primary w-100 mt-4"
+                                            >
+
+                                                <i class="fas fa-eye me-1"></i>
+
+                                                View Property
+
+                                            </a>
+
+                                        {% endif %}
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <div class="empty-state">
+
+            <i class="fas fa-flag d-block"></i>
+
+            <h4>
+                No Reported Properties
+            </h4>
+
+            <p class="text-muted mb-4">
+                You have not reported any properties yet.
+            </p>
+
+            <a
+                href="{% url 'properties:property_list' %}"
+                class="btn btn-warning"
+            >
+
+                <i class="fas fa-search me-1"></i>
+
+                Browse Properties
+
+            </a>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}
+

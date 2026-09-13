@@ -1,0 +1,306 @@
+
+{% extends 'base.html' %}
+
+{% block title %}
+    Terms and Conditions - Rongo Homes
+{% endblock %}
+
+
+{% block content %}
+
+<div class="container mt-5 mb-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-9">
+
+
+            <div class="card shadow-sm">
+
+                <div class="card-body p-4 p-md-5">
+
+
+                    <div class="text-center mb-5">
+
+                        <i
+                            class="fas fa-file-contract fa-3x text-success mb-3"
+                        ></i>
+
+                        <h1 class="fw-bold">
+
+                            Rongo Homes Terms and Conditions
+
+                        </h1>
+
+                        <p class="text-muted">
+
+                            Please read these terms carefully before
+                            creating an account.
+
+                        </p>
+
+                    </div>
+
+
+
+                    <h4 class="fw-bold">
+
+                        1. Acceptance of Terms
+
+                    </h4>
+
+                    <p>
+
+                        By creating an account on Rongo Homes, you confirm
+                        that you have read, understood and agreed to these
+                        Terms and Conditions.
+
+                    </p>
+
+
+
+                    <h4 class="fw-bold mt-4">
+
+                        2. Rongo Homes Services
+
+                    </h4>
+
+                    <p>
+
+                        Rongo Homes provides a digital platform designed to
+                        help users discover and manage accommodation
+                        information around Rongo University.
+
+                    </p>
+
+                    <p>
+
+                        The platform may provide property information,
+                        accommodation details, availability information
+                        and communication features.
+
+                    </p>
+
+
+
+                    <h4 class="fw-bold mt-4">
+
+                        3. Student Accounts
+
+                    </h4>
+
+                    <p>
+
+                        Students are responsible for providing accurate
+                        registration information and maintaining the
+                        security of their account credentials.
+
+                    </p>
+
+                    <p>
+
+                        Students should carefully review accommodation
+                        information and make appropriate inquiries before
+                        making any accommodation-related decisions.
+
+                    </p>
+
+
+
+                    <h4 class="fw-bold mt-4">
+
+                        4. Property Owner / Caretaker Accounts
+
+                    </h4>
+
+                    <p>
+
+                        Property owners and caretakers must provide accurate
+                        information about themselves and the properties
+                        they manage.
+
+                    </p>
+
+                    <p>
+
+                        Verification documents may be requested to assist
+                        administrators in reviewing owner and caretaker
+                        accounts.
+
+                    </p>
+
+                    <p>
+
+                        Providing false, misleading or fraudulent
+                        information may result in rejection, suspension
+                        or termination of an account.
+
+                    </p>
+
+
+
+                    <h4 class="fw-bold mt-4">
+
+                        5. Property Information
+
+                    </h4>
+
+                    <p>
+
+                        Property owners and caretakers are responsible for
+                        keeping their property information reasonably
+                        accurate and up to date.
+
+                    </p>
+
+                    <p>
+
+                        Users should independently verify important
+                        accommodation details before entering into any
+                        agreement or making payments.
+
+                    </p>
+
+
+
+                    <h4 class="fw-bold mt-4">
+
+                        6. Account Security
+
+                    </h4>
+
+                    <p>
+
+                        Users are responsible for keeping their login
+                        credentials confidential and should not knowingly
+                        share their passwords with other people.
+
+                    </p>
+
+
+
+                    <h4 class="fw-bold mt-4">
+
+                        7. Prohibited Activities
+
+                    </h4>
+
+                    <p>
+
+                        Users must not use Rongo Homes to provide false
+                        information, impersonate another person, submit
+                        fraudulent documents, misuse another user's account,
+                        or intentionally interfere with the operation of
+                        the platform.
+
+                    </p>
+
+
+
+                    <h4 class="fw-bold mt-4">
+
+                        8. Account Suspension
+
+                    </h4>
+
+                    <p>
+
+                        Rongo Homes administrators may suspend, reject or
+                        deactivate accounts where there are reasonable
+                        grounds to believe that the account or its use
+                        violates these Terms and Conditions or presents a
+                        risk to other users or the platform.
+
+                    </p>
+
+
+
+                    <h4 class="fw-bold mt-4">
+
+                        9. Privacy
+
+                    </h4>
+
+                    <p>
+
+                        Information submitted during registration, including
+                        verification documents submitted by property owners
+                        and caretakers, should be used for account
+                        verification and platform administration.
+
+                    </p>
+
+                    <p>
+
+                        Users should avoid submitting information that is
+                        unrelated to the requested verification process.
+
+                    </p>
+
+
+
+                    <h4 class="fw-bold mt-4">
+
+                        10. Changes to These Terms
+
+                    </h4>
+
+                    <p>
+
+                        Rongo Homes may update these Terms and Conditions
+                        when necessary. Continued use of the platform after
+                        an update may require acceptance of the revised
+                        terms.
+
+                    </p>
+
+
+
+                    <h4 class="fw-bold mt-4">
+
+                        11. Contact
+
+                    </h4>
+
+                    <p>
+
+                        If you have questions regarding these Terms and
+                        Conditions or the Rongo Homes platform, please use
+                        the contact information provided in the website
+                        footer.
+
+                    </p>
+
+
+
+                    <hr class="my-5">
+
+
+                    <div class="text-center">
+
+                        <a
+                            href="{% url 'accounts:register' %}"
+                            class="btn btn-success"
+                        >
+
+                            <i class="fas fa-arrow-left me-2"></i>
+
+                            Back to Registration
+
+                        </a>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
+

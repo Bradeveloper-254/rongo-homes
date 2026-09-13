@@ -1,0 +1,152 @@
+```django
+{% extends "base.html" %}
+
+{% block title %}
+    Report Property - Rongo Homes
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-5 mb-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-md-7">
+
+            <div class="card shadow">
+
+                <div class="card-body p-4">
+
+                    <h2 class="mb-3">
+                        <i class="fas fa-flag text-danger me-2"></i>
+                        Report Property
+                    </h2>
+
+                    <p class="text-muted">
+                        You are reporting:
+                    </p>
+
+                    <div class="alert alert-light border">
+
+                        <strong>
+                            {{ property.name }}
+                        </strong>
+
+                        {% if property.location.area %}
+
+                            <br>
+
+                            <small class="text-muted">
+                                {{ property.location.area }}
+                            </small>
+
+                        {% endif %}
+
+                    </div>
+
+                    <div class="alert alert-warning">
+
+                        <i class="fas fa-info-circle me-2"></i>
+
+                        Please provide accurate information.
+                        Your report will be reviewed by the Rongo Homes
+                        administration team.
+
+                    </div>
+
+                    <form method="POST">
+
+                        {% csrf_token %}
+
+                        {% if form.non_field_errors %}
+
+                            <div class="alert alert-danger">
+
+                                {{ form.non_field_errors }}
+
+                            </div>
+
+                        {% endif %}
+
+
+                        <div class="mb-3">
+
+                            <label
+                                for="{{ form.reason.id_for_label }}"
+                                class="form-label"
+                            >
+                                Reason for Report
+                            </label>
+
+                            {{ form.reason }}
+
+                            {% if form.reason.errors %}
+
+                                <div class="text-danger small mt-1">
+
+                                    {{ form.reason.errors }}
+
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <div class="mb-4">
+
+                            <label
+                                for="{{ form.description.id_for_label }}"
+                                class="form-label"
+                            >
+                                Additional Details
+                            </label>
+
+                            {{ form.description }}
+
+                            {% if form.description.errors %}
+
+                                <div class="text-danger small mt-1">
+
+                                    {{ form.description.errors }}
+
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <div class="d-flex gap-2">
+
+                            <a
+                                href="{% url 'properties:property_detail' property.property_id %}"
+                                class="btn btn-secondary"
+                            >
+                                Cancel
+                            </a>
+
+                            <button
+                                type="submit"
+                                class="btn btn-danger"
+                            >
+                                <i class="fas fa-flag me-2"></i>
+                                Submit Report
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
+```

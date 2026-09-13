@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        M-PESA Payment | Rongo Homes
+    </title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family:
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                Roboto,
+                Arial,
+                sans-serif;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #f0fdf4 0%,
+                    #ffffff 50%,
+                    #ecfdf5 100%
+                );
+
+            color: #1f2937;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 24px;
+        }
+
+        .payment-container {
+            width: 100%;
+            max-width: 480px;
+        }
+
+        .brand {
+            text-align: center;
+            margin-bottom: 22px;
+        }
+
+        .brand-icon {
+            width: 58px;
+            height: 58px;
+
+            margin: 0 auto 12px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: #16a34a;
+            color: white;
+
+            border-radius: 16px;
+
+            font-size: 27px;
+            font-weight: 800;
+
+            box-shadow:
+                0 8px 20px rgba(22, 163, 74, 0.25);
+        }
+
+        .brand h1 {
+            font-size: 26px;
+            font-weight: 750;
+            color: #166534;
+        }
+
+        .brand p {
+            margin-top: 4px;
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .payment-card {
+            background: #ffffff;
+
+            border: 1px solid #e5e7eb;
+
+            border-radius: 24px;
+
+            padding: 30px;
+
+            box-shadow:
+                0 20px 50px rgba(0, 0, 0, 0.08);
+        }
+
+        .payment-header {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .mpesa-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 8px 15px;
+
+            background: #dcfce7;
+            color: #15803d;
+
+            border-radius: 999px;
+
+            font-size: 13px;
+            font-weight: 700;
+
+            margin-bottom: 12px;
+        }
+
+        .payment-header h2 {
+            font-size: 24px;
+            color: #111827;
+        }
+
+        .payment-header p {
+            margin-top: 7px;
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .details {
+            background: #f9fafb;
+
+            border: 1px solid #f0f0f0;
+
+            border-radius: 16px;
+
+            overflow: hidden;
+
+            margin-bottom: 25px;
+        }
+
+        .detail-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 15px 17px;
+
+            border-bottom: 1px solid #e5e7eb;
+
+            gap: 20px;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .detail-value {
+            color: #111827;
+            font-size: 14px;
+            font-weight: 600;
+            text-align: right;
+
+            word-break: break-word;
+        }
+
+        .amount {
+            color: #15803d;
+            font-size: 20px;
+            font-weight: 800;
+        }
+
+        .instructions {
+            text-align: center;
+
+            padding: 25px 15px;
+
+            border-radius: 18px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #f0fdf4,
+                    #ecfdf5
+                );
+
+            border: 1px solid #bbf7d0;
+
+            margin-bottom: 20px;
+        }
+
+        .phone-icon {
+            width: 58px;
+            height: 58px;
+
+            margin: 0 auto 15px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: #16a34a;
+            color: white;
+
+            border-radius: 50%;
+
+            font-size: 25px;
+
+            box-shadow:
+                0 8px 18px rgba(22, 163, 74, 0.2);
+        }
+
+        .instructions h3 {
+            color: #166534;
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+
+        .instructions p {
+            color: #4b5563;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .status {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            gap: 10px;
+
+            min-height: 48px;
+
+            padding: 12px 15px;
+
+            background: #f9fafb;
+
+            border-radius: 12px;
+
+            color: #4b5563;
+
+            font-size: 14px;
+            text-align: center;
+
+            margin-bottom: 22px;
+        }
+
+        .spinner {
+            width: 18px;
+            height: 18px;
+
+            flex-shrink: 0;
+
+            border: 2px solid #bbf7d0;
+            border-top-color: #16a34a;
+
+            border-radius: 50%;
+
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .back-button {
+            display: block;
+
+            width: 100%;
+
+            padding: 13px 18px;
+
+            text-align: center;
+
+            text-decoration: none;
+
+            background: #ffffff;
+
+            color: #166534;
+
+            border: 1px solid #bbf7d0;
+
+            border-radius: 12px;
+
+            font-size: 14px;
+            font-weight: 650;
+
+            transition:
+                background 0.2s ease,
+                border-color 0.2s ease,
+                transform 0.2s ease;
+        }
+
+        .back-button:hover {
+            background: #f0fdf4;
+            border-color: #86efac;
+            transform: translateY(-1px);
+        }
+
+        .footer {
+            text-align: center;
+
+            margin-top: 20px;
+
+            color: #9ca3af;
+
+            font-size: 12px;
+        }
+
+        .success {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .error {
+            background: #fef2f2;
+            color: #b91c1c;
+        }
+
+        @media (max-width: 520px) {
+
+            body {
+                padding: 15px;
+            }
+
+            .payment-card {
+                padding: 22px 18px;
+                border-radius: 20px;
+            }
+
+            .brand h1 {
+                font-size: 23px;
+            }
+
+            .payment-header h2 {
+                font-size: 21px;
+            }
+
+            .detail-row {
+                padding: 13px 14px;
+            }
+
+            .detail-value {
+                max-width: 58%;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <main class="payment-container">
+
+        <div class="brand">
+
+            <div class="brand-icon">
+                RH
+            </div>
+
+            <h1>
+                Rongo Homes
+            </h1>
+
+            <p>
+                Secure property payments
+            </p>
+
+        </div>
+
+
+        <section class="payment-card">
+
+            <div class="payment-header">
+
+                <span class="mpesa-badge">
+                    M-PESA PAYMENT
+                </span>
+
+                <h2>
+                    Complete Your Payment
+                </h2>
+
+                <p>
+                    Confirm the payment on your phone
+                </p>
+
+            </div>
+
+
+            <div class="details">
+
+                <div class="detail-row">
+
+                    <span class="detail-label">
+                        Property
+                    </span>
+
+                    <span class="detail-value">
+                        {{ property.name }}
+                    </span>
+
+                </div>
+
+
+                <div class="detail-row">
+
+                    <span class="detail-label">
+                        Amount
+                    </span>
+
+                    <span class="detail-value amount">
+                        KSh {{ payment.amount }}
+                    </span>
+
+                </div>
+
+
+                <div class="detail-row">
+
+                    <span class="detail-label">
+                        Transaction
+                    </span>
+
+                    <span class="detail-value">
+                        {{ payment.transaction_id }}
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="instructions">
+
+                <div class="phone-icon">
+                    📱
+                </div>
+
+                <h3>
+                    Check your phone
+                </h3>
+
+                <p>
+                    An M-PESA payment prompt has been
+                    sent to your phone.
+                    <br>
+                    Enter your M-PESA PIN to complete
+                    the payment.
+                </p>
+
+            </div>
+
+
+            <div
+                id="payment-message"
+                class="status"
+            >
+
+                <span
+                    id="spinner"
+                    class="spinner"
+                ></span>
+
+                <span>
+                    Waiting for payment confirmation...
+                </span>
+
+            </div>
+
+
+            <a
+                class="back-button"
+                href="{% url 'properties:property_detail' property.property_id %}"
+            >
+                ← Back to Property
+            </a>
+
+        </section>
+
+
+        <div class="footer">
+            © Rongo Homes · Secure M-PESA Payment
+        </div>
+
+    </main>
+
+
+    <script>
+
+        const statusUrl =
+            "{% url 'payments:payment_status' payment.transaction_id %}";
+
+        const propertyUrl =
+            "{% url 'properties:property_detail' property.property_id %}";
+
+        let attempts = 0;
+
+        const maxAttempts = 60;
+
+
+        function checkPayment() {
+
+            fetch(statusUrl, {
+                method: "GET",
+                headers: {
+                    "X-Requested-With":
+                        "XMLHttpRequest"
+                }
+            })
+
+            .then(response => {
+
+                if (!response.ok) {
+                    throw new Error(
+                        "Payment status request failed"
+                    );
+                }
+
+                return response.json();
+
+            })
+
+            .then(data => {
+
+                const message =
+                    document.getElementById(
+                        "payment-message"
+                    );
+
+                const spinner =
+                    document.getElementById(
+                        "spinner"
+                    );
+
+
+                if (data.status === "successful") {
+
+                    message.className =
+                        "status success";
+
+                    message.innerHTML =
+                        "✓ Payment successful. Unlocking property...";
+
+                    window.location.href =
+                        propertyUrl;
+
+                    return;
+                }
+
+
+                if (
+                    data.status === "failed" ||
+                    data.status === "cancelled"
+                ) {
+
+                    message.className =
+                        "status error";
+
+                    message.innerHTML =
+                        "✕ Payment was not completed. Please try again.";
+
+                    if (spinner) {
+                        spinner.remove();
+                    }
+
+                    return;
+                }
+
+
+                attempts++;
+
+
+                if (attempts < maxAttempts) {
+
+                    setTimeout(
+                        checkPayment,
+                        3000
+                    );
+
+                } else {
+
+                    if (spinner) {
+                        spinner.remove();
+                    }
+
+                    message.innerHTML =
+                        "We are still waiting for payment confirmation. "
+                        + "Please check your M-PESA messages.";
+
+                }
+
+            })
+
+            .catch(() => {
+
+                attempts++;
+
+
+                if (attempts < maxAttempts) {
+
+                    setTimeout(
+                        checkPayment,
+                        3000
+                    );
+
+                } else {
+
+                    const message =
+                        document.getElementById(
+                            "payment-message"
+                        );
+
+                    const spinner =
+                        document.getElementById(
+                            "spinner"
+                        );
+
+                    if (spinner) {
+                        spinner.remove();
+                    }
+
+                    message.innerHTML =
+                        "Unable to check payment status. "
+                        + "Please check your M-PESA messages.";
+
+                }
+
+            });
+
+        }
+
+
+        checkPayment();
+
+    </script>
+
+</body>
+
+</html>

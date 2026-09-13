@@ -1,0 +1,475 @@
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8">
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>Manage Property Photos</title>
+
+<style>
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+        background: #f4f7fb;
+        color: #1f2937;
+        line-height: 1.6;
+        min-height: 100vh;
+    }
+
+    .container {
+        width: 90%;
+        max-width: 1100px;
+        margin: 40px auto;
+    }
+
+    .header {
+        background: linear-gradient(135deg, #2563eb, #1d4ed8);
+        color: white;
+        padding: 30px;
+        border-radius: 16px;
+        margin-bottom: 25px;
+        box-shadow: 0 8px 25px rgba(37, 99, 235, 0.2);
+    }
+
+    .header h1 {
+        font-size: 32px;
+        margin-bottom: 8px;
+    }
+
+    .header h2 {
+        font-size: 22px;
+        font-weight: 500;
+        margin-bottom: 8px;
+    }
+
+    .property-id {
+        opacity: 0.85;
+        font-size: 14px;
+    }
+
+    .stats {
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+        margin-top: 20px;
+    }
+
+    .stat-card {
+        background: rgba(255, 255, 255, 0.15);
+        padding: 12px 18px;
+        border-radius: 10px;
+        backdrop-filter: blur(5px);
+    }
+
+    .messages {
+        margin-bottom: 25px;
+    }
+
+    .message {
+        background: #dcfce7;
+        color: #166534;
+        border: 1px solid #bbf7d0;
+        padding: 14px 18px;
+        border-radius: 10px;
+        margin-bottom: 10px;
+    }
+
+    .section {
+        background: white;
+        border-radius: 16px;
+        padding: 30px;
+        margin-bottom: 25px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+    }
+
+    .section h3 {
+        font-size: 22px;
+        margin-bottom: 20px;
+        color: #111827;
+    }
+
+    .photos-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+        gap: 22px;
+    }
+
+    .photo-card {
+        background: #f8fafc;
+        border: 1px solid #e5e7eb;
+        border-radius: 14px;
+        overflow: hidden;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .photo-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .photo-wrapper {
+        width: 100%;
+        height: 210px;
+        overflow: hidden;
+        background: #e5e7eb;
+    }
+
+    .photo-wrapper img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    .photo-info {
+        padding: 16px;
+    }
+
+    .cover-badge {
+        display: inline-block;
+        background: #fef3c7;
+        color: #92400e;
+        padding: 6px 10px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: bold;
+        margin-bottom: 12px;
+    }
+
+    .photo-actions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+
+    .btn {
+        border: none;
+        border-radius: 8px;
+        padding: 9px 14px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
+        transition: background 0.2s ease, transform 0.1s ease;
+    }
+
+    .btn:hover {
+        transform: translateY(-1px);
+    }
+
+    .btn-primary {
+        background: #2563eb;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background: #1d4ed8;
+    }
+
+    .btn-danger {
+        background: #fee2e2;
+        color: #b91c1c;
+    }
+
+    .btn-danger:hover {
+        background: #fecaca;
+    }
+
+    .upload-info {
+        background: #eff6ff;
+        color: #1e40af;
+        border: 1px solid #bfdbfe;
+        padding: 14px 18px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+    }
+
+    .upload-form p {
+        margin-bottom: 15px;
+    }
+
+    .upload-form input[type="file"] {
+        width: 100%;
+        padding: 12px;
+        border: 2px dashed #cbd5e1;
+        border-radius: 10px;
+        background: #f8fafc;
+        cursor: pointer;
+    }
+
+    .upload-form input[type="file"]:hover {
+        border-color: #2563eb;
+    }
+
+    .upload-button {
+        background: #16a34a;
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 9px;
+        font-size: 15px;
+        font-weight: bold;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+
+    .upload-button:hover {
+        background: #15803d;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 35px 20px;
+        color: #6b7280;
+        background: #f9fafb;
+        border-radius: 12px;
+        border: 1px dashed #d1d5db;
+    }
+
+    .limit-message {
+        background: #fff7ed;
+        border: 1px solid #fed7aa;
+        color: #9a3412;
+        padding: 16px;
+        border-radius: 10px;
+    }
+
+    .bottom-navigation {
+        text-align: center;
+        margin: 30px 0;
+    }
+
+    .back-link {
+        color: #2563eb;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .back-link:hover {
+        text-decoration: underline;
+    }
+
+    @media (max-width: 600px) {
+        .container {
+            width: 94%;
+            margin: 20px auto;
+        }
+
+        .header {
+            padding: 22px;
+        }
+
+        .header h1 {
+            font-size: 26px;
+        }
+
+        .section {
+            padding: 20px;
+        }
+
+        .photo-actions {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .photo-actions .btn {
+            text-align: center;
+        }
+    }
+</style>
+
+</head> <body> <div class="container">
+<!-- Header -->
+<div class="header">
+    <h1>Manage Property Photos</h1>
+
+    <h2>{{ property.name }}</h2>
+
+    <p class="property-id">
+        Property ID: {{ property.property_id }}
+    </p>
+
+    <div class="stats">
+        <div class="stat-card">
+            📷 <strong>{{ photo_count }}/4</strong> Photos
+        </div>
+
+        {% if photo_count < 4 %}
+            <div class="stat-card">
+                {{ remaining_slots }} Upload Slot{{ remaining_slots|pluralize }}
+                Available
+            </div>
+        {% else %}
+            <div class="stat-card">
+                Maximum Photos Reached
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+
+<!-- Messages -->
+{% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+            <div class="message">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+
+<!-- Current Photos -->
+<div class="section">
+
+    <h3>📸 Current Photos</h3>
+
+    {% if property.photos %}
+
+        <div class="photos-grid">
+
+            {% for photo in property.photos %}
+
+                <div class="photo-card">
+
+                    <div class="photo-wrapper">
+                        <img
+                            src="{{ photo.url }}"
+                            alt="{{ property.name }}"
+                        >
+                    </div>
+
+                    <div class="photo-info">
+
+                        {% if photo.is_cover %}
+
+                            <span class="cover-badge">
+                                ★ Cover Photo
+                            </span>
+
+                        {% endif %}
+
+                        <div class="photo-actions">
+
+                            {% if not photo.is_cover %}
+
+                                <a
+                                    class="btn btn-primary"
+                                    href="{% url 'properties:set_cover_photo' property.property_id forloop.counter0 %}"
+                                >
+                                    ★ Set as Cover
+                                </a>
+
+                            {% endif %}
+
+                            <form
+                                method="POST"
+                                action="{% url 'properties:delete_photo' property.property_id forloop.counter0 %}"
+                                onsubmit="return confirm('Delete this photo?');"
+                            >
+
+                                {% csrf_token %}
+
+                                <button
+                                    type="submit"
+                                    class="btn btn-danger"
+                                >
+                                    🗑 Delete
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <div class="empty-state">
+            <p>📷 No photos uploaded yet.</p>
+            <p>Upload some photos to showcase your property.</p>
+        </div>
+
+    {% endif %}
+
+</div>
+
+
+<!-- Upload Section -->
+{% if photo_count < 4 %}
+
+    <div class="section">
+
+        <h3>⬆️ Upload Photos</h3>
+
+        <div class="upload-info">
+            You can upload
+            <strong>{{ remaining_slots }}</strong>
+            more photo{{ remaining_slots|pluralize }}.
+            A maximum of 4 photos is allowed.
+        </div>
+
+        <form
+            method="POST"
+            enctype="multipart/form-data"
+            class="upload-form"
+        >
+
+            {% csrf_token %}
+
+            {{ form.as_p }}
+
+            <button
+                type="submit"
+                class="upload-button"
+            >
+                Upload Photos
+            </button>
+
+        </form>
+
+    </div>
+
+{% else %}
+
+    <div class="section">
+
+        <div class="limit-message">
+            <strong>Maximum of 4 photos reached.</strong>
+            <p>
+                Delete an existing photo if you want to upload a new one.
+            </p>
+        </div>
+
+    </div>
+
+{% endif %}
+
+
+<!-- Navigation -->
+<div class="bottom-navigation">
+
+    <a
+        href="{% url 'properties:my_properties' %}"
+        class="back-link"
+    >
+        ← Back to My Properties
+    </a>
+
+</div>
+
+</div> </body> </html>

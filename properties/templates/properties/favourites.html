@@ -1,0 +1,295 @@
+<!DOCTYPE html> <html lang="en"> <head>
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>My Favourites | Rongo Homes</title>
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+        background: #f5f7f6;
+        color: #26332d;
+        line-height: 1.6;
+        min-height: 100vh;
+    }
+
+    /* Header */
+    h1 {
+        background: #176b4d;
+        color: white;
+        padding: 25px 8%;
+        font-size: 30px;
+        letter-spacing: 0.5px;
+    }
+
+    /* Navigation */
+    nav {
+        background: white;
+        padding: 15px 8%;
+        border-bottom: 1px solid #e0e5e2;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    nav a {
+        color: #176b4d;
+        text-decoration: none;
+        font-weight: 600;
+        margin: 0 8px;
+        transition: color 0.2s ease;
+    }
+
+    nav a:first-child {
+        margin-left: 0;
+    }
+
+    nav a:hover {
+        color: #0e4935;
+        text-decoration: underline;
+    }
+
+    /* Divider */
+    hr {
+        border: none;
+        height: 1px;
+        background: #e1e6e3;
+    }
+
+    /* Main heading */
+    h2 {
+        max-width: 1100px;
+        margin: 40px auto 25px;
+        padding: 0 20px;
+        color: #176b4d;
+        font-size: 28px;
+    }
+
+    /* Favourite property card */
+    h2 + div,
+    div {
+        max-width: 1100px;
+    }
+
+    body > div {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    div {
+        background: white;
+        margin: 0 auto 20px;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
+        border-left: 5px solid #176b4d;
+    }
+
+    div h3 {
+        color: #176b4d;
+        font-size: 21px;
+        margin-bottom: 12px;
+    }
+
+    div p {
+        margin: 8px 0;
+        color: #59655f;
+        font-size: 15px;
+    }
+
+    /* Property links */
+    div a {
+        display: inline-block;
+        margin-top: 15px;
+        margin-right: 8px;
+        padding: 9px 16px;
+        border-radius: 7px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 14px;
+        transition: all 0.2s ease;
+    }
+
+    div a:first-of-type {
+        background: #176b4d;
+        color: white;
+    }
+
+    div a:first-of-type:hover {
+        background: #0e4935;
+        transform: translateY(-1px);
+    }
+
+    div a:last-of-type {
+        background: #fff0f0;
+        color: #c0392b;
+        border: 1px solid #f0c5c2;
+    }
+
+    div a:last-of-type:hover {
+        background: #c0392b;
+        color: white;
+    }
+
+    /* Empty favourites message */
+    body > p {
+        max-width: 1100px;
+        margin: 30px auto 15px;
+        padding: 25px;
+        text-align: center;
+        color: #68736e;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+    }
+
+    body > p + a {
+        display: block;
+        width: fit-content;
+        margin: 20px auto;
+        padding: 12px 20px;
+        background: #176b4d;
+        color: white;
+        text-decoration: none;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: background 0.2s ease;
+    }
+
+    body > p + a:hover {
+        background: #0e4935;
+    }
+
+    /* Responsive design */
+    @media (max-width: 700px) {
+
+        h1 {
+            padding: 20px;
+            font-size: 25px;
+        }
+
+        nav {
+            padding: 14px 20px;
+            line-height: 2.2;
+        }
+
+        nav a {
+            margin: 0 4px;
+            font-size: 14px;
+        }
+
+        h2 {
+            margin-top: 30px;
+            padding: 0 15px;
+            font-size: 24px;
+        }
+
+        div {
+            margin-left: 15px;
+            margin-right: 15px;
+            padding: 20px;
+        }
+
+        div a {
+            margin-top: 10px;
+        }
+    }
+</style>
+
+</head> <body>
+<h1>Rongo Homes</h1>
+
+<nav>
+
+    <a href="{% url 'properties:student_home' %}">
+        Home
+    </a>
+
+    |
+
+    <a href="{% url 'accounts:profile' %}">
+        Profile
+    </a>
+
+    |
+
+    <a href="{% url 'properties:favourite_list' %}">
+        My Favourites
+    </a>
+
+    |
+
+    <a href="{% url 'accounts:logout' %}">
+        Logout
+    </a>
+
+</nav>
+
+<hr>
+
+<h2>My Favourites</h2>
+
+{% if favourites %}
+
+    {% for item in favourites %}
+
+        <div>
+
+            <h3>
+                {{ item.property.property_id }}
+            </h3>
+
+            <p>
+                 {{ item.property.location.area }}
+            </p>
+
+            {% if item.property.monthly_price %}
+                <p>
+                    KSh {{ item.property.monthly_price }} / month
+                </p>
+            {% endif %}
+
+            {% if item.property.semester_price %}
+                <p>
+                     KSh {{ item.property.semester_price }} / semester
+                </p>
+            {% endif %}
+
+            <p>
+                 {{ item.property.rooms|length }}
+                room(s)
+            </p>
+
+            <a href="{% url 'properties:property_detail' item.property.property_id %}">
+                View Property
+            </a>
+
+            <a href="{% url 'properties:remove_favourite' item.property.property_id %}">
+                Remove
+            </a>
+
+        </div>
+
+        <hr>
+
+    {% endfor %}
+
+{% else %}
+
+    <p>
+        You haven't saved any properties yet.
+    </p>
+
+    <a href="{% url 'properties:student_home' %}">
+        Browse Available Accommodation
+    </a>
+
+{% endif %}
+
+</body> </html>
