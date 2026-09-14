@@ -43,6 +43,7 @@ ALLOWED_HOSTS = [
     "127.0.0.1",
     "localhost",
     "frequent-fridge-marrow.ngrok-free.dev",
+    "https://rongo-homes.onrender.com"
 ]
 
 render_hostname = os.getenv("RENDER_EXTERNAL_HOSTNAME")
@@ -54,6 +55,7 @@ if render_hostname:
 CSRF_TRUSTED_ORIGINS = [
     "http://127.0.0.1",
     "http://localhost",
+    "https://rongo-homes.onrender.com"
 ]
 
 if render_hostname:
