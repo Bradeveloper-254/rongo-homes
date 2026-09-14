@@ -35,6 +35,7 @@ if not SECRET_KEY:
     )
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = True
+
 DEBUG = os.getenv("DJANGO_DEBUG", "True").lower() == "true"
 
 
@@ -43,6 +44,24 @@ ALLOWED_HOSTS = [
     "localhost",
     "frequent-fridge-marrow.ngrok-free.dev",
 ]
+
+render_hostname = os.getenv("RENDER_EXTERNAL_HOSTNAME")
+
+if render_hostname:
+    ALLOWED_HOSTS.append(render_hostname)
+
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://127.0.0.1",
+    "http://localhost",
+]
+
+if render_hostname:
+    CSRF_TRUSTED_ORIGINS.append(
+        f"https://{render_hostname}"
+    )
+
+
 
 
 
