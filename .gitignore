@@ -29,3 +29,8 @@ Thumbs.db
 # Python tooling
 .pytest_cache/
 .mypy_cache/
+
+# Node.js
+node_modules/
+package-lock.json
+package.json
