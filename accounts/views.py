@@ -36,12 +36,11 @@ additional_document = None
 # ==========================================
 
 
+
 def register(request):
 
     # If user is already logged in, redirect to appropriate dashboard
-
     if request.session.get("user_id"):
-
         role = request.session.get("role")
 
         if role == "student":
@@ -53,7 +52,6 @@ def register(request):
         elif role == "admin":
             return redirect("accounts:admin_dashboard")
 
-
     if request.method == "POST":
 
         form = RegistrationForm(
@@ -61,16 +59,13 @@ def register(request):
             request.FILES
         )
 
-
         if form.is_valid():
 
             email = form.cleaned_data["email"].lower().strip()
 
-
             existing_user = User.objects(
                 email=email
             ).first()
-
 
             if existing_user:
 
@@ -79,28 +74,21 @@ def register(request):
                     "An account with this email already exists."
                 )
 
-
             else:
 
                 role = form.cleaned_data["role"]
 
-
                 # Students become active immediately.
                 # Owners/caretakers must wait for approval.
-
                 if role == "student":
-                   status = "active"
-
+                    status = "active"
                 else:
                     status = "pending"
 
-
                 # Save uploaded documents
-
                 id_document_path = None
                 ownership_document_path = None
                 additional_document_path = None
-
 
                 if role == "owner":
 
@@ -116,39 +104,30 @@ def register(request):
                         "additional_document"
                     )
 
-
                     if id_document:
-
                         id_document_path = default_storage.save(
                             f"owner_documents/{email}/id/{id_document.name}",
                             id_document
                         )
 
-
                     if ownership_document:
-
                         ownership_document_path = default_storage.save(
                             f"owner_documents/{email}/ownership/{ownership_document.name}",
                             ownership_document
                         )
 
-
                     if additional_document:
-
                         additional_document_path = default_storage.save(
                             f"owner_documents/{email}/additional/{additional_document.name}",
                             additional_document
                         )
 
-
                 user = User(
-
                     full_name=form.cleaned_data[
                         "full_name"
                     ],
 
-                    email = email,
-
+                    email=email,
 
                     phone=form.cleaned_data[
                         "phone"
@@ -162,10 +141,12 @@ def register(request):
 
                     role=role,
 
-                     status="pending" if role == "owner" else "active",
+                    status=status,
 
                     is_verified=False,
+
                     is_active=True if role == "student" else False,
+
                     id_document=id_document_path,
 
                     ownership_document=ownership_document_path,
@@ -175,32 +156,32 @@ def register(request):
                     created_at=datetime.now(),
 
                     updated_at=datetime.now()
-
                 )
-
 
                 user.save()
-                if role == "owner":
-                 admin_users = User.objects(
-                    role="admin",
-                    status="active"
-                )
 
-                for admin in admin_users:
-                    create_notification(
-                        user_id=str(admin.id),
-                        recipient_id=str(admin.id),
-                        recipient_role="admin",
-                        notification_type="owner_registered",
-                        title="New Owner Application",
-                        message=(
-                            f"{user.full_name} has submitted a new owner "
-                            f"application using {user.email}."
-                        ),
-                        related_id=str(user.id),
+                # Notify active administrators about new owner applications
+                if role == "owner":
+
+                    admin_users = User.objects(
+                        role="admin",
+                        status="active"
                     )
 
-                if role == "owner":
+                    for admin in admin_users:
+
+                        create_notification(
+                            user_id=str(admin.id),
+                            recipient_id=str(admin.id),
+                            recipient_role="admin",
+                            notification_type="owner_registered",
+                            title="New Owner Application",
+                            message=(
+                                f"{user.full_name} has submitted a new owner "
+                                f"application using {user.email}."
+                            ),
+                            related_id=str(user.id),
+                        )
 
                     messages.success(
                         request,
@@ -217,16 +198,13 @@ def register(request):
                         "You can now log in."
                     )
 
-
                 return redirect(
                     "accounts:login"
                 )
 
-
     else:
 
         form = RegistrationForm()
-
 
     return render(
         request,
@@ -235,7 +213,6 @@ def register(request):
             "form": form
         }
     )
-
 
 
 
