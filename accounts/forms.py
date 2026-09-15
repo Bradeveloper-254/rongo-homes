@@ -1,5 +1,6 @@
 
 from django import forms
+from django.core.validators import RegexValidator
 
 
 class RegistrationForm(forms.Form):
@@ -19,12 +20,30 @@ class RegistrationForm(forms.Form):
     )
 
     password = forms.CharField(
-        widget=forms.PasswordInput,
-        label="Password"
+        min_length=8,
+        label="Password",
+        validators=[
+            RegexValidator(
+                regex=r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).+$",
+                message=(
+                    "Password must contain at least one uppercase letter, "
+                    "one lowercase letter, one number, and one special character."
+                ),
+            )
+        ],
+        widget=forms.PasswordInput(
+            attrs={
+                "placeholder": "Enter a strong password"
+            }
+        )
     )
 
     confirm_password = forms.CharField(
-        widget=forms.PasswordInput,
+        widget=forms.PasswordInput(
+            attrs={
+                "placeholder": "Confirm your password"
+            }
+        ),
         label="Confirm Password"
     )
 
@@ -76,7 +95,8 @@ class RegistrationForm(forms.Form):
 
             if password != confirm_password:
 
-                raise forms.ValidationError(
+                self.add_error(
+                    "confirm_password",
                     "Passwords do not match."
                 )
 
