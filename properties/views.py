@@ -717,6 +717,7 @@ def my_properties(request):
 # OWNER: ADD PROPERTY
 # ============================================================
 
+
 @owner_required
 def add_property(request):
 
@@ -789,31 +790,36 @@ def add_property(request):
                     ),
                 ),
 
-                distance_from_university=
+                distance_from_university=(
                     form.cleaned_data.get(
                         "distance_from_university"
-                    ),
+                    )
+                ),
 
-                monthly_price=
+                monthly_price=(
                     form.cleaned_data.get(
                         "monthly_price"
-                    ),
+                    )
+                ),
 
-                semester_price=
+                semester_price=(
                     form.cleaned_data.get(
                         "semester_price"
-                    ),
+                    )
+                ),
 
-                Cost_Sharing=
+                Cost_Sharing=(
                     form.cleaned_data.get(
                         "Cost_Sharing"
-                    ),
+                    )
+                ),
 
-                amenities=
+                amenities=(
                     form.cleaned_data.get(
                         "amenities",
                         []
-                    ),
+                    )
+                ),
 
                 rooms=[],
 
@@ -828,44 +834,73 @@ def add_property(request):
                 updated_at=datetime.now(),
             )
 
-         
-    property_obj.save()
+            property_obj.save()
 
 
-    # Notify all active admins about the new property
-    admin_users = User.objects(
-        role="admin",
-        status="active"
-    )
+            # Notify all active admins
+            # about the new property
 
-    for admin in admin_users:
+            admin_users = User.objects(
+                role="admin",
+                status="active"
+            )
 
-        create_notification(
-            user_id=str(admin.id),
-            recipient_id=str(admin.id),
-            recipient_role="admin",
-            notification_type="property_submitted",
-            title="New Property Submitted",
-            message=(
-                f"Property #{property_obj.property_id} "
-                f"has been submitted by an owner and is "
-                f"awaiting approval."
-            ),
-            related_id=str(property_obj.property_id),
-        )
+            for admin in admin_users:
+
+                create_notification(
+                    user_id=str(admin.id),
+
+                    recipient_id=str(admin.id),
+
+                    recipient_role="admin",
+
+                    notification_type=(
+                        "property_submitted"
+                    ),
+
+                    title="New Property Submitted",
+
+                    message=(
+                        f"Property "
+                        f"#{property_obj.property_id} "
+                        f"has been submitted by an "
+                        f"owner and is awaiting "
+                        f"approval."
+                    ),
+
+                    related_id=(
+                        str(
+                            property_obj.property_id
+                        )
+                    ),
+                )
 
 
-    messages.success(
+            messages.success(
+                request,
+                (
+                    "Property added successfully. "
+                    "It is now pending approval."
+                )
+            )
+
+            return redirect(
+                "owner_dashboard:dashboard"
+            )
+
+    else:
+
+        form = PropertyForm()
+
+
+    return render(
         request,
-        (
-            "Property added successfully. "
-            "It is now pending approval."
-        )
+        "properties/add_property.html",
+        {
+            "form": form
+        }
     )
 
-    return redirect(
-        "owner_dashboard:dashboard"
-    )
 
 
 
