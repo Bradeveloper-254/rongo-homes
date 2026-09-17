@@ -15,6 +15,12 @@ urlpatterns = [
     path( "owners/", views.owners, name="owners" ),
     path("owners/<str:user_id>/view/", views.owner_detail, name="owner_detail"),
     path(
+    "owners/<str:user_id>/documents/<str:document_type>/",
+    views.view_owner_document,
+    name="view_owner_document"
+),
+    
+    path(
         "owners/<str:user_id>/approve/",
         views.approve_owner,
         name="approve_owner"
@@ -148,7 +154,5 @@ path(
     views.mark_all_notifications_read,
     name="mark_all_notifications_read"
 ),
-
-
 
 ]
