@@ -17,6 +17,7 @@ staticfiles/
 
 # User-uploaded media
 media/
+private_media/
 
 # IDE
 .vscode/
