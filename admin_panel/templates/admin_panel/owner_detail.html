@@ -604,13 +604,13 @@
             </p>
 
             <a
-                href="{{ MEDIA_URL }}{{ owner.id_document }}"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="link-button"
-            >
-                View Document
-            </a>
+    href="{% url 'admin_panel:view_owner_document' owner.id 'id' %}"
+    target="_blank"
+    rel="noopener noreferrer"
+    class="link-button"
+>
+    View Document
+</a>
 
         {% else %}
 
@@ -639,7 +639,7 @@
             </p>
 
             <a
-                href="{{ MEDIA_URL }}{{ owner.ownership_document }}"
+                href="{% url 'admin_panel:view_owner_document' owner.id 'ownership' %}"
                 target="_blank"
                 rel="noopener noreferrer"
                 class="link-button"
@@ -673,14 +673,14 @@
                 ✓ Submitted
             </p>
 
-            <a
-                href="{{ MEDIA_URL }}{{ owner.additional_document }}"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="link-button"
-            >
-                View Document
-            </a>
+          <a
+    href="{% url 'admin_panel:view_owner_document' owner.id 'additional' %}"
+    target="_blank"
+    rel="noopener noreferrer"
+    class="link-button"
+>
+    View Document
+</a>
 
         {% else %}
 
