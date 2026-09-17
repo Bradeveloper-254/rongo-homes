@@ -1,7 +1,8 @@
 from datetime import datetime, timedelta
+import email
 import os
 import secrets
-
+import uuid
 from django.core.serializers import python
 from notifications.utils import create_notification
 from accounts.models import User
@@ -27,9 +28,12 @@ from .decorators import admin_required
 from .decorators import login_required
 from .forms import RegistrationForm
 from .models import User
+from django.conf import settings
+from django.core.files.storage import FileSystemStorage
 id_document = None
 ownership_document = None
 additional_document = None
+private_document_storage = FileSystemStorage( location=settings.PRIVATE_MEDIA_ROOT )
 
 # ==========================================
 # REGISTER
@@ -105,19 +109,19 @@ def register(request):
                     )
 
                     if id_document:
-                        id_document_path = default_storage.save(
-                            f"owner_documents/{email}/id/{id_document.name}",
-                            id_document
-                        )
+                            id_document_path = private_document_storage.save(
+                                f"owner_documents/{email}/id/{id_document.name}",
+                                id_document
+                            )
 
                     if ownership_document:
-                        ownership_document_path = default_storage.save(
+                        ownership_document_path = private_document_storage.save(
                             f"owner_documents/{email}/ownership/{ownership_document.name}",
                             ownership_document
                         )
 
                     if additional_document:
-                        additional_document_path = default_storage.save(
+                        additional_document_path = private_document_storage.save(
                             f"owner_documents/{email}/additional/{additional_document.name}",
                             additional_document
                         )
