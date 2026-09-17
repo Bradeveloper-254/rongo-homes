@@ -1,6 +1,7 @@
 import datetime
 
 from django.contrib import messages
+from django.core.files.storage import FileSystemStorage
 from django.shortcuts import redirect, render
 from mongoengine.queryset.visitor import Q
 
@@ -12,8 +13,13 @@ from payments.models import Payment
 from properties.models import Property
 from reports.models import Report
 from reviews.models import Review
+import os
 
-
+from django.conf import settings
+from django.http import FileResponse, Http404
+private_document_storage = FileSystemStorage(
+    location=settings.PRIVATE_MEDIA_ROOT
+)
 # ============================================================
 # ADMIN DASHBOARD
 # ============================================================
@@ -449,6 +455,7 @@ def activate_owner(request, user_id):
 
 @admin_required
 def owner_detail(request, user_id):
+
     owner = User.objects(
         id=user_id,
         role="owner"
@@ -461,8 +468,6 @@ def owner_detail(request, user_id):
         )
         return redirect("admin_panel:owners")
 
-    from django.conf import settings
-
     # Find all properties belonging to this owner
     owner_properties = Property.objects(
         owner_id=str(owner.id)
@@ -474,11 +479,59 @@ def owner_detail(request, user_id):
         {
             "owner": owner,
             "owner_properties": owner_properties,
-            "MEDIA_URL": settings.MEDIA_URL,
         }
     )
 
 
+@admin_required
+def view_owner_document(request, user_id, document_type):
+
+    allowed_documents = {
+        "id": "id_document",
+        "ownership": "ownership_document",
+        "additional": "additional_document",
+    }
+
+    field_name = allowed_documents.get(document_type)
+
+    if not field_name:
+        raise Http404("Invalid document type.")
+
+    owner = User.objects(
+        id=user_id,
+        role="owner"
+    ).first()
+
+    if not owner:
+        raise Http404("Owner account not found.")
+
+    document_path = getattr(owner, field_name, None)
+
+    if not document_path:
+        raise Http404("Document not found.")
+
+    private_root = os.path.abspath(
+        settings.PRIVATE_MEDIA_ROOT
+    )
+
+    file_path = os.path.abspath(
+        os.path.join(private_root, document_path)
+    )
+
+    # Prevent path traversal outside private_media/
+    if os.path.commonpath(
+        [private_root, file_path]
+    ) != private_root:
+        raise Http404("Invalid document path.")
+
+    if not os.path.isfile(file_path):
+        raise Http404("Document file not found.")
+
+    return FileResponse(
+        open(file_path, "rb"),
+        as_attachment=False,
+        filename=os.path.basename(file_path),
+    )
 
 
 # ============================================================
