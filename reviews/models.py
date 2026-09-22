@@ -22,7 +22,10 @@ class Review(Document):
         max_value=5
     )
 
-    comment = StringField()
+    comment = StringField(
+        required=True,
+        max_length=1000
+    )
 
     status = StringField(
         required=True,

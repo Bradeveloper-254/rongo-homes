@@ -29,11 +29,13 @@ from django import forms
 class PropertySearchForm(forms.Form):
 
     keyword = forms.CharField(
-        required=False
+        required=False,
+        max_length=100
     )
 
     location = forms.CharField(
-        required=False
+        required=False,
+        max_length=100
     )
 
     min_price = forms.FloatField(
@@ -122,6 +124,7 @@ class PropertyReportForm(forms.Form):
 
     description = forms.CharField(
         required=False,
+        max_length=2000,
         widget=forms.Textarea(
             attrs={
                 "rows": 4,

@@ -117,7 +117,7 @@ class Property(Document):
 
     description = StringField(
         default="",
-        max_length=1000
+        max_length=2000
     )
 
     location = EmbeddedDocumentField(

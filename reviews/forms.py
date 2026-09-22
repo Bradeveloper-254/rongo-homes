@@ -15,6 +15,7 @@ class ReviewForm(forms.Form):
 
     comment = forms.CharField(
         required=False,
+        max_length=1000,
         widget=forms.Textarea(
             attrs={
                 "rows": 5,
