@@ -1,5 +1,6 @@
 import os
 import uuid
+from django.views.decorators.http import require_POST
 from accounts.models import User
 from notifications.utils import create_notification
 from properties.forms import(PropertyForm, PropertyPhotoForm,RoomForm,)
@@ -510,7 +511,9 @@ def set_cover_photo(
         "owner_dashboard:manage_photos",
         property_id=property_id
     )
-    
+
+@owner_required
+@require_POST  
 def delete_photo(
     request,
     property_id,

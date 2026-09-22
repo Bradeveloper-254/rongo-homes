@@ -47,8 +47,15 @@ class Notification(Document):
 
     )
 
-    title = StringField(required=True)
-    message = StringField(required=True)
+    title = StringField(
+    required=True,
+    max_length=200
+    )
+
+    message = StringField(
+        required=True,
+        max_length=5000
+    )
     link = StringField(default="")
     related_id = StringField(required=False)
 

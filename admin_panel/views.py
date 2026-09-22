@@ -16,7 +16,7 @@ from reviews.models import Review
 import os
 
 from django.conf import settings
-from django.http import FileResponse, Http404
+from django.http import FileResponse, Http404, request
 private_document_storage = FileSystemStorage(
     location=settings.PRIVATE_MEDIA_ROOT
 )
@@ -1252,7 +1252,22 @@ def send_announcement(request):
             "message",
             ""
         ).strip()
+        if len(title) > 200:
+            messages.error(
+                request,
+                "Announcement title is too long."
+            )
+            return redirect("admin_panel:send_announcement")
 
+        if len(message) > 5000:
+            messages.error(
+                request,
+                "Announcement message is too long."
+            )
+            return redirect("admin_panel:send_announcement")
+
+
+            
         # ----------------------------------------------------
         # VALIDATION
         # ----------------------------------------------------

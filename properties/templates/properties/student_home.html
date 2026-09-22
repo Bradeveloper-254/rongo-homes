@@ -209,20 +209,27 @@ Student Dashboard | Rongo Homes
 
 
     <!-- NOTIFICATIONS -->
-    <div class="col-md-6 col-lg">
+ <div class="col-md-6 col-lg">
 
-        <a
-            href="{% url 'notifications:list' %}"
-            class="btn btn-outline-secondary w-100 py-3"
-        >
+    <a
+        href="{% url 'notifications:list' %}"
+        class="btn btn-outline-secondary w-100 py-3 position-relative"
+    >
 
-            <i class="fas fa-bell me-2"></i>
+        <i class="fas fa-bell me-2"></i>
 
-            Notifications
+        Notifications
 
-        </a>
+        {% if unread_notifications > 0 %}
+            <span class="badge bg-danger ms-2">
+                {{ unread_notifications }}
+            </span>
+        {% endif %}
 
-    </div>
+    </a>
+
+</div>
+
 
 </div>
 

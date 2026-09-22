@@ -145,9 +145,11 @@ class PropertyForm(forms.Form):
 
     description = forms.CharField(
         required=False,
+        max_length=1000,
         widget=forms.Textarea(
             attrs={
                 "rows": 4,
+                "maxlength": 2000,
                 "placeholder": "Describe your property..."
             }
         )

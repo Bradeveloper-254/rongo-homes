@@ -225,9 +225,17 @@
 
     |
 
-    <a href="{% url 'accounts:logout' %}">
+   <form
+    method="post"
+    action="{% url 'accounts:logout' %}"
+    style="display:inline;"
+>
+    {% csrf_token %}
+
+    <button type="submit">
         Logout
-    </a>
+    </button>
+</form>
 
 </nav>
 
@@ -270,9 +278,16 @@
                 View Property
             </a>
 
-            <a href="{% url 'properties:remove_favourite' item.property.property_id %}">
-                Remove
-            </a>
+          <form
+    method="post"
+    action="{% url 'properties:remove_favourite' item.property.property_id %}"
+>
+    {% csrf_token %}
+
+    <button type="submit">
+        Remove Favourite
+    </button>
+</form>
 
         </div>
 

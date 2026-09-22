@@ -555,9 +555,17 @@
 
     |
 
-    <a href="{% url 'accounts:logout' %}">
+  <form
+    method="post"
+    action="{% url 'accounts:logout' %}"
+    style="display:inline;"
+>
+    {% csrf_token %}
+
+    <button type="submit">
         Logout
-    </a>
+    </button>
+</form>
 
 </nav>
 
@@ -827,25 +835,36 @@
             information are hidden until the
             unlock payment is completed.
         </p>
-        {% if request.session.role == "student" %}
+{% if request.session.role == "student" %}
 
-            {% if is_favourite %}
+    {% if is_favourite %}
 
-                <a href="{% url 'properties:remove_favourite' property.property_id %}">
-                    ❤️ Remove from Favourites
-                </a>
+        {% if property.property_id %}
+            <form
+                method="post"
+                action="{% url 'properties:remove_favourite' property.property_id %}"
+            >
+                {% csrf_token %}
 
-            {% else %}
-
-                <a href="{% url 'properties:add_favourite' property.property_id %}">
-                    🤍 Add to Favourites
-                </a>
-
-            {% endif %}
-
+                <button type="submit">
+                    ❤️ Remove Favourite
+                </button>
+            </form>
         {% endif %}
 
+    {% else %}
 
+        {% if property.property_id %}
+            <a
+                href="{% url 'properties:add_favourite' property.property_id %}"
+            >
+                🤍 Add to Favourites
+            </a>
+        {% endif %}
+
+    {% endif %}
+
+{% endif %}
         
 
 

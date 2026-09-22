@@ -1,5 +1,6 @@
 import os
 import uuid
+from django.views.decorators.http import require_POST
 from datetime import datetime
 from django.conf import settings
 from django.contrib import messages
@@ -209,6 +210,7 @@ def student_home(request):
         recipient_id=student_id,
         is_read=False
     ).count()
+
 
     # --------------------------------------------------------
     # COMPARISON
@@ -1476,7 +1478,7 @@ def add_favourite(
         property_id=property_id
     )
 
-
+@require_POST
 def remove_favourite(
     request,
     property_id
@@ -1544,11 +1546,14 @@ def favourite_list(request):
 
     for favourite in favourites:
 
+        if not favourite.property_id:
+            continue
+
         property_obj = Property.objects(
             property_id=favourite.property_id
         ).first()
 
-        if property_obj:
+        if property_obj and property_obj.property_id:
 
             favourite_properties.append(
                 {

@@ -612,12 +612,17 @@
                     My Profile
                 </a>
 
-                <a
-                    href="{% url 'accounts:logout' %}"
-                    class="link-button"
-                >
-                    Logout
-                </a>
+               <form
+    method="post"
+    action="{% url 'accounts:logout' %}"
+    style="display:inline;"
+>
+    {% csrf_token %}
+
+    <button type="submit">
+        Logout
+    </button>
+</form>
 
             </div>
 

@@ -512,7 +512,9 @@ def reset_password(request, token):
 # ==========================================
 # LOGOUT
 # ==========================================
+from django.views.decorators.http import require_POST
 
+@require_POST
 def logout_view(request):
 
     request.session.flush()
@@ -525,7 +527,6 @@ def logout_view(request):
     return redirect(
         "accounts:login"
     )
-
 
 # ==========================================
 # PROFILE
