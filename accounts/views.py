@@ -38,6 +38,8 @@ additional_document = None
 private_document_storage = FileSystemStorage( location=settings.PRIVATE_MEDIA_ROOT )
 LOGIN_MAX_ATTEMPTS = 5
 LOGIN_THROTTLE_SECONDS = 300  # 5 minutes
+PASSWORD_RESET_MAX_ATTEMPTS = 3
+PASSWORD_RESET_THROTTLE_SECONDS = 900  # 15 minutes
 
 # ==========================================
 # REGISTER
@@ -420,15 +422,77 @@ def login_view(request):
 # ==========================================
 # FORGOT PASSWORD
 # ==========================================
-
 def forgot_password(request):
 
     if request.method == "POST":
+
+        now = timezone.now()
+
+        reset_attempts = request.session.get(
+            "password_reset_attempts",
+            0
+        )
+
+        reset_locked_until = request.session.get(
+            "password_reset_locked_until"
+        )
+
+        # Check whether reset requests are currently throttled
+        if reset_locked_until:
+
+            reset_locked_until_dt = datetime.fromisoformat(
+                reset_locked_until
+            )
+
+            if reset_locked_until_dt > now:
+
+                messages.success(
+                    request,
+                    "If an account exists with that email, "
+                    "a password reset link has been sent."
+                )
+
+                return redirect(
+                    "accounts:forgot_password"
+                )
+
+            # Throttle period has expired
+            request.session.pop(
+                "password_reset_attempts",
+                None
+            )
+
+            request.session.pop(
+                "password_reset_locked_until",
+                None
+            )
 
         email = request.POST.get(
             "email",
             ""
         ).lower().strip()
+
+        # Count every reset request, including requests
+        # for addresses that do not exist.
+        
+        reset_attempts += 1
+
+        request.session[
+            "password_reset_attempts"
+        ] = reset_attempts
+
+        if reset_attempts >= PASSWORD_RESET_MAX_ATTEMPTS:
+
+            request.session[
+                "password_reset_locked_until"
+            ] = (
+                now
+                + timedelta(
+                    seconds=PASSWORD_RESET_THROTTLE_SECONDS
+                )
+            ).isoformat()
+
+            request.session.modified = True
 
         user = User.objects(
             email=email
@@ -459,7 +523,7 @@ def forgot_password(request):
                     f"Hello {user.full_name},\n\n"
                     "We received a request to reset your "
                     "Rongo Homes password.\n\n"
-                    f"Reset your password using this link:\n"
+                    "Reset your password using this link:\n"
                     f"{reset_url}\n\n"
                     "This link will expire in 30 minutes.\n\n"
                     "If you did not request a password reset, "
@@ -485,7 +549,6 @@ def forgot_password(request):
         request,
         "accounts/forgot_password.html"
     )
-
 
 # ==========================================
 # RESET PASSWORD
