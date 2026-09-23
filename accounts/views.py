@@ -36,6 +36,8 @@ id_document = None
 ownership_document = None
 additional_document = None
 private_document_storage = FileSystemStorage( location=settings.PRIVATE_MEDIA_ROOT )
+LOGIN_MAX_ATTEMPTS = 5
+LOGIN_THROTTLE_SECONDS = 300  # 5 minutes
 
 # ==========================================
 # REGISTER
@@ -225,19 +227,64 @@ def register(request):
 # ==========================================
 # LOGIN
 # ==========================================
-
 def login_view(request):
+
     # If user is already logged in, redirect to appropriate dashboard
     if request.session.get("user_id"):
         role = request.session.get("role")
+
         if role == "student":
             return redirect("properties:student_home")
+
         elif role == "owner":
             return redirect("owner_dashboard:dashboard")
+
         elif role == "admin":
             return redirect("accounts:admin_dashboard")
 
     if request.method == "POST":
+
+        now = timezone.now()
+
+        failed_attempts = request.session.get(
+            "login_failed_attempts",
+            0
+        )
+
+        locked_until = request.session.get(
+            "login_locked_until"
+        )
+
+        # Check whether this session is currently throttled
+        if locked_until:
+
+            locked_until_dt = datetime.fromisoformat(
+                locked_until
+            )
+
+            if locked_until_dt > now:
+
+                messages.error(
+                    request,
+                    "Too many failed login attempts. "
+                    "Please try again later."
+                )
+
+                return render(
+                    request,
+                    "accounts/login.html"
+                )
+
+            # Throttle period has expired
+            request.session.pop(
+                "login_failed_attempts",
+                None
+            )
+
+            request.session.pop(
+                "login_locked_until",
+                None
+            )
 
         email = request.POST.get(
             "email",
@@ -253,41 +300,62 @@ def login_view(request):
             email=email
         ).first()
 
-        print("LOGIN EMAIL:", repr(email))
-        print("USER FOUND:", user is not None)
-
-        if user:
-            print("DB EMAIL:", repr(user.email))
-            print("STATUS:", user.status)
-            print("ROLE:", user.role)
-            print("PASSWORD CHECK:", check_password(password, user.password))
-
-        if not user:
-
-            messages.error(
-                request,
-                "Invalid email or password."
-            )
-
-            return render(
-                request,
-                "accounts/login.html"
-            )
-
-        if not check_password(
+        # Invalid credentials
+        if not user or not check_password(
             password,
             user.password
         ):
 
-            messages.error(
-                request,
-                "Invalid email or password."
-            )
+            failed_attempts += 1
+
+            request.session[
+                "login_failed_attempts"
+            ] = failed_attempts
+
+            if failed_attempts >= LOGIN_MAX_ATTEMPTS:
+
+                request.session[
+                    "login_locked_until"
+                ] = (
+                    now
+                    + timedelta(
+                        seconds=LOGIN_THROTTLE_SECONDS
+                    )
+                ).isoformat()
+
+                request.session.modified = True
+
+                messages.error(
+                    request,
+                    "Too many failed login attempts. "
+                    "Please try again later."
+                )
+
+            else:
+
+                request.session.modified = True
+
+                messages.error(
+                    request,
+                    "Invalid email or password."
+                )
 
             return render(
                 request,
                 "accounts/login.html"
             )
+
+        # Successful authentication
+        request.session.pop(
+            "login_failed_attempts",
+            None
+        )
+
+        request.session.pop(
+            "login_locked_until",
+            None
+        )
+
 
         if user.status == "pending":
 
@@ -305,7 +373,7 @@ def login_view(request):
 
             messages.error(
                 request,
-                "Your account application was rejected."
+                "Your account has been rejected."
             )
 
             return render(
@@ -325,13 +393,13 @@ def login_view(request):
                 "accounts/login.html"
             )
 
-        # Successful login - Save session explicitly
+
+
         request.session["user_id"] = str(user.id)
         request.session["role"] = user.role
         request.session["email"] = user.email
         request.session["full_name"] = user.full_name
-        
-        # Force session to save before redirect
+
         request.session.modified = True
         request.session.save()
 
@@ -348,8 +416,6 @@ def login_view(request):
         request,
         "accounts/login.html"
     )
-    
-
 
 # ==========================================
 # FORGOT PASSWORD
