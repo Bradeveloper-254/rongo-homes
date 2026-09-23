@@ -2,7 +2,17 @@
 from django import forms
 from django.core.validators import RegexValidator
 
+from django import forms
+from django.core.validators import RegexValidator
 
+
+strong_password_validator = RegexValidator(
+    regex=r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).+$",
+    message=(
+        "Password must contain at least one uppercase letter, "
+        "one lowercase letter, one number, and one special character."
+    ),
+)
 class RegistrationForm(forms.Form):
 
     full_name = forms.CharField(
@@ -23,13 +33,7 @@ class RegistrationForm(forms.Form):
         min_length=8,
         label="Password",
         validators=[
-            RegexValidator(
-                regex=r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).+$",
-                message=(
-                    "Password must contain at least one uppercase letter, "
-                    "one lowercase letter, one number, and one special character."
-                ),
-            )
+            strong_password_validator
         ],
         widget=forms.PasswordInput(
             attrs={

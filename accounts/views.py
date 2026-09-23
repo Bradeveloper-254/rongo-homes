@@ -2,6 +2,8 @@ from datetime import datetime, timedelta
 import email
 import os
 import secrets
+from .forms import strong_password_validator
+from django.core.exceptions import ValidationError
 import uuid
 from django.core.serializers import python
 from notifications.utils import create_notification
@@ -474,10 +476,12 @@ def reset_password(request, token):
                 {"token": token}
             )
 
-        if len(password) < 8:
+        try:
+            strong_password_validator(password)
+        except ValidationError as error:
             messages.error(
                 request,
-                "Password must be at least 8 characters long."
+                error.messages[0]
             )
             return render(
                 request,

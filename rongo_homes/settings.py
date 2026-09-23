@@ -233,3 +233,31 @@ STORAGES = {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
 }
+
+
+# SECURITY HARDENING
+
+# Prevent browsers from guessing MIME types
+SECURE_CONTENT_TYPE_NOSNIFF = True
+
+# Prevent the site from being embedded in iframes
+X_FRAME_OPTIONS = "DENY"
+
+# Referrer privacy
+SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"
+
+# Only enable HTTPS-only protections in production
+SECURE_SSL_REDIRECT = not DEBUG
+
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = "Lax"
+SESSION_COOKIE_SECURE = not DEBUG
+
+CSRF_COOKIE_HTTPONLY = False
+CSRF_COOKIE_SAMESITE = "Lax"
+CSRF_COOKIE_SECURE = not DEBUG
+
+#HSTS for production
+SECURE_HSTS_SECONDS = 31536000 if not DEBUG else 0
+SECURE_HSTS_INCLUDE_SUBDOMAINS = not DEBUG
+SECURE_HSTS_PRELOAD = not DEBUG
