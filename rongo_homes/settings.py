@@ -36,7 +36,7 @@ if not SECRET_KEY:
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = True
 
-DEBUG = os.getenv("DJANGO_DEBUG", "True").lower() == "true"
+DEBUG = os.getenv("DJANGO_DEBUG", "False").lower() == "true"
 
 
 ALLOWED_HOSTS = [
@@ -204,15 +204,33 @@ SESSION_SAVE_EVERY_REQUEST = True  # Save session on every request to ensure per
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False  # Session persists even if browser closes
 
 
-MPESA_ENVIRONMENT = os.getenv("MPESA_ENVIRONMENT", "sandbox")
 
-MPESA_CONSUMER_KEY = os.getenv("MPESA_CONSUMER_KEY","nzr2EhYZooO341JibfJX0mpJuOQzsqvCE7nWcketF6vLZjGB")
-MPESA_CONSUMER_SECRET = os.getenv("MPESA_CONSUMER_SECRET","1P0d8TF00C2wjMV1eD6tL9lUJS5phJTQZfkjlying0PzxYn93jXgJ6mkbdpVAPT8")
 
-MPESA_SHORTCODE = os.getenv("MPESA_SHORTCODE", "174379")
-MPESA_PASSKEY = os.getenv("MPESA_PASSKEY", "bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919")
 
-MPESA_CALLBACK_URL = os.getenv("MPESA_CALLBACK_URL","https://frequent-fridge-marrow.ngrok-free.dev/payments/mpesa/callback/")
+MPESA_ENVIRONMENT = os.getenv(
+    "MPESA_ENVIRONMENT",
+    "sandbox"
+)
+
+MPESA_CONSUMER_KEY = os.getenv(
+    "MPESA_CONSUMER_KEY"
+)
+
+MPESA_CONSUMER_SECRET = os.getenv(
+    "MPESA_CONSUMER_SECRET"
+)
+
+MPESA_SHORTCODE = os.getenv(
+    "MPESA_SHORTCODE"
+)
+
+MPESA_PASSKEY = os.getenv(
+    "MPESA_PASSKEY"
+)
+
+MPESA_CALLBACK_URL = os.getenv(
+    "MPESA_CALLBACK_URL"
+)
 
 MPESA_ACCOUNT_REFERENCE = os.getenv(
     "MPESA_ACCOUNT_REFERENCE",
@@ -261,3 +279,9 @@ CSRF_COOKIE_SECURE = not DEBUG
 SECURE_HSTS_SECONDS = 31536000 if not DEBUG else 0
 SECURE_HSTS_INCLUDE_SUBDOMAINS = not DEBUG
 SECURE_HSTS_PRELOAD = not DEBUG
+
+#make sure Django understands that HTTPS is coming through the proxy:
+SECURE_PROXY_SSL_HEADER = (
+    "HTTP_X_FORWARDED_PROTO",
+    "https",
+)

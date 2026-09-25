@@ -298,15 +298,13 @@ def unlock_property(request, property_id):
 
     payment.save()
 
-    # --------------------------------------------------------
-    # GET ACCESS TOKEN
-    # --------------------------------------------------------
+
+# ============================================================
+# GET ACCESS TOKEN
+# ============================================================
 
     try:
-
-        access_token = (
-            get_mpesa_access_token()
-        )
+        access_token = get_mpesa_access_token()
 
     except Exception as exc:
 
@@ -330,9 +328,10 @@ def unlock_property(request, property_id):
             }
         )
 
-    # --------------------------------------------------------
+
+    # ============================================================
     # STK PUSH
-    # --------------------------------------------------------
+    # ============================================================
 
     stk_url = (
         get_mpesa_base_url()
@@ -379,6 +378,7 @@ def unlock_property(request, property_id):
             settings.MPESA_TRANSACTION_DESC,
     }
 
+
     headers = {
         "Authorization":
             "Bearer " + access_token,
@@ -386,6 +386,7 @@ def unlock_property(request, property_id):
         "Content-Type":
             "application/json"
     }
+
 
     try:
 
@@ -396,18 +397,27 @@ def unlock_property(request, property_id):
             timeout=30
         )
 
+        response.raise_for_status()
+
         response_data = response.json()
 
-    except Exception as exc:
+    except (
+        requests.exceptions.RequestException,
+        ValueError
+    ):
 
         payment.status = "failed"
-        payment.result_description = str(exc)
+        payment.result_description = (
+            "M-PESA request failed or returned "
+            "an invalid response."
+        )
         payment.updated_at = datetime.utcnow()
         payment.save()
 
         messages.error(
             request,
-            "Could not contact M-PESA. Please try again."
+            "Could not contact M-PESA. "
+            "Please try again."
         )
 
         return render(
@@ -419,24 +429,24 @@ def unlock_property(request, property_id):
             }
         )
 
-    # --------------------------------------------------------
-    # HANDLE SAFARICOM RESPONSE
-    # --------------------------------------------------------
 
-    response_code = response_data.get(
-        "ResponseCode"
-    )
+    # ============================================================
+    # HANDLE SAFARICOM RESPONSE
+    # ============================================================
+
+    response_code = str(
+        response_data.get(
+            "ResponseCode",
+            ""
+        )
+    ).strip()
+
 
     if response_code != "0":
 
         payment.status = "failed"
 
-        payment.result_code = str(
-            response_data.get(
-                "ResponseCode",
-                ""
-            )
-        )
+        payment.result_code = response_code
 
         payment.result_description = (
             response_data.get(
@@ -466,9 +476,10 @@ def unlock_property(request, property_id):
             }
         )
 
-    # --------------------------------------------------------
+
+    # ============================================================
     # SAVE STK IDENTIFIERS
-    # --------------------------------------------------------
+    # ============================================================
 
     payment.merchant_request_id = (
         response_data.get(
@@ -492,38 +503,11 @@ def unlock_property(request, property_id):
     payment.updated_at = datetime.utcnow()
 
     payment.save()
-    
-    print(
-    "\nSTK PUSH CREATED"
-    )
 
-    print(
-        "Transaction ID:",
-        payment.transaction_id
-    )
 
-    print(
-        "MerchantRequestID:",
-        payment.merchant_request_id
-    )
-
-    print(
-        "CheckoutRequestID:",
-        payment.checkout_request_id
-    )
-
-    print(
-        "Callback URL:",
-        settings.MPESA_CALLBACK_URL
-    )
-
-    print(
-        "=" * 70
-    )
-
-    # --------------------------------------------------------
+    # ============================================================
     # PAYMENT WAITING PAGE
-    # --------------------------------------------------------
+    # ============================================================
 
     return render(
         request,
@@ -533,6 +517,7 @@ def unlock_property(request, property_id):
             "property": property_obj
         }
     )
+
 
 
 
@@ -607,230 +592,309 @@ def unlocked_contacts(request):
 
 @csrf_exempt
 def mpesa_callback(request):
+    """
+    Receive and process M-PESA STK callback.
 
-    print("\n" + "=" * 70)
-    print("M-PESA CALLBACK RECEIVED")
-    print("=" * 70)
+    Security rules:
+    - Only POST is accepted.
+    - Unknown checkout requests are ignored.
+    - Only pending payments can change state.
+    - Successful callbacks must contain a receipt.
+    - Callback amount must match the server-created payment amount.
+    - Duplicate callbacks are harmless.
+    - A receipt already attached to another successful payment is rejected.
+    - Sensitive payment details are not printed to logs.
+    """
 
-    # Safaricom sends the callback using POST
     if request.method != "POST":
-        print("Callback received using GET")
-        return JsonResponse({
-            "ResultCode": 0,
-            "ResultDesc": "Callback endpoint is active."
-        })
-
-    # --------------------------------------------------------
-    # READ JSON BODY
-    # --------------------------------------------------------
+        return JsonResponse(
+            {
+                "ResultCode": 1,
+                "ResultDesc": "POST required."
+            },
+            status=405
+        )
 
     try:
-        data = json.loads(request.body)
-
-        print("CALLBACK DATA:")
-        print(json.dumps(data, indent=4))
-
-    except json.JSONDecodeError as exc:
-
-        print("INVALID JSON:", exc)
-
-        return JsonResponse({
-            "ResultCode": 1,
-            "ResultDesc": "Invalid JSON."
-        }, status=400)
-
-    # --------------------------------------------------------
-    # EXTRACT STK CALLBACK
-    # --------------------------------------------------------
-
-    try:
-
-        callback = (
-            data
-            .get("Body", {})
-            .get("stkCallback", {})
+        payload = json.loads(
+            request.body.decode("utf-8")
+        )
+    except (json.JSONDecodeError, UnicodeDecodeError):
+        return JsonResponse(
+            {
+                "ResultCode": 1,
+                "ResultDesc": "Invalid JSON."
+            },
+            status=400
         )
 
-        checkout_request_id = (
-            callback.get("CheckoutRequestID")
+    callback = (
+        payload.get("Body", {})
+        .get("stkCallback", {})
+    )
+
+    if not callback:
+        return JsonResponse(
+            {
+                "ResultCode": 1,
+                "ResultDesc": "Invalid callback payload."
+            },
+            status=400
         )
 
-        result_code = callback.get(
-            "ResultCode"
+    checkout_request_id = callback.get(
+        "CheckoutRequestID"
+    )
+
+    result_code = callback.get(
+        "ResultCode"
+    )
+
+    result_description = callback.get(
+        "ResultDesc",
+        ""
+    )
+
+    if not checkout_request_id:
+        return JsonResponse(
+            {
+                "ResultCode": 1,
+                "ResultDesc": "Missing CheckoutRequestID."
+            },
+            status=400
         )
 
-        result_description = callback.get(
-            "ResultDesc",
-            ""
-        )
+    payment = Payment.objects(
+        checkout_request_id=checkout_request_id
+    ).first()
 
-        print("CheckoutRequestID:", checkout_request_id)
-        print("ResultCode:", result_code)
-        print("ResultDesc:", result_description)
-
-        # ----------------------------------------------------
-        # FIND PAYMENT
-        # ----------------------------------------------------
-
-        if not checkout_request_id:
-
-            print("No CheckoutRequestID received.")
-
-            return JsonResponse({
+    if not payment:
+        # Do not reveal whether a payment exists.
+        return JsonResponse(
+            {
                 "ResultCode": 0,
                 "ResultDesc": "Accepted"
-            })
+            }
+        )
 
-        payment = Payment.objects(
-            checkout_request_id=checkout_request_id
-        ).first()
+    # --------------------------------------------------------
+    # IDEMPOTENCY
+    # --------------------------------------------------------
 
-        if not payment:
-
-            print(
-                "PAYMENT NOT FOUND FOR CHECKOUT REQUEST:",
-                checkout_request_id
-            )
-
-            return JsonResponse({
+    # Once a payment is successful, repeated callbacks
+    # must not change or duplicate it.
+    if payment.status == "successful":
+        return JsonResponse(
+            {
                 "ResultCode": 0,
-                "ResultDesc": "Accepted"
-            })
-
-        print(
-            "PAYMENT FOUND:",
-            payment.transaction_id
+                "ResultDesc": "Already processed."
+            }
         )
 
-        # ----------------------------------------------------
-        # SAVE RESULT INFORMATION
-        # ----------------------------------------------------
+    # --------------------------------------------------------
+    # SAVE CALLBACK RESULT
+    # --------------------------------------------------------
 
-        payment.result_code = str(
-            result_code
-        )
+    payment.result_code = str(
+        result_code
+    )
 
-        payment.result_description = (
-            result_description
-        )
+    payment.result_description = (
+        str(result_description)[:500]
+    )
 
+    # --------------------------------------------------------
+    # FAILED / CANCELLED PAYMENT
+    # --------------------------------------------------------
+
+    if result_code != 0:
+        payment.status = "failed"
         payment.updated_at = datetime.utcnow()
-
-        # ----------------------------------------------------
-        # SUCCESSFUL PAYMENT
-        # ----------------------------------------------------
-
-        if result_code == 0:
-
-            print("PAYMENT SUCCESSFUL")
-
-            callback_metadata = (
-                callback.get(
-                    "CallbackMetadata",
-                    {}
-                )
-            )
-
-            items = callback_metadata.get(
-                "Item",
-                []
-            )
-
-            metadata = {}
-
-            for item in items:
-
-                name = item.get("Name")
-                value = item.get("Value")
-
-                if name:
-                    metadata[name] = value
-
-            # -----------------------------------------------
-            # MPESA RECEIPT
-            # -----------------------------------------------
-
-            mpesa_receipt = metadata.get(
-                "MpesaReceiptNumber"
-            )
-
-            if mpesa_receipt:
-
-                payment.mpesa_reference = str(
-                    mpesa_receipt
-                )
-
-                print(
-                    "M-PESA RECEIPT:",
-                    mpesa_receipt
-                )
-
-            # -----------------------------------------------
-            # FINAL PAYMENT STATUS
-            # -----------------------------------------------
-
-            payment.status = "successful"
-
-            print(
-                "PAYMENT STATUS CHANGED TO SUCCESSFUL"
-            )
-
-        # ----------------------------------------------------
-        # FAILED / CANCELLED PAYMENT
-        # ----------------------------------------------------
-
-        else:
-
-            payment.status = "failed"
-
-            print(
-                "PAYMENT FAILED:",
-                result_description
-            )
-
-        # ----------------------------------------------------
-        # SAVE PAYMENT
-        # ----------------------------------------------------
-
-        payment.updated_at = datetime.utcnow()
-
         payment.save()
 
-        print(
-            "PAYMENT SAVED:",
-            payment.transaction_id,
-            payment.status
+        return JsonResponse(
+            {
+                "ResultCode": 0,
+                "ResultDesc": "Accepted"
+            }
         )
 
-        print("=" * 70)
-        print("CALLBACK PROCESSING COMPLETE")
-        print("=" * 70)
+    # --------------------------------------------------------
+    # SUCCESS CALLBACK VALIDATION
+    # --------------------------------------------------------
 
-        # ----------------------------------------------------
-        # ACKNOWLEDGE SAFARICOM
-        # ----------------------------------------------------
+    callback_metadata = (
+        callback.get(
+            "CallbackMetadata",
+            {}
+        )
+    )
 
-        return JsonResponse({
-            "ResultCode": 0,
-            "ResultDesc": "Accepted"
-        })
+    metadata_items = (
+        callback_metadata.get(
+            "Item",
+            []
+        )
+    )
 
-    except Exception as exc:
+    metadata = {}
 
-        print(
-            "M-PESA CALLBACK ERROR:",
-            exc
+    for item in metadata_items:
+        name = item.get("Name")
+
+        if name:
+            metadata[name] = item.get("Value")
+
+    mpesa_receipt = metadata.get(
+        "MpesaReceiptNumber"
+    )
+
+    callback_amount = metadata.get(
+        "Amount"
+    )
+
+    callback_phone = metadata.get(
+        "PhoneNumber"
+    )
+
+    # A successful payment must have an M-PESA receipt.
+    if not mpesa_receipt:
+        payment.status = "failed"
+        payment.result_description = (
+            "Successful callback missing M-PESA receipt."
+        )
+        payment.updated_at = datetime.utcnow()
+        payment.save()
+
+        return JsonResponse(
+            {
+                "ResultCode": 0,
+                "ResultDesc": "Accepted"
+            }
         )
 
-        # Always acknowledge the callback so Safaricom
-        # does not keep retrying the request.
+    # --------------------------------------------------------
+    # AMOUNT VALIDATION
+    # --------------------------------------------------------
 
-        return JsonResponse({
+    try:
+        callback_amount = float(
+            callback_amount
+        )
+    except (
+        TypeError,
+        ValueError
+    ):
+        callback_amount = None
+
+    if callback_amount is None:
+        payment.status = "failed"
+        payment.result_description = (
+            "Callback missing valid payment amount."
+        )
+        payment.updated_at = datetime.utcnow()
+        payment.save()
+
+        return JsonResponse(
+            {
+                "ResultCode": 0,
+                "ResultDesc": "Accepted"
+            }
+        )
+
+    if callback_amount != float(payment.amount):
+        payment.status = "failed"
+        payment.result_description = (
+            "Callback amount does not match "
+            "the payment amount."
+        )
+        payment.updated_at = datetime.utcnow()
+        payment.save()
+
+        return JsonResponse(
+            {
+                "ResultCode": 0,
+                "ResultDesc": "Accepted"
+            }
+        )
+
+    # --------------------------------------------------------
+    # DUPLICATE RECEIPT PROTECTION
+    # --------------------------------------------------------
+
+    existing_receipt = Payment.objects(
+        mpesa_reference=str(mpesa_receipt),
+        status="successful"
+    ).first()
+
+    if (
+        existing_receipt
+        and str(existing_receipt.id)
+        != str(payment.id)
+    ):
+        payment.status = "failed"
+        payment.result_description = (
+            "M-PESA receipt already used."
+        )
+        payment.updated_at = datetime.utcnow()
+        payment.save()
+
+        return JsonResponse(
+            {
+                "ResultCode": 0,
+                "ResultDesc": "Accepted"
+            }
+        )
+
+    # --------------------------------------------------------
+    # OPTIONAL PHONE VALIDATION
+    # --------------------------------------------------------
+
+    if callback_phone and payment.phone_number:
+
+        callback_phone = str(
+            callback_phone
+        ).replace("+", "").replace(" ", "")
+
+        stored_phone = str(
+            payment.phone_number
+        ).replace("+", "").replace(" ", "")
+
+        if callback_phone != stored_phone:
+            payment.status = "failed"
+            payment.result_description = (
+                "Callback phone number does not "
+                "match the payment."
+            )
+            payment.updated_at = datetime.utcnow()
+            payment.save()
+
+            return JsonResponse(
+                {
+                    "ResultCode": 0,
+                    "ResultDesc": "Accepted"
+                }
+            )
+
+    # --------------------------------------------------------
+    # FINAL SUCCESS
+    # --------------------------------------------------------
+
+    payment.mpesa_reference = str(
+        mpesa_receipt
+    )
+
+    payment.status = "successful"
+    payment.updated_at = datetime.utcnow()
+
+    payment.save()
+
+    return JsonResponse(
+        {
             "ResultCode": 0,
             "ResultDesc": "Accepted"
-        })
-
-
+        }
+    )
 
 # ============================================================
 # PAYMENT STATUS
