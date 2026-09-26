@@ -199,6 +199,15 @@
         div a {
             margin-top: 10px;
         }
+        .remove-favourite-btn {
+            margin-top: 10px;
+            padding: 8px 14px;
+            font-size: 13px;
+            background: #c0392b;
+            color: white;
+            border: none;
+            
+        }
     }
 </style>
 
@@ -284,7 +293,7 @@
 >
     {% csrf_token %}
 
-    <button type="submit">
+    <button type="submit" class="remove-favourite-btn">
         Remove Favourite
     </button>
 </form>
