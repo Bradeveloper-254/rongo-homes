@@ -1,9 +1,9 @@
 
 from django import forms
 from django.core.validators import RegexValidator
+import re
+from django.core.exceptions import ValidationError
 
-from django import forms
-from django.core.validators import RegexValidator
 
 
 strong_password_validator = RegexValidator(
@@ -13,6 +13,23 @@ strong_password_validator = RegexValidator(
         "one lowercase letter, one number, and one special character."
     ),
 )
+
+
+
+def validate_kenyan_phone(value):
+    phone = value.strip()
+
+    if phone.startswith("+254"):
+        phone = "254" + phone[4:]
+    elif phone.startswith("07") or phone.startswith("01"):
+        phone = "254" + phone[1:]
+
+    if not re.fullmatch(r"254(?:7|1)\d{8}", phone):
+        raise ValidationError(
+            "Enter a valid Kenyan mobile number."
+        )
+
+
 class RegistrationForm(forms.Form):
 
     full_name = forms.CharField(
@@ -25,8 +42,15 @@ class RegistrationForm(forms.Form):
     )
 
     phone = forms.CharField(
-        max_length=20,
-        label="Phone Number"
+        max_length=13,
+        validators=[validate_kenyan_phone],
+        widget=forms.TextInput(
+            attrs={
+                "maxlength": "13",
+                "inputmode": "numeric",
+                "autocomplete": "tel",
+            }
+        ),
     )
 
     password = forms.CharField(
@@ -125,4 +149,20 @@ class RegistrationForm(forms.Form):
                 )
 
         return cleaned_data
+    
+    def clean_phone(self):
+        phone = self.cleaned_data["phone"].strip()
+
+        if phone.startswith("+254"):
+            phone = "254" + phone[4:]
+        elif phone.startswith("07") or phone.startswith("01"):
+            phone = "254" + phone[1:]
+
+        if not re.fullmatch(r"254(?:7|1)\d{8}", phone):
+            raise forms.ValidationError(
+                "Enter a valid Kenyan mobile number."
+            )
+
+        return phone
+    
 

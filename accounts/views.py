@@ -1,6 +1,9 @@
 from datetime import datetime, timedelta
 import email
 import os
+import re
+from django import forms
+from django.core.exceptions import ValidationError
 import secrets
 from .forms import strong_password_validator
 from django.core.exceptions import ValidationError
@@ -938,3 +941,23 @@ def terms(request):
         "accounts/terms.html"
     )
 
+def validate_kenyan_phone(value):
+    phone = value.strip()
+
+    if phone.startswith("+254"):
+        phone = "254" + phone[4:]
+    elif phone.startswith("254"):
+        phone = phone
+    elif phone.startswith("07") or phone.startswith("01"):
+        phone = "254" + phone[1:]
+    else:
+        raise ValidationError(
+            "Enter a valid Kenyan mobile number."
+        )
+
+    if not re.fullmatch(r"254(?:7|1)\d{8}", phone):
+        raise ValidationError(
+            "Enter a valid Kenyan mobile number."
+        )
+
+    return phone
