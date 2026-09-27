@@ -28,7 +28,7 @@
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     color: var(--text-dark);
-    background-color: #76b4f3;
+    background-color: #f2f9f9;
     line-height: 1.6;
     margin: 0;
     padding-top: 60px; /* same as navbar height */
@@ -1131,4 +1131,98 @@ input.is-valid:focus {
 
 .logout-btn:active {
     transform: scale(0.98);
+}
+
+
+/* =========================================================
+   MOBILE RESPONSIVE POLISH
+   ========================================================= */
+
+@media (max-width: 576px) {
+
+    /* Keep page content from feeling cramped */
+    .main-content {
+        overflow-x: hidden;
+    }
+
+    /* Smaller cards/forms on phones */
+    .card-body.p-5 {
+        padding: 1.25rem !important;
+    }
+
+    /* Make buttons easier to tap */
+    .btn {
+        min-height: 42px;
+    }
+
+    /* Prevent long IDs/text from creating horizontal overflow */
+    .transaction-id,
+    .property-id,
+    .property-title,
+    .card-title {
+        overflow-wrap: anywhere;
+        word-break: break-word;
+    }
+
+    /* Footer text/links */
+    footer a {
+        overflow-wrap: anywhere;
+    }
+}
+
+
+/* =========================================================
+   PROPERTY CARD ACTIONS
+   ========================================================= */
+
+.property-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.property-actions .btn {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+
+/* =========================================================
+   VERY SMALL PHONES
+   ========================================================= */
+
+@media (max-width: 400px) {
+
+    .property-actions {
+        flex-direction: column;
+    }
+
+    .property-actions .btn {
+        width: 100%;
+    }
+
+    .quick-action-card,
+    .dashboard-header {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+
+    .container,
+    .container-fluid {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    /* Prevent large Bootstrap headings from crowding phones */
+    h1 {
+        font-size: 1.6rem;
+    }
+
+    h2 {
+        font-size: 1.35rem;
+    }
+
+    h3 {
+        font-size: 1.15rem;
+    }
 }

@@ -426,30 +426,46 @@ function getCookie(name) {
 /**
  * Show notification message
  */
-function showNotification(message, type = 'info') {
-    const alertId = 'notification-' + Date.now();
-    const alertHtml = `
-        <div id="${alertId}" class="alert alert-${type} alert-dismissible fade show" role="alert" style="position: fixed; top: 20px; right: 20px; z-index: 9999; max-width: 400px;">
-            <i class="fas fa-info-circle me-2"></i>
-            ${message}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    `;
+function showNotification(message, type = "info") {
+    const container = document.createElement("div");
 
-    const tempDiv = document.createElement('div');
-    tempDiv.innerHTML = alertHtml;
-    document.body.appendChild(tempDiv.firstElementChild);
+    container.className =
+        "alert alert-" +
+        type +
+        " alert-dismissible fade show position-fixed";
 
-    // Auto close after 5 seconds
-    setTimeout(() => {
-        const alert = document.getElementById(alertId);
-        if (alert) {
-            const bsAlert = new bootstrap.Alert(alert);
-            bsAlert.close();
+    container.style.top = "80px";
+    container.style.right = "20px";
+    container.style.zIndex = "9999";
+    container.style.maxWidth = "calc(100vw - 40px)";
+
+    const icon = document.createElement("i");
+
+    icon.className = "fas fa-info-circle me-2";
+
+    const messageText = document.createElement("span");
+
+    messageText.textContent = message;
+
+    const closeButton = document.createElement("button");
+
+    closeButton.type = "button";
+    closeButton.className = "btn-close";
+    closeButton.setAttribute("data-bs-dismiss", "alert");
+    closeButton.setAttribute("aria-label", "Close");
+
+    container.appendChild(icon);
+    container.appendChild(messageText);
+    container.appendChild(closeButton);
+
+    document.body.appendChild(container);
+
+    setTimeout(function () {
+        if (container.parentNode) {
+            container.remove();
         }
     }, 5000);
 }
-
 /**
  * Debounce function for optimizing event handlers
  */

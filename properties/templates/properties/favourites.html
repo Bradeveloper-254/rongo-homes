@@ -72,17 +72,19 @@
     }
 
     /* Favourite property card */
-    h2 + div,
-    div {
+    h2 + .favourite-card {
+        margin-top: 0;
+    },
+    .favourite-card {
         max-width: 1100px;
     }
 
-    body > div {
+    body > .favourite-card {
         margin-left: auto;
         margin-right: auto;
     }
 
-    div {
+   .favourite-card {
         background: white;
         margin: 0 auto 20px;
         padding: 25px;
@@ -91,20 +93,20 @@
         border-left: 5px solid #176b4d;
     }
 
-    div h3 {
+   .favourite-card  h3 {
         color: #176b4d;
         font-size: 21px;
         margin-bottom: 12px;
     }
 
-    div p {
+    .favourite-card p {
         margin: 8px 0;
         color: #59655f;
         font-size: 15px;
     }
 
     /* Property links */
-    div a {
+    .favourite-card a {
         display: inline-block;
         margin-top: 15px;
         margin-right: 8px;
@@ -116,29 +118,29 @@
         transition: all 0.2s ease;
     }
 
-    div a:first-of-type {
+  .favourite-card a:first-of-type {
         background: #176b4d;
         color: white;
     }
 
-    div a:first-of-type:hover {
+    .favourite-card  a:first-of-type:hover {
         background: #0e4935;
         transform: translateY(-1px);
     }
 
-    div a:last-of-type {
+    .favourite-card  a:last-of-type {
         background: #fff0f0;
         color: #c0392b;
         border: 1px solid #f0c5c2;
     }
 
-    div a:last-of-type:hover {
+    .favourite-card  a:last-of-type:hover {
         background: #c0392b;
         color: white;
     }
 
     /* Empty favourites message */
-    body > p {
+    body >.favourite-card  p {
         max-width: 1100px;
         margin: 30px auto 15px;
         padding: 25px;
@@ -149,7 +151,7 @@
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
     }
 
-    body > p + a {
+    body > .favourite-card p + .favourite-card a {
         display: block;
         width: fit-content;
         margin: 20px auto;
@@ -162,7 +164,7 @@
         transition: background 0.2s ease;
     }
 
-    body > p + a:hover {
+    body > .favourite-card  + .favourite-card {a:hover {
         background: #0e4935;
     }
 
@@ -196,7 +198,7 @@
             padding: 20px;
         }
 
-        div a {
+       .favourite-card  a {
             margin-top: 10px;
         }
         .remove-favourite-btn {
@@ -223,6 +225,41 @@
         .logout-btn:active {
             background: #8c251b;
         }
+        .favourite-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    margin-top: 15px;
+}
+
+.favourite-actions a,
+.favourite-actions button {
+    margin: 0;
+}
+
+.favourite-actions form {
+    margin: 0;
+}
+
+@media (max-width: 400px) {
+
+    .favourite-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .favourite-actions a,
+    .favourite-actions form,
+    .favourite-actions button {
+        width: 100%;
+    }
+
+    .favourite-actions a,
+    .favourite-actions button {
+        text-align: center;
+    }
+}
     }
 </style>
 
@@ -271,7 +308,7 @@
 
     {% for item in favourites %}
 
-        <div>
+        <div class="favourite-card">
 
             <h3>
                 {{ item.property.property_id }}
@@ -296,21 +333,32 @@
             <p>
                  {{ item.property.rooms|length }}
                 room(s)
-            </p>
 
-            <a href="{% url 'properties:property_detail' item.property.property_id %}">
-                View Property
-            </a>
+           <div class="favourite-actions">
 
-          <form
-    method="post"
-    action="{% url 'properties:remove_favourite' item.property.property_id %}"
->
-    {% csrf_token %}
+    <a
+        href="{% url 'properties:property_detail' item.property.property_id %}"
+        class="favourite-view-btn"
+    >
+        View Property
+    </a>
 
-    <button type="submit" class="remove-favourite-btn">
-        Remove Favourite
-    </button>
+    <form
+        method="post"
+        action="{% url 'properties:remove_favourite' item.property.property_id %}"
+    >
+        {% csrf_token %}
+
+        <button
+            type="submit"
+            class="remove-favourite-btn"
+        >
+            Remove Favourite
+        </button>
+
+    </form>
+
+</div>
 </form>
 
         </div>

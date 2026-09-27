@@ -547,6 +547,51 @@
     .logout-btn:active {
         transform: scale(0.98);
     }
+    /* =========================================================
+   PROPERTY ACTIONS
+   ========================================================= */
+
+.property-action-btn,
+.back-button {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+}
+
+@media (max-width: 700px) {
+
+    .property-action-btn,
+    .back-button {
+        width: 100%;
+        margin-left: 0;
+        margin-right: 0;
+        text-align: center;
+    }
+
+    .review-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .review-rating {
+        white-space: normal;
+    }
+
+    .review-comment {
+        overflow-wrap: anywhere;
+        word-break: break-word;
+    }
+
+    section p {
+        overflow-wrap: anywhere;
+    }
+
+    li {
+        overflow-wrap: anywhere;
+    }
+  }
 
     }
 
@@ -877,9 +922,12 @@
     {% else %}
 
         {% if property.property_id %}
-            <a
-                href="{% url 'properties:add_favourite' property.property_id %}"
-            >
+            
+                <a
+    href="{% url 'properties:add_favourite' property.property_id %}"
+    class="property-action-btn btn-favourite"
+>
+            
                 🤍 Add to Favourites
             </a>
         {% endif %}
@@ -890,7 +938,10 @@
         
 
 
-        <a href="{% url 'payments:unlock_property' property.property_id %}">
+        <a
+    href="{% url 'payments:unlock_property' property.property_id %}"
+    class="property-action-btn btn-unlock"
+>
              Pay To Unlock 
         </a>
 
@@ -993,7 +1044,10 @@
 
     <p>
 
-        <a href="{% url 'reviews:add_review' property.property_id %}">
+       <a
+    href="{% url 'reviews:add_review' property.property_id %}"
+    class="property-action-btn btn-review"
+>
             ⭐ Write a Review
         </a>
 
