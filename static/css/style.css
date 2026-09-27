@@ -28,7 +28,7 @@
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     color: var(--text-dark);
-    background-color: var(--light-bg);
+    background-color: #040e18;
     line-height: 1.6;
     margin: 0;
     padding-top: 60px; /* same as navbar height */
